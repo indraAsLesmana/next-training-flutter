@@ -49,55 +49,16 @@
               <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Setup untuk Peserta Training Flutter + Neon</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#system-requirements">1. System Requirements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#software-yang-perlu-diinstall">2. Software yang perlu diinstall</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#flutter-sdk">Flutter SDK</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#visual-studio-code">Visual Studio Code</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#git">Git</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#akun-cloud-services">3. Akun Cloud Services</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#neon-postgresql">Neon PostgreSQL</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#github-opsional">GitHub (Opsional)</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#environment-setup">4. Environment Setup</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#clone-project-template">Clone Project Template</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#install-dependencies-flutter">Install Dependencies Flutter</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#setup-environment-variables">Setup Environment Variables</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#database-setup">6. Database Setup</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#buat-database-di-neon">Buat Database di Neon</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#testing-setup">7. Testing Setup</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#test-flutter-app">Test Flutter App</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#troubleshooting-common-issues">8. Troubleshooting Common Issues</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#flutter-doctor-errors">Flutter doctor errors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#database-connection-errors">Database Connection Errors</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#verifikasi-setup-lengkap">9. Verifikasi Setup Lengkap</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#checklist-setup">Checklist Setup</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#quick-test">Quick Test</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#resources">10. Resources</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#documentation">Documentation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#learning-resources">Learning Resources</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#support">Support</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#backup-recovery">11. Backup &amp; Recovery</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#export-database">Export Database</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#backup-code">Backup Code</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#ready-for-training">12. Ready for Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bagian-1-install-package-manager-toolchain">Bagian 1: Install Package Manager &amp; Toolchain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bagian-2-install-flutter-sdk-via-fvm">Bagian 2: Install Flutter SDK via FVM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bagian-3-setup-android-studio-sdk-tools">Bagian 3: Setup Android Studio &amp; SDK Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bagian-4-konfigurasi-vs-code">Bagian 4: Konfigurasi VS Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bagian-5-strategi-khusus-lab-komputer-smk-offline-kit">Bagian 5: Strategi Khusus Lab Komputer SMK (Offline Kit)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bagian-6-setup-akun-cloud-services-neon">Bagian 6: Setup Akun Cloud Services (Neon)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bagian-7-project-setup-environment-variables">Bagian 7: Project Setup &amp; Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bagian-8-testing-setup">Bagian 8: Testing Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#verifikasi-lengkap">Verifikasi Lengkap</a></li>
 </ul>
 </li>
 </ul>
@@ -134,67 +95,195 @@
              
   <section id="setup-untuk-peserta-training-flutter-neon">
 <h1>Setup untuk Peserta Training Flutter + Neon<a class="headerlink" href="#setup-untuk-peserta-training-flutter-neon" title="Link to this heading"></a></h1>
-<section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
-<section id="system-requirements">
-<h3>1. System Requirements<a class="headerlink" href="#system-requirements" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>OS:</strong> Windows 10/11 (64-bit)</p></li>
-<li><p><strong>RAM:</strong> Minimum 8GB (16GB recommended)</p></li>
-<li><p><strong>Storage:</strong> Minimum 20GB free space</p></li>
-<li><p><strong>Processor:</strong> Intel i5 atau setara</p></li>
-</ul>
-</section>
-<section id="software-yang-perlu-diinstall">
-<h3>2. Software yang perlu diinstall<a class="headerlink" href="#software-yang-perlu-diinstall" title="Link to this heading"></a></h3>
-<section id="flutter-sdk">
-<h4>Flutter SDK<a class="headerlink" href="#flutter-sdk" title="Link to this heading"></a></h4>
-<ol class="arabic">
-<li><p>Download Flutter SDK dari <a class="reference external" href="https://flutter.dev">flutter.dev</a></p></li>
-<li><p>Extract ke folder, contoh: <code class="docutils literal notranslate"><span class="pre">C:\flutter</span></code></p></li>
-<li><p>Tambahkan ke PATH environment variable:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">C</span><span class="p">:</span>\<span class="n">flutter</span>\<span class="nb">bin</span>
-</pre></div>
-</div>
-</li>
-<li><p>Verifikasi installasi:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>flutter<span class="w"> </span>doctor
-</pre></div>
-</div>
-</li>
-</ol>
-</section>
-<section id="visual-studio-code">
-<h4>Visual Studio Code<a class="headerlink" href="#visual-studio-code" title="Link to this heading"></a></h4>
+<p>Panduan ini disusun menggunakan standar industri modern (<strong>FVM + Package Manager</strong>) untuk mempermudah setup di berbagai sistem operasi.</p>
+<section id="bagian-1-install-package-manager-toolchain">
+<h2>Bagian 1: Install Package Manager &amp; Toolchain<a class="headerlink" href="#bagian-1-install-package-manager-toolchain" title="Link to this heading"></a></h2>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-0">
+Windows</label><div class="sd-tab-content docutils">
+<p>Menggunakan <strong>Chocolatey</strong> (Package Manager untuk Windows).</p>
 <ol class="arabic simple">
-<li><p>Download VS Code dari <a class="reference external" href="https://code.visualstudio.com">code.visualstudio.com</a></p></li>
-<li><p>Install extensions:</p>
+<li><p>Buka <strong>PowerShell</strong> sebagai <strong>Administrator</strong> (Klik kanan Start Menu -&gt; <em>Terminal (Admin)</em> atau <em>Windows PowerShell (Admin)</em>).</p></li>
+<li><p>Jalankan perintah berikut untuk memasang Chocolatey:</p></li>
+</ol>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nb">Set-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="n">-Scope</span> <span class="k">Process</span> <span class="n">-Force</span><span class="p">;</span> <span class="no">[System.Net.ServicePointManager]</span><span class="p">::</span><span class="n">SecurityProtocol</span> <span class="p">=</span> <span class="no">[System.Net.ServicePointManager]</span><span class="p">::</span><span class="n">SecurityProtocol</span> <span class="o">-bor</span> <span class="n">3072</span><span class="p">;</span> <span class="nb">iex </span><span class="p">((</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;https://community.chocolatey.org/install.ps1&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Tutup jendela PowerShell, lalu <strong>buka kembali PowerShell (Admin) baru</strong>.</p></li>
+<li><p>Jalankan perintah satu baris ini untuk menginstal FVM, Git, VS Code, dan Android Studio secara otomatis:</p></li>
+</ol>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">choco</span> <span class="n">install</span> <span class="n">fvm</span> <span class="n">git</span> <span class="n">vscode</span> <span class="n">androidstudio</span> <span class="n">-y</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-1">
+macOS</label><div class="sd-tab-content docutils">
+<p>Menggunakan <strong>Homebrew</strong>.</p>
+<ol class="arabic simple">
+<li><p>Buka <strong>Terminal</strong>.</p></li>
+<li><p>Jalankan perintah berikut untuk memasang Homebrew:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Tambahkan Homebrew ke shell environment:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;eval &quot;$(/opt/homebrew/bin/brew shellenv)&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
+<span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>/opt/homebrew/bin/brew<span class="w"> </span>shellenv<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Install FVM, Git, CocoaPods, Scrcpy, VS Code, dan Android Studio:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>git<span class="w"> </span>cocoapods<span class="w"> </span>fvm<span class="w"> </span>scrcpy
+brew<span class="w"> </span>install<span class="w"> </span>--cask<span class="w"> </span>visual-studio-code<span class="w"> </span>android-studio<span class="w"> </span>google-chrome
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="bagian-2-install-flutter-sdk-via-fvm">
+<h2>Bagian 2: Install Flutter SDK via FVM<a class="headerlink" href="#bagian-2-install-flutter-sdk-via-fvm" title="Link to this heading"></a></h2>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-2">
+Windows</label><div class="sd-tab-content docutils">
+<p>Buka <strong>PowerShell</strong> biasa atau Admin:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># 1. Install Flutter SDK Stable via FVM</span>
+<span class="n">fvm</span> <span class="n">install</span> <span class="n">stable</span>
+
+<span class="c"># 2. Set versi stable sebagai default global komputer</span>
+<span class="n">fvm</span> <span class="n">global</span> <span class="n">stable</span>
+
+<span class="c"># 3. Tambahkan symlink FVM ke User PATH Windows</span>
+<span class="no">[Environment]</span><span class="p">::</span><span class="n">SetEnvironmentVariable</span><span class="p">(</span><span class="s2">&quot;Path&quot;</span><span class="p">,</span> <span class="nv">$env:Path</span> <span class="p">+</span> <span class="s2">&quot;;$env:USERPROFILE\\fvm\\default\\bin&quot;</span><span class="p">,</span> <span class="s2">&quot;User&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-3">
+macOS</label><div class="sd-tab-content docutils">
+<p>Buka <strong>Terminal</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Install dan set Flutter Stable</span>
+fvm<span class="w"> </span>install<span class="w"> </span>stable
+fvm<span class="w"> </span>global<span class="w"> </span>stable
+
+<span class="c1"># 2. Configure global shell PATH</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PATH=&quot;$HOME/fvm/default/bin:$PATH&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
+<span class="nb">source</span><span class="w"> </span>~/.zshrc
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="bagian-3-setup-android-studio-sdk-tools">
+<h2>Bagian 3: Setup Android Studio &amp; SDK Tools<a class="headerlink" href="#bagian-3-setup-android-studio-sdk-tools" title="Link to this heading"></a></h2>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-2" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-4">
+Windows</label><div class="sd-tab-content docutils">
+<ol class="arabic simple">
+<li><p>Jalankan <strong>Setup Wizard Android Studio</strong>: Setelah instalasi <code class="docutils literal notranslate"><span class="pre">choco</span></code> selesai, buka Android Studio dari Start Menu untuk menjalankan <em>Standard Setup Wizard</em> pertama kali.</p></li>
+<li><p>Pasang Command-line Tools:</p>
 <ul class="simple">
-<li><p>Flutter</p></li>
-<li><p>Dart</p></li>
-<li><p>REST Client (opsional)</p></li>
+<li><p>Masuk ke <strong>More Actions</strong> -&gt; <strong>SDK Manager</strong> -&gt; tab <strong>SDK Tools</strong>.</p></li>
+<li><p>Centang <strong>Android SDK Command-line Tools (latest)</strong>, <strong>Android SDK Build-Tools</strong>, dan <strong>Android Emulator</strong>.</p></li>
+<li><p>Klik <strong>Apply</strong> dan tunggu instalasi selesai.</p></li>
+</ul>
+</li>
+<li><p>Terima Lisensi SDK di PowerShell Baru:</p></li>
+</ol>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">flutter</span> <span class="n">doctor</span> <span class="p">-</span><span class="n">-android-licenses</span>
+<span class="n">flutter</span> <span class="n">doctor</span> <span class="n">-v</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-5">
+macOS</label><div class="sd-tab-content docutils">
+<ol class="arabic simple">
+<li><p>Setup Xcode:</p>
+<ul class="simple">
+<li><p>Pasang Xcode dari App Store.</p></li>
+<li><p>Buka Terminal dan jalankan konfigurasi:</p></li>
+</ul>
+</li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>xcode-select<span class="w"> </span>-s<span class="w"> </span>/Applications/Xcode.app/Contents/Developer
+sudo<span class="w"> </span>xcodebuild<span class="w"> </span>-runFirstLaunch
+sudo<span class="w"> </span>xcodebuild<span class="w"> </span>-license<span class="w"> </span>accept
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Jalankan <strong>Setup Wizard Android Studio</strong> pertama kali.</p></li>
+<li><p>Buka Android Studio -&gt; <strong>Settings</strong> -&gt; <strong>Languages &amp; Frameworks</strong> -&gt; <strong>Android SDK</strong> -&gt; <strong>SDK Tools</strong>.</p></li>
+<li><p>Pastikan <strong>Android SDK Command-line Tools</strong> tercentang, lalu <strong>Apply</strong>.</p></li>
+<li><p>Terima Lisensi SDK di Terminal:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>flutter<span class="w"> </span>doctor<span class="w"> </span>--android-licenses
+flutter<span class="w"> </span>doctor<span class="w"> </span>-v
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="bagian-4-konfigurasi-vs-code">
+<h2>Bagian 4: Konfigurasi VS Code<a class="headerlink" href="#bagian-4-konfigurasi-vs-code" title="Link to this heading"></a></h2>
+<p>Tambahkan konfigurasi ini di VS Code agar IDE otomatis mendeteksi SDK Flutter milik FVM dan melakukan <em>format-on-save</em>.</p>
+<ol class="arabic simple">
+<li><p>Buka VS Code.</p></li>
+<li><p>Tekan <code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">Shift</span> <span class="pre">+</span> <span class="pre">P</span></code> (Windows) atau <code class="docutils literal notranslate"><span class="pre">Cmd</span> <span class="pre">+</span> <span class="pre">Shift</span> <span class="pre">+</span> <span class="pre">P</span></code> (macOS).</p></li>
+<li><p>Ketik <strong>Preferences: Open User Settings (JSON)</strong> dan pilih.</p></li>
+<li><p>Tambahkan konfigurasi berikut ke dalam file <code class="docutils literal notranslate"><span class="pre">settings.json</span></code>:</p></li>
+</ol>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;workbench.settings.applyToAllProfiles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+
+<span class="w">  </span><span class="c1">// Auto-detect Flutter dari FVM</span>
+<span class="w">  </span><span class="nt">&quot;dart.flutterSdkPaths&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;fvm/versions&quot;</span><span class="p">],</span>
+
+<span class="w">  </span><span class="c1">// Automation &amp; Linting</span>
+<span class="w">  </span><span class="nt">&quot;editor.formatOnSave&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;editor.codeActionsOnSave&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;source.fixAll.eslint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;explicit&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;source.organizeImports&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;explicit&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+
+<span class="w">  </span><span class="nt">&quot;[dart]&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;editor.defaultFormatter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Dart-Code.dart-code&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;editor.formatOnSave&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Install VS Code Extensions:</p>
+<ul class="simple">
+<li><p><strong>Flutter</strong> (Dart-Code.flutter)</p></li>
+<li><p><strong>Dart</strong> (Dart-Code.dart-code)</p></li>
 </ul>
 </li>
 </ol>
 </section>
-<section id="git">
-<h4>Git<a class="headerlink" href="#git" title="Link to this heading"></a></h4>
-<ol class="arabic">
-<li><p>Download Git dari <a class="reference external" href="https://git-scm.com">git-scm.com</a></p></li>
-<li><p>Install dengan default options</p></li>
-<li><p>Konfigurasi:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.name<span class="w"> </span><span class="s2">&quot;Nama Anda&quot;</span>
-git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.email<span class="w"> </span><span class="s2">&quot;email@example.com&quot;</span>
-</pre></div>
-</div>
+<section id="bagian-5-strategi-khusus-lab-komputer-smk-offline-kit">
+<h2>Bagian 5: Strategi Khusus Lab Komputer SMK (Offline Kit)<a class="headerlink" href="#bagian-5-strategi-khusus-lab-komputer-smk-offline-kit" title="Link to this heading"></a></h2>
+<p>Untuk mengatasi keterbatasan spek PC lab &amp; koneksi internet di sekolah:</p>
+<ol class="arabic simple">
+<li><p><strong>HP Fisik + Scrcpy (Tanpa Android Emulator):</strong></p>
+<ul class="simple">
+<li><p>Minta guru/siswa membawa HP Android dan kabel data.</p></li>
+<li><p>Aktifkan <strong>USB Debugging</strong> di HP Android.</p></li>
+<li><p>Jalankan <code class="docutils literal notranslate"><span class="pre">scrcpy</span></code> dari terminal (Windows/Mac) untuk me-mirror layar HP ke PC secara sangat ringan tanpa membebani RAM PC.</p></li>
+</ul>
 </li>
 </ol>
 </section>
-</section>
-<section id="akun-cloud-services">
-<h3>3. Akun Cloud Services<a class="headerlink" href="#akun-cloud-services" title="Link to this heading"></a></h3>
-<section id="neon-postgresql">
-<h4>Neon PostgreSQL<a class="headerlink" href="#neon-postgresql" title="Link to this heading"></a></h4>
+<section id="bagian-6-setup-akun-cloud-services-neon">
+<h2>Bagian 6: Setup Akun Cloud Services (Neon)<a class="headerlink" href="#bagian-6-setup-akun-cloud-services-neon" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Buka <a class="reference external" href="https://neon.tech">neon.tech</a></p></li>
 <li><p>Buat akun gratis dengan GitHub/Google</p></li>
@@ -205,35 +294,21 @@ git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"
 <li><p><strong>PostgreSQL Version:</strong> 15 atau terbaru</p></li>
 </ul>
 </li>
-<li><p>Catat database connection string</p></li>
 </ol>
 </section>
-<section id="github-opsional">
-<h4>GitHub (Opsional)<a class="headerlink" href="#github-opsional" title="Link to this heading"></a></h4>
+<section id="bagian-7-project-setup-environment-variables">
+<h2>Bagian 7: Project Setup &amp; Environment Variables<a class="headerlink" href="#bagian-7-project-setup-environment-variables" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
-<li><p>Buat akun di <a class="reference external" href="https://github.com">github.com</a></p></li>
-<li><p>Buat repository baru untuk project</p></li>
+<li><p>Clone project:</p></li>
 </ol>
-</section>
-</section>
-<section id="environment-setup">
-<h3>4. Environment Setup<a class="headerlink" href="#environment-setup" title="Link to this heading"></a></h3>
-<section id="clone-project-template">
-<h4>Clone Project Template<a class="headerlink" href="#clone-project-template" title="Link to this heading"></a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>&lt;template-repo-url&gt;
 <span class="nb">cd</span><span class="w"> </span>todo_app_flutter
 </pre></div>
 </div>
-</section>
-<section id="install-dependencies-flutter">
-<h4>Install Dependencies Flutter<a class="headerlink" href="#install-dependencies-flutter" title="Link to this heading"></a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>flutter<span class="w"> </span>pub<span class="w"> </span>get
-</pre></div>
-</div>
-</section>
-<section id="setup-environment-variables">
-<h4>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading"></a></h4>
-<p>Buat file <code class="docutils literal notranslate"><span class="pre">config.json</span></code> di root project Anda:</p>
+<ol class="arabic simple" start="2">
+<li><p>Jalankan <code class="docutils literal notranslate"><span class="pre">flutter</span> <span class="pre">pub</span> <span class="pre">get</span></code>.</p></li>
+<li><p>Buat file <code class="docutils literal notranslate"><span class="pre">config.json</span></code> di root project Anda:</p></li>
+</ol>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;API_BASE_URL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://&lt;your-neon-function-url&gt;.neon.build&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;APP_NAME&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;To-Do App&quot;</span><span class="p">,</span>
@@ -243,43 +318,8 @@ git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"
 </div>
 <p><em>(Catatan: Anda akan mendapatkan URL Neon Function pada Session 3)</em></p>
 </section>
-</section>
-<section id="database-setup">
-<h3>6. Database Setup<a class="headerlink" href="#database-setup" title="Link to this heading"></a></h3>
-<section id="buat-database-di-neon">
-<h4>Buat Database di Neon<a class="headerlink" href="#buat-database-di-neon" title="Link to this heading"></a></h4>
-<ol class="arabic simple">
-<li><p>Login ke Neon dashboard</p></li>
-<li><p>Pilih project <code class="docutils literal notranslate"><span class="pre">flutter-training</span></code></p></li>
-<li><p>Klik “SQL Editor”</p></li>
-<li><p>Jalankan script berikut:</p></li>
-</ol>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Buat table tasks</span>
-<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
-<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">description</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
-<span class="w">    </span><span class="n">completed</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span>
-<span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">,</span>
-<span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span>
-<span class="p">);</span>
-
-<span class="c1">-- Insert sample data</span>
-<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">description</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
-<span class="p">(</span><span class="s1">&#39;Belajar Flutter&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Membuat aplikasi To-Do dengan database&#39;</span><span class="p">),</span>
-<span class="p">(</span><span class="s1">&#39;Setup Neon&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Konfigurasi PostgreSQL di cloud&#39;</span><span class="p">),</span>
-<span class="p">(</span><span class="s1">&#39;Buat REST API&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Backend dengan Node.js&#39;</span><span class="p">);</span>
-
-<span class="c1">-- Verifikasi data</span>
-<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">tasks</span><span class="p">;</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="testing-setup">
-<h3>7. Testing Setup<a class="headerlink" href="#testing-setup" title="Link to this heading"></a></h3>
-<section id="test-flutter-app">
-<h4>Test Flutter App<a class="headerlink" href="#test-flutter-app" title="Link to this heading"></a></h4>
+<section id="bagian-8-testing-setup">
+<h2>Bagian 8: Testing Setup<a class="headerlink" href="#bagian-8-testing-setup" title="Link to this heading"></a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build untuk testing</span>
 flutter<span class="w"> </span>build<span class="w"> </span>apk<span class="w"> </span>--debug
 
@@ -290,101 +330,27 @@ flutter<span class="w"> </span>run<span class="w"> </span>--dart-define-from-fil
 flutter<span class="w"> </span><span class="nb">test</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="troubleshooting-common-issues">
-<h3>8. Troubleshooting Common Issues<a class="headerlink" href="#troubleshooting-common-issues" title="Link to this heading"></a></h3>
-<section id="flutter-doctor-errors">
-<h4>Flutter doctor errors<a class="headerlink" href="#flutter-doctor-errors" title="Link to this heading"></a></h4>
+<section id="troubleshooting">
+<h3>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Android SDK not found:</strong> Install Android Studio dan setup SDK</p></li>
-<li><p><strong>No devices available:</strong> Enable USB debugging di Android device</p></li>
-<li><p><strong>Firewall issues:</strong> Allow Flutter dan Dart di Windows Firewall</p></li>
+<li><p><strong>Database Connection Errors:</strong> Jika <code class="docutils literal notranslate"><span class="pre">Authentication</span> <span class="pre">failed</span></code>, periksa username dan password di dashboard Neon.</p></li>
+<li><p><strong>Flutter doctor errors:</strong></p>
+<ul>
+<li><p><strong>Android SDK not found:</strong> Install Android Studio dan setup SDK Tools.</p></li>
+<li><p><strong>No devices available:</strong> Enable USB debugging di Android device, atau jalankan emulator.</p></li>
+</ul>
+</li>
 </ul>
 </section>
-<section id="database-connection-errors">
-<h4>Database Connection Errors<a class="headerlink" href="#database-connection-errors" title="Link to this heading"></a></h4>
+<section id="verifikasi-lengkap">
+<h3>Verifikasi Lengkap<a class="headerlink" href="#verifikasi-lengkap" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Authentication failed:</strong> Periksa username dan password di Neon dashboard</p></li>
+<li><p>[ ] Toolchain (FVM, Git, VS Code, Android Studio) terinstall via package manager.</p></li>
+<li><p>[ ] <code class="docutils literal notranslate"><span class="pre">flutter</span> <span class="pre">doctor</span></code> status OK.</p></li>
+<li><p>[ ] Akun Neon aktif dan tabel <code class="docutils literal notranslate"><span class="pre">tasks</span></code> sudah dibuat.</p></li>
+<li><p>[ ] File <code class="docutils literal notranslate"><span class="pre">config.json</span></code> siap digunakan.</p></li>
+<li><p>[ ] Flutter app dapat di-run.</p></li>
 </ul>
-</section>
-</section>
-<section id="verifikasi-setup-lengkap">
-<h3>9. Verifikasi Setup Lengkap<a class="headerlink" href="#verifikasi-setup-lengkap" title="Link to this heading"></a></h3>
-<section id="checklist-setup">
-<h4>Checklist Setup<a class="headerlink" href="#checklist-setup" title="Link to this heading"></a></h4>
-<ul class="simple">
-<li><p>[ ] Flutter SDK terinstall (<code class="docutils literal notranslate"><span class="pre">flutter</span> <span class="pre">doctor</span></code>)</p></li>
-<li><p>[ ] VS Code dengan extensions Flutter</p></li>
-<li><p>[ ] Git terinstall (<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">--version</span></code>)</p></li>
-<li><p>[ ] Akun Neon dibuat</p></li>
-<li><p>[ ] Database schema dijalankan</p></li>
-<li><p>[ ] File <code class="docutils literal notranslate"><span class="pre">config.json</span></code> telah disiapkan</p></li>
-<li><p>[ ] Flutter app bisa di-run dengan <code class="docutils literal notranslate"><span class="pre">--dart-define-from-file</span></code></p></li>
-</ul>
-</section>
-<section id="quick-test">
-<h4>Quick Test<a class="headerlink" href="#quick-test" title="Link to this heading"></a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test komponen utama</span>
-<span class="nb">cd</span><span class="w"> </span>todo_app_flutter
-flutter<span class="w"> </span>doctor
-flutter<span class="w"> </span>run<span class="w"> </span>--dart-define-from-file<span class="o">=</span>config.json
-</pre></div>
-</div>
-</section>
-</section>
-<section id="resources">
-<h3>10. Resources<a class="headerlink" href="#resources" title="Link to this heading"></a></h3>
-<section id="documentation">
-<h4>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h4>
-<ul class="simple">
-<li><p><a class="reference external" href="https://flutter.dev/docs">Flutter Documentation</a></p></li>
-<li><p><a class="reference external" href="https://neon.tech/docs">Neon Documentation</a></p></li>
-</ul>
-</section>
-<section id="learning-resources">
-<h4>Learning Resources<a class="headerlink" href="#learning-resources" title="Link to this heading"></a></h4>
-<ul class="simple">
-<li><p><a class="reference external" href="https://codelabs.developers.google.com/codelabs/flutter">Flutter Codelabs</a></p></li>
-<li><p><a class="reference external" href="https://www.postgresqltutorial.com">PostgreSQL Tutorial</a></p></li>
-<li><p><a class="reference external" href="https://restfulapi.net">REST API Best Practices</a></p></li>
-</ul>
-</section>
-<section id="support">
-<h4>Support<a class="headerlink" href="#support" title="Link to this heading"></a></h4>
-<ul class="simple">
-<li><p><a class="reference external" href="https://flutter.dev/community">Flutter Community</a></p></li>
-<li><p><a class="reference external" href="https://discord.gg/neon">Neon Discord</a></p></li>
-<li><p><a class="reference external" href="https://stackoverflow.com/questions/tagged/flutter">Stack Overflow</a></p></li>
-</ul>
-</section>
-</section>
-<section id="backup-recovery">
-<h3>11. Backup &amp; Recovery<a class="headerlink" href="#backup-recovery" title="Link to this heading"></a></h3>
-<section id="export-database">
-<h4>Export Database<a class="headerlink" href="#export-database" title="Link to this heading"></a></h4>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Backup data tasks</span>
-<span class="k">COPY</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;/path/to/backup.csv&#39;</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="n">CSV</span><span class="w"> </span><span class="n">HEADER</span><span class="p">;</span>
-</pre></div>
-</div>
-</section>
-<section id="backup-code">
-<h4>Backup Code<a class="headerlink" href="#backup-code" title="Link to this heading"></a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Commit ke Git</span>
-git<span class="w"> </span>add<span class="w"> </span>.
-git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Backup sebelum training&quot;</span>
-git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>main
-
-<span class="c1"># Buat zip backup</span>
-tar<span class="w"> </span>-czf<span class="w"> </span>backup-<span class="k">$(</span>date<span class="w"> </span>+%Y%m%d<span class="k">)</span>.tar.gz<span class="w"> </span>todo_app_flutter/
-</pre></div>
-</div>
-</section>
-</section>
-<section id="ready-for-training">
-<h3>12. Ready for Training<a class="headerlink" href="#ready-for-training" title="Link to this heading"></a></h3>
-<p>Setup selesai! Anda sekarang siap untuk mengikuti training Flutter + Neon.</p>
-<p>Jika ada masalah selama setup, konsultasikan dengan instruktur atau lihat bagian troubleshooting.</p>
 </section>
 </section>
 </section>

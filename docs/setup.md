@@ -1,73 +1,186 @@
 # Setup untuk Peserta Training Flutter + Neon
 
-## Prerequisites
+Panduan ini disusun menggunakan standar industri modern (**FVM + Package Manager**) untuk mempermudah setup di berbagai sistem operasi.
 
-### 1. System Requirements
-- **OS:** Windows 10/11 (64-bit)
-- **RAM:** Minimum 8GB (16GB recommended)
-- **Storage:** Minimum 20GB free space
-- **Processor:** Intel i5 atau setara
+## Bagian 1: Install Package Manager & Toolchain
 
-### 2. Software yang perlu diinstall
+::::{tab-set}
+:::{tab-item} Windows
+Menggunakan **Chocolatey** (Package Manager untuk Windows).
 
-#### Flutter SDK
-1. Download Flutter SDK dari [flutter.dev](https://flutter.dev)
-2. Extract ke folder, contoh: `C:\flutter`
-3. Tambahkan ke PATH environment variable:
-   ```
-   C:\flutter\bin
-   ```
-4. Verifikasi installasi:
-   ```bash
-   flutter doctor
-   ```
+1. Buka **PowerShell** sebagai **Administrator** (Klik kanan Start Menu -> *Terminal (Admin)* atau *Windows PowerShell (Admin)*).
+2. Jalankan perintah berikut untuk memasang Chocolatey:
 
-#### Visual Studio Code
-1. Download VS Code dari [code.visualstudio.com](https://code.visualstudio.com)
-2. Install extensions:
-   - Flutter
-   - Dart
-   - REST Client (opsional)
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
 
-#### Git
-1. Download Git dari [git-scm.com](https://git-scm.com)
-2. Install dengan default options
-3. Konfigurasi:
-   ```bash
-   git config --global user.name "Nama Anda"
-   git config --global user.email "email@example.com"
-   ```
+3. Tutup jendela PowerShell, lalu **buka kembali PowerShell (Admin) baru**.
+4. Jalankan perintah satu baris ini untuk menginstal FVM, Git, VS Code, dan Android Studio secara otomatis:
 
-### 3. Akun Cloud Services
+```powershell
+choco install fvm git vscode androidstudio -y
+```
+:::
+:::{tab-item} macOS
+Menggunakan **Homebrew**.
 
-#### Neon PostgreSQL
+1. Buka **Terminal**.
+2. Jalankan perintah berikut untuk memasang Homebrew:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+3. Tambahkan Homebrew ke shell environment:
+
+```bash
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+4. Install FVM, Git, CocoaPods, Scrcpy, VS Code, dan Android Studio:
+
+```bash
+brew install git cocoapods fvm scrcpy
+brew install --cask visual-studio-code android-studio google-chrome
+```
+:::
+::::
+
+## Bagian 2: Install Flutter SDK via FVM
+
+::::{tab-set}
+:::{tab-item} Windows
+Buka **PowerShell** biasa atau Admin:
+
+```powershell
+# 1. Install Flutter SDK Stable via FVM
+fvm install stable
+
+# 2. Set versi stable sebagai default global komputer
+fvm global stable
+
+# 3. Tambahkan symlink FVM ke User PATH Windows
+[Environment]::SetEnvironmentVariable("Path", $env:Path + ";$env:USERPROFILE\\fvm\\default\\bin", "User")
+```
+:::
+:::{tab-item} macOS
+Buka **Terminal**:
+
+```bash
+# 1. Install dan set Flutter Stable
+fvm install stable
+fvm global stable
+
+# 2. Configure global shell PATH
+echo 'export PATH="$HOME/fvm/default/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+:::
+::::
+
+## Bagian 3: Setup Android Studio & SDK Tools
+
+::::{tab-set}
+:::{tab-item} Windows
+1. Jalankan **Setup Wizard Android Studio**: Setelah instalasi `choco` selesai, buka Android Studio dari Start Menu untuk menjalankan *Standard Setup Wizard* pertama kali.
+2. Pasang Command-line Tools:
+   - Masuk ke **More Actions** -> **SDK Manager** -> tab **SDK Tools**.
+   - Centang **Android SDK Command-line Tools (latest)**, **Android SDK Build-Tools**, dan **Android Emulator**.
+   - Klik **Apply** dan tunggu instalasi selesai.
+3. Terima Lisensi SDK di PowerShell Baru:
+```powershell
+flutter doctor --android-licenses
+flutter doctor -v
+```
+:::
+:::{tab-item} macOS
+1. Setup Xcode:
+   - Pasang Xcode dari App Store.
+   - Buka Terminal dan jalankan konfigurasi:
+```bash
+sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+sudo xcodebuild -runFirstLaunch
+sudo xcodebuild -license accept
+```
+2. Jalankan **Setup Wizard Android Studio** pertama kali.
+3. Buka Android Studio -> **Settings** -> **Languages & Frameworks** -> **Android SDK** -> **SDK Tools**.
+4. Pastikan **Android SDK Command-line Tools** tercentang, lalu **Apply**.
+5. Terima Lisensi SDK di Terminal:
+```bash
+flutter doctor --android-licenses
+flutter doctor -v
+```
+:::
+::::
+
+## Bagian 4: Konfigurasi VS Code
+
+Tambahkan konfigurasi ini di VS Code agar IDE otomatis mendeteksi SDK Flutter milik FVM dan melakukan *format-on-save*.
+
+1. Buka VS Code.
+2. Tekan `Ctrl + Shift + P` (Windows) atau `Cmd + Shift + P` (macOS).
+3. Ketik **Preferences: Open User Settings (JSON)** dan pilih.
+4. Tambahkan konfigurasi berikut ke dalam file `settings.json`:
+
+```json
+{
+  "workbench.settings.applyToAllProfiles": [],
+
+  // Auto-detect Flutter dari FVM
+  "dart.flutterSdkPaths": ["fvm/versions"],
+
+  // Automation & Linting
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+
+  "[dart]": {
+    "editor.defaultFormatter": "Dart-Code.dart-code",
+    "editor.formatOnSave": true
+  }
+}
+```
+
+5. Install VS Code Extensions:
+   - **Flutter** (Dart-Code.flutter)
+   - **Dart** (Dart-Code.dart-code)
+
+## Bagian 5: Strategi Khusus Lab Komputer SMK (Offline Kit)
+
+Untuk mengatasi keterbatasan spek PC lab & koneksi internet di sekolah:
+
+1. **HP Fisik + Scrcpy (Tanpa Android Emulator):**
+   - Minta guru/siswa membawa HP Android dan kabel data.
+   - Aktifkan **USB Debugging** di HP Android.
+   - Jalankan `scrcpy` dari terminal (Windows/Mac) untuk me-mirror layar HP ke PC secara sangat ringan tanpa membebani RAM PC.
+
+
+
+## Bagian 6: Setup Akun Cloud Services (Neon)
+
 1. Buka [neon.tech](https://neon.tech)
 2. Buat akun gratis dengan GitHub/Google
 3. Buat project baru:
    - **Project Name:** `flutter-training`
    - **Region:** Singapore (pilih terdekat)
    - **PostgreSQL Version:** 15 atau terbaru
-4. Catat database connection string
 
-#### GitHub (Opsional)
-1. Buat akun di [github.com](https://github.com)
-2. Buat repository baru untuk project
 
-### 4. Environment Setup
+## Bagian 7: Project Setup & Environment Variables
 
-#### Clone Project Template
+1. Clone project:
 ```bash
 git clone <template-repo-url>
 cd todo_app_flutter
 ```
 
-#### Install Dependencies Flutter
-```bash
-flutter pub get
-```
+2. Jalankan `flutter pub get`.
 
-#### Setup Environment Variables
-Buat file `config.json` di root project Anda:
+3. Buat file `config.json` di root project Anda:
 ```json
 {
   "API_BASE_URL": "https://<your-neon-function-url>.neon.build",
@@ -77,39 +190,8 @@ Buat file `config.json` di root project Anda:
 ```
 *(Catatan: Anda akan mendapatkan URL Neon Function pada Session 3)*
 
+## Bagian 8: Testing Setup
 
-### 6. Database Setup
-
-#### Buat Database di Neon
-1. Login ke Neon dashboard
-2. Pilih project `flutter-training`
-3. Klik "SQL Editor"
-4. Jalankan script berikut:
-
-```sql
--- Buat table tasks
-CREATE TABLE tasks (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    completed BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Insert sample data
-INSERT INTO tasks (title, description) VALUES
-('Belajar Flutter', 'Membuat aplikasi To-Do dengan database'),
-('Setup Neon', 'Konfigurasi PostgreSQL di cloud'),
-('Buat REST API', 'Backend dengan Node.js');
-
--- Verifikasi data
-SELECT * FROM tasks;
-```
-
-### 7. Testing Setup
-
-#### Test Flutter App
 ```bash
 # Build untuk testing
 flutter build apk --debug
@@ -121,70 +203,15 @@ flutter run --dart-define-from-file=config.json
 flutter test
 ```
 
-### 8. Troubleshooting Common Issues
+### Troubleshooting
+- **Database Connection Errors:** Jika `Authentication failed`, periksa username dan password di dashboard Neon.
+- **Flutter doctor errors:** 
+  - **Android SDK not found:** Install Android Studio dan setup SDK Tools.
+  - **No devices available:** Enable USB debugging di Android device, atau jalankan emulator.
 
-#### Flutter doctor errors
-- **Android SDK not found:** Install Android Studio dan setup SDK
-- **No devices available:** Enable USB debugging di Android device
-- **Firewall issues:** Allow Flutter dan Dart di Windows Firewall
-
-#### Database Connection Errors
-- **Authentication failed:** Periksa username dan password di Neon dashboard
-### 9. Verifikasi Setup Lengkap
-
-#### Checklist Setup
-- [ ] Flutter SDK terinstall (`flutter doctor`)
-- [ ] VS Code dengan extensions Flutter
-- [ ] Git terinstall (`git --version`)
-- [ ] Akun Neon dibuat
-- [ ] Database schema dijalankan
-- [ ] File `config.json` telah disiapkan
-- [ ] Flutter app bisa di-run dengan `--dart-define-from-file`
-
-#### Quick Test
-```bash
-# Test komponen utama
-cd todo_app_flutter
-flutter doctor
-flutter run --dart-define-from-file=config.json
-```
-
-### 10. Resources
-
-#### Documentation
-- [Flutter Documentation](https://flutter.dev/docs)
-- [Neon Documentation](https://neon.tech/docs)
-
-#### Learning Resources
-- [Flutter Codelabs](https://codelabs.developers.google.com/codelabs/flutter)
-- [PostgreSQL Tutorial](https://www.postgresqltutorial.com)
-- [REST API Best Practices](https://restfulapi.net)
-
-#### Support
-- [Flutter Community](https://flutter.dev/community)
-- [Neon Discord](https://discord.gg/neon)
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/flutter)
-
-### 11. Backup & Recovery
-
-#### Export Database
-```sql
--- Backup data tasks
-COPY tasks TO '/path/to/backup.csv' WITH CSV HEADER;
-```
-
-#### Backup Code
-```bash
-# Commit ke Git
-git add .
-git commit -m "Backup sebelum training"
-git push origin main
-
-# Buat zip backup
-tar -czf backup-$(date +%Y%m%d).tar.gz todo_app_flutter/
-```
-
-### 12. Ready for Training
-Setup selesai! Anda sekarang siap untuk mengikuti training Flutter + Neon.
-
-Jika ada masalah selama setup, konsultasikan dengan instruktur atau lihat bagian troubleshooting.
+### Verifikasi Lengkap
+- [ ] Toolchain (FVM, Git, VS Code, Android Studio) terinstall via package manager.
+- [ ] `flutter doctor` status OK.
+- [ ] Akun Neon aktif dan tabel `tasks` sudah dibuat.
+- [ ] File `config.json` siap digunakan.
+- [ ] Flutter app dapat di-run.
