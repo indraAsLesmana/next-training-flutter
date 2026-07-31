@@ -155,18 +155,16 @@ Tambahkan konfigurasi ini di VS Code agar IDE otomatis mendeteksi SDK Flutter mi
    fvm flutter doctor -v
    ```
 
-## Bagian 5: Strategi Khusus Lab Komputer SMK (Offline Kit)
-
-Untuk mengatasi keterbatasan spek PC lab & koneksi internet di sekolah:
-
-1. **HP Fisik + Scrcpy (Tanpa Android Emulator):**
-   - Minta guru/siswa membawa HP Android dan kabel data.
+7. **(Optional) Mirroring HP Android (Tanpa Emulator)**:
+   Untuk mengatasi keterbatasan spek PC/Laptop jika tidak kuat menjalankan Android Emulator:
+   - Minta siswa membawa HP Android dan kabel data.
    - Aktifkan **USB Debugging** di HP Android.
-   - Jalankan `scrcpy` dari terminal (Windows/Mac) untuk me-mirror layar HP ke PC secara sangat ringan tanpa membebani RAM PC.
+   - Install **Scrcpy** menggunakan Package Manager:
+     - **Windows (PowerShell Admin):** `choco install scrcpy -y`
+     - **macOS (Terminal):** `brew install scrcpy`
+   - Sambungkan HP ke Laptop, buka terminal lalu ketik `scrcpy` untuk me-mirror layar HP ke PC dengan sangat ringan.
 
-
-
-## Bagian 6: Setup Akun Cloud Services (Neon)
+## Bagian 5: Setup Akun Cloud Services (Neon)
 
 1. Buka [neon.tech](https://neon.tech)
 2. Buat akun gratis dengan GitHub/Google
@@ -176,7 +174,7 @@ Untuk mengatasi keterbatasan spek PC lab & koneksi internet di sekolah:
    - **PostgreSQL Version:** 15 atau terbaru
 
 
-## Bagian 7: Project Setup & Environment Variables
+## Bagian 6: Project Setup & Environment Variables
 
 1. Clone project:
 ```bash
@@ -196,7 +194,7 @@ cd todo_app_flutter
 ```
 *(Catatan: Anda akan mendapatkan URL Neon Function pada Session 3)*
 
-## Bagian 8: Testing Setup
+## Bagian 7: Testing Setup
 
 ```bash
 # Build untuk testing
