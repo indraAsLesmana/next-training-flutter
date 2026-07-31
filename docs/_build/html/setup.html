@@ -174,10 +174,7 @@ Windows</label><div class="sd-tab-content docutils">
 <span class="n">fvm</span> <span class="n">global</span> <span class="n">stable</span>
 
 <span class="c"># 3. Tambahkan symlink FVM ke User PATH Windows</span>
-<span class="c"># (Penjelasan: Symlink adalah &quot;jalan pintas dinamis&quot;. Dengan ini, sistem operasi akan </span>
-<span class="c"># otomatis diarahkan ke versi Flutter yang sedang aktif digunakan oleh FVM, </span>
-<span class="c"># sehingga Anda tidak perlu mengatur ulang Environment Variables setiap kali ganti versi.)</span>
-<span class="no">[Environment]</span><span class="p">::</span><span class="n">SetEnvironmentVariable</span><span class="p">(</span><span class="s2">&quot;Path&quot;</span><span class="p">,</span> <span class="nv">$env:Path</span> <span class="p">+</span> <span class="s2">&quot;;$env:USERPROFILE\\fvm\\default\\bin&quot;</span><span class="p">,</span> <span class="s2">&quot;User&quot;</span><span class="p">)</span>
+<span class="no">[Environment]</span><span class="p">::</span><span class="n">SetEnvironmentVariable</span><span class="p">(</span><span class="s2">&quot;Path&quot;</span><span class="p">,</span> <span class="nv">$env:Path</span> <span class="p">+</span> <span class="s2">&quot;;$env:USERPROFILE\fvm\default\bin&quot;</span><span class="p">,</span> <span class="s2">&quot;User&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -212,12 +209,7 @@ Windows</label><div class="sd-tab-content docutils">
 <li><p>Klik <strong>Apply</strong> dan tunggu instalasi selesai.</p></li>
 </ul>
 </li>
-<li><p>Terima Lisensi SDK di PowerShell Baru:</p></li>
 </ol>
-<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">flutter</span> <span class="n">doctor</span> <span class="p">-</span><span class="n">-android-licenses</span>
-<span class="n">flutter</span> <span class="n">doctor</span> <span class="n">-v</span>
-</pre></div>
-</div>
 </div>
 <input id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
 </input><label class="sd-tab-label" for="sd-tab-item-5">
@@ -239,12 +231,7 @@ sudo<span class="w"> </span>xcodebuild<span class="w"> </span>-license<span clas
 <li><p>Jalankan <strong>Setup Wizard Android Studio</strong> pertama kali.</p></li>
 <li><p>Buka Android Studio -&gt; <strong>Settings</strong> -&gt; <strong>Languages &amp; Frameworks</strong> -&gt; <strong>Android SDK</strong> -&gt; <strong>SDK Tools</strong>.</p></li>
 <li><p>Pastikan <strong>Android SDK Command-line Tools</strong> tercentang, lalu <strong>Apply</strong>.</p></li>
-<li><p>Terima Lisensi SDK di Terminal:</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>flutter<span class="w"> </span>doctor<span class="w"> </span>--android-licenses
-flutter<span class="w"> </span>doctor<span class="w"> </span>-v
-</pre></div>
-</div>
 </div>
 </div>
 </section>
@@ -277,12 +264,19 @@ flutter<span class="w"> </span>doctor<span class="w"> </span>-v
 <span class="p">}</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="5">
+<ol class="arabic" start="5">
 <li><p>Install VS Code Extensions:</p>
 <ul class="simple">
 <li><p><strong>Flutter</strong> (Dart-Code.flutter)</p></li>
 <li><p><strong>Dart</strong> (Dart-Code.dart-code)</p></li>
 </ul>
+</li>
+<li><p>Terima Lisensi Android SDK:
+Buka terminal di dalam VS Code (tekan <code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">`</span></code>) lalu jalankan:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fvm<span class="w"> </span>flutter<span class="w"> </span>doctor<span class="w"> </span>--android-licenses
+fvm<span class="w"> </span>flutter<span class="w"> </span>doctor<span class="w"> </span>-v
+</pre></div>
+</div>
 </li>
 </ol>
 </section>
@@ -383,7 +377,7 @@ flutter<span class="w"> </span><span class="nb">test</span>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2026, Instructor.</p>
+    <p>&#169; Copyright 2026, Indra Agus Lesmana | https://indra-blog.pages.dev/ | indra953@gmail.com.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -15,3 +15,11 @@ session-2
 session-3
 session-4
 ```
+
+---
+
+## Author
+
+- **Name**: Indra Agus Lesmana
+- **Email**: indra953@gmail.com
+- **Website**: [https://indra-blog.pages.dev/](https://indra-blog.pages.dev/)
