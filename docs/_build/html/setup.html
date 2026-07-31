@@ -23,7 +23,6 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Session 1: Flutter Basics &amp; Layouts" href="session-1.html" />
     <link rel="prev" title="Welcome to Aplikasi Pengumpulan Tugas Training Documentation" href="index.html" /> 
 </head>
 
@@ -49,6 +48,8 @@
               <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Setup untuk Peserta Training Flutter + Neon</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#mengapa-menggunakan-package-manager-chocolatey-homebrew">Mengapa menggunakan Package Manager (Chocolatey / Homebrew)?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#apa-itu-fvm">Apa itu FVM?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bagian-1-install-package-manager-toolchain">Bagian 1: Install Package Manager &amp; Toolchain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bagian-2-install-flutter-sdk-via-fvm">Bagian 2: Install Flutter SDK via FVM</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bagian-3-setup-android-studio-sdk-tools">Bagian 3: Setup Android Studio &amp; SDK Tools</a></li>
@@ -63,10 +64,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="session-1.html">Session 1: Flutter Basics &amp; Layouts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="session-2.html">Session 2: HTTP Integration &amp; Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="session-3.html">Session 3: Neon Database &amp; API Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="session-4.html">Session 4: State Management &amp; Finalisasi</a></li>
 </ul>
 
         </div>
@@ -95,7 +92,19 @@
              
   <section id="setup-untuk-peserta-training-flutter-neon">
 <h1>Setup untuk Peserta Training Flutter + Neon<a class="headerlink" href="#setup-untuk-peserta-training-flutter-neon" title="Link to this heading"></a></h1>
-<p>Panduan ini disusun menggunakan standar industri modern (<strong>FVM + Package Manager</strong>) untuk mempermudah setup di berbagai sistem operasi.</p>
+<p>Panduan ini disusun menggunakan standar industri modern dengan memanfaatkan <strong>Package Manager</strong> dan <strong>FVM (Flutter Version Manager)</strong>.</p>
+<section id="mengapa-menggunakan-package-manager-chocolatey-homebrew">
+<h2>Mengapa menggunakan Package Manager (Chocolatey / Homebrew)?<a class="headerlink" href="#mengapa-menggunakan-package-manager-chocolatey-homebrew" title="Link to this heading"></a></h2>
+<p>Daripada harus mengunduh file <code class="docutils literal notranslate"><span class="pre">.zip</span></code> installer satu per satu secara manual dari berbagai website (Flutter, Git, VS Code, Android Studio), mengekstraknya, dan mengatur Environment Variables (PATH) Windows secara manual yang rawan error, kita menggunakan metode otomasi. Dengan satu baris perintah di terminal, Package Manager akan mengunduh, menginstal, dan mengkonfigurasi semua perangkat lunak secara otomatis dan jauh lebih cepat.</p>
+</section>
+<section id="apa-itu-fvm">
+<h2>Apa itu FVM?<a class="headerlink" href="#apa-itu-fvm" title="Link to this heading"></a></h2>
+<p><strong>FVM (Flutter Version Manager)</strong> adalah alat standar industri yang memungkinkan Anda memiliki banyak versi Flutter SDK di satu komputer tanpa saling bentrok.</p>
+<ul class="simple">
+<li><p><strong>Bagi Peserta:</strong> Memastikan semua peserta menggunakan versi Flutter yang persis sama (konsisten) sehingga menghindari error <em>“works on my machine”</em>.</p></li>
+<li><p><strong>Bagi Instruktur:</strong> Sangat mudah untuk berpindah dari satu versi Flutter ke versi lainnya hanya dengan satu perintah terminal, tanpa harus repot mengunduh ulang SDK secara manual.</p></li>
+</ul>
+</section>
 <section id="bagian-1-install-package-manager-toolchain">
 <h2>Bagian 1: Install Package Manager &amp; Toolchain<a class="headerlink" href="#bagian-1-install-package-manager-toolchain" title="Link to this heading"></a></h2>
 <div class="sd-tab-set docutils">
@@ -360,13 +369,12 @@ flutter<span class="w"> </span><span class="nb">test</span>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Aplikasi Pengumpulan Tugas Training Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="session-1.html" class="btn btn-neutral float-right" title="Session 1: Flutter Basics &amp; Layouts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2026, Instructor.</p>
+    <p>&#169; Copyright 2026, Indra Agus Lesmana | https://indra-blog.pages.dev/ | indra953@gmail.com.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

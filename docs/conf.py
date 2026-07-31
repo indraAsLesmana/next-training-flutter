@@ -7,8 +7,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'Aplikasi Pengumpulan Tugas Training'
-copyright = '2026, Instructor'
-author = 'Instructor'
+copyright = '2026, Indra Agus Lesmana | https://indra-blog.pages.dev/ | indra953@gmail.com'
+author = 'Indra Agus Lesmana'
 release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------

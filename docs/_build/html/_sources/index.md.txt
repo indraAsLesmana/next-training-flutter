@@ -11,3 +11,11 @@ caption: Table of Contents
 ---
 setup
 ```
+
+---
+
+## Author
+
+- **Name**: Indra Agus Lesmana
+- **Email**: indra953@gmail.com
+- **Website**: [https://indra-blog.pages.dev/](https://indra-blog.pages.dev/)
