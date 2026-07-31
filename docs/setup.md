@@ -2,14 +2,11 @@
 
 Panduan ini disusun menggunakan standar industri modern dengan memanfaatkan **Package Manager** dan **FVM (Flutter Version Manager)**. 
 
-## Mengapa menggunakan Package Manager (Chocolatey / Homebrew)?
-Daripada harus mengunduh file `.zip` installer satu per satu secara manual dari berbagai website (Flutter, Git, VS Code, Android Studio), mengekstraknya, dan mengatur Environment Variables (PATH) Windows secara manual yang rawan error, kita menggunakan metode otomasi. Dengan satu baris perintah di terminal, Package Manager akan mengunduh, menginstal, dan mengkonfigurasi semua perangkat lunak secara otomatis dan jauh lebih cepat.
+## Package Manager (Chocolatey / Homebrew)?
+Package Manager untuk mengunduh, menginstal, dan mengkonfigurasi semua perangkat lunak secara otomatis.
 
 ## Apa itu FVM?
-**FVM (Flutter Version Manager)** adalah alat standar industri yang memungkinkan Anda memiliki banyak versi Flutter SDK di satu komputer tanpa saling bentrok. 
-- **Bagi Peserta:** Memastikan semua peserta menggunakan versi Flutter yang persis sama (konsisten) sehingga menghindari error *"works on my machine"*.
-- **Bagi Instruktur:** Sangat mudah untuk berpindah dari satu versi Flutter ke versi lainnya hanya dengan satu perintah terminal, tanpa harus repot mengunduh ulang SDK secara manual.
-
+**FVM (Flutter Version Manager)** adalah alat standar industri yang memungkinkan Anda memiliki banyak versi Flutter SDK di satu komputer tanpa saling bentrok.
 
 ## Bagian 1: Install Package Manager & Toolchain
 

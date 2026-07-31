@@ -49,7 +49,7 @@
               <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Setup untuk Peserta Training Flutter + Neon</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#mengapa-menggunakan-package-manager-chocolatey-homebrew">Mengapa menggunakan Package Manager (Chocolatey / Homebrew)?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#package-manager-chocolatey-homebrew">Package Manager (Chocolatey / Homebrew)?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#apa-itu-fvm">Apa itu FVM?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bagian-1-install-package-manager-toolchain">Bagian 1: Install Package Manager &amp; Toolchain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bagian-2-install-flutter-sdk-via-fvm">Bagian 2: Install Flutter SDK via FVM</a></li>
@@ -97,17 +97,13 @@
   <section id="setup-untuk-peserta-training-flutter-neon">
 <h1>Setup untuk Peserta Training Flutter + Neon<a class="headerlink" href="#setup-untuk-peserta-training-flutter-neon" title="Link to this heading"></a></h1>
 <p>Panduan ini disusun menggunakan standar industri modern dengan memanfaatkan <strong>Package Manager</strong> dan <strong>FVM (Flutter Version Manager)</strong>.</p>
-<section id="mengapa-menggunakan-package-manager-chocolatey-homebrew">
-<h2>Mengapa menggunakan Package Manager (Chocolatey / Homebrew)?<a class="headerlink" href="#mengapa-menggunakan-package-manager-chocolatey-homebrew" title="Link to this heading"></a></h2>
-<p>Daripada harus mengunduh file <code class="docutils literal notranslate"><span class="pre">.zip</span></code> installer satu per satu secara manual dari berbagai website (Flutter, Git, VS Code, Android Studio), mengekstraknya, dan mengatur Environment Variables (PATH) Windows secara manual yang rawan error, kita menggunakan metode otomasi. Dengan satu baris perintah di terminal, Package Manager akan mengunduh, menginstal, dan mengkonfigurasi semua perangkat lunak secara otomatis dan jauh lebih cepat.</p>
+<section id="package-manager-chocolatey-homebrew">
+<h2>Package Manager (Chocolatey / Homebrew)?<a class="headerlink" href="#package-manager-chocolatey-homebrew" title="Link to this heading"></a></h2>
+<p>Package Manager untuk mengunduh, menginstal, dan mengkonfigurasi semua perangkat lunak secara otomatis.</p>
 </section>
 <section id="apa-itu-fvm">
 <h2>Apa itu FVM?<a class="headerlink" href="#apa-itu-fvm" title="Link to this heading"></a></h2>
 <p><strong>FVM (Flutter Version Manager)</strong> adalah alat standar industri yang memungkinkan Anda memiliki banyak versi Flutter SDK di satu komputer tanpa saling bentrok.</p>
-<ul class="simple">
-<li><p><strong>Bagi Peserta:</strong> Memastikan semua peserta menggunakan versi Flutter yang persis sama (konsisten) sehingga menghindari error <em>“works on my machine”</em>.</p></li>
-<li><p><strong>Bagi Instruktur:</strong> Sangat mudah untuk berpindah dari satu versi Flutter ke versi lainnya hanya dengan satu perintah terminal, tanpa harus repot mengunduh ulang SDK secara manual.</p></li>
-</ul>
 </section>
 <section id="bagian-1-install-package-manager-toolchain">
 <h2>Bagian 1: Install Package Manager &amp; Toolchain<a class="headerlink" href="#bagian-1-install-package-manager-toolchain" title="Link to this heading"></a></h2>
@@ -320,7 +316,7 @@ Buka terminal, lalu jalankan perintah berikut untuk membuat project Flutter baru
 <li><p><strong>Set Versi Flutter dengan FVM:</strong>
 Kita akan mengunci versi Flutter untuk project ini.</p>
 <blockquote>
-<div><p>[!IMPORTANT]
+<div><p>[!Penting]
 <strong>Khusus Pengguna Windows (Developer Mode):</strong>
 Agar VS Code dapat membuat <em>symlink</em> FVM tanpa harus selalu dijalankan sebagai Administrator, Anda <strong>wajib</strong> mengaktifkan Developer Mode:</p>
 <ol class="arabic simple">
