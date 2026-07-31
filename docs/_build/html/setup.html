@@ -49,6 +49,8 @@
               <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Setup untuk Peserta Training Flutter + Neon</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#mengapa-menggunakan-package-manager-chocolatey-homebrew">Mengapa menggunakan Package Manager (Chocolatey / Homebrew)?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#apa-itu-fvm">Apa itu FVM?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bagian-1-install-package-manager-toolchain">Bagian 1: Install Package Manager &amp; Toolchain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bagian-2-install-flutter-sdk-via-fvm">Bagian 2: Install Flutter SDK via FVM</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bagian-3-setup-android-studio-sdk-tools">Bagian 3: Setup Android Studio &amp; SDK Tools</a></li>
@@ -95,7 +97,19 @@
              
   <section id="setup-untuk-peserta-training-flutter-neon">
 <h1>Setup untuk Peserta Training Flutter + Neon<a class="headerlink" href="#setup-untuk-peserta-training-flutter-neon" title="Link to this heading"></a></h1>
-<p>Panduan ini disusun menggunakan standar industri modern (<strong>FVM + Package Manager</strong>) untuk mempermudah setup di berbagai sistem operasi.</p>
+<p>Panduan ini disusun menggunakan standar industri modern dengan memanfaatkan <strong>Package Manager</strong> dan <strong>FVM (Flutter Version Manager)</strong>.</p>
+<section id="mengapa-menggunakan-package-manager-chocolatey-homebrew">
+<h2>Mengapa menggunakan Package Manager (Chocolatey / Homebrew)?<a class="headerlink" href="#mengapa-menggunakan-package-manager-chocolatey-homebrew" title="Link to this heading"></a></h2>
+<p>Daripada harus mengunduh file <code class="docutils literal notranslate"><span class="pre">.zip</span></code> installer satu per satu secara manual dari berbagai website (Flutter, Git, VS Code, Android Studio), mengekstraknya, dan mengatur Environment Variables (PATH) Windows secara manual yang rawan error, kita menggunakan metode otomasi. Dengan satu baris perintah di terminal, Package Manager akan mengunduh, menginstal, dan mengkonfigurasi semua perangkat lunak secara otomatis dan jauh lebih cepat.</p>
+</section>
+<section id="apa-itu-fvm">
+<h2>Apa itu FVM?<a class="headerlink" href="#apa-itu-fvm" title="Link to this heading"></a></h2>
+<p><strong>FVM (Flutter Version Manager)</strong> adalah alat standar industri yang memungkinkan Anda memiliki banyak versi Flutter SDK di satu komputer tanpa saling bentrok.</p>
+<ul class="simple">
+<li><p><strong>Bagi Peserta:</strong> Memastikan semua peserta menggunakan versi Flutter yang persis sama (konsisten) sehingga menghindari error <em>“works on my machine”</em>.</p></li>
+<li><p><strong>Bagi Instruktur:</strong> Sangat mudah untuk berpindah dari satu versi Flutter ke versi lainnya hanya dengan satu perintah terminal, tanpa harus repot mengunduh ulang SDK secara manual.</p></li>
+</ul>
+</section>
 <section id="bagian-1-install-package-manager-toolchain">
 <h2>Bagian 1: Install Package Manager &amp; Toolchain<a class="headerlink" href="#bagian-1-install-package-manager-toolchain" title="Link to this heading"></a></h2>
 <div class="sd-tab-set docutils">
@@ -160,6 +174,9 @@ Windows</label><div class="sd-tab-content docutils">
 <span class="n">fvm</span> <span class="n">global</span> <span class="n">stable</span>
 
 <span class="c"># 3. Tambahkan symlink FVM ke User PATH Windows</span>
+<span class="c"># (Penjelasan: Symlink adalah &quot;jalan pintas dinamis&quot;. Dengan ini, sistem operasi akan </span>
+<span class="c"># otomatis diarahkan ke versi Flutter yang sedang aktif digunakan oleh FVM, </span>
+<span class="c"># sehingga Anda tidak perlu mengatur ulang Environment Variables setiap kali ganti versi.)</span>
 <span class="no">[Environment]</span><span class="p">::</span><span class="n">SetEnvironmentVariable</span><span class="p">(</span><span class="s2">&quot;Path&quot;</span><span class="p">,</span> <span class="nv">$env:Path</span> <span class="p">+</span> <span class="s2">&quot;;$env:USERPROFILE\\fvm\\default\\bin&quot;</span><span class="p">,</span> <span class="s2">&quot;User&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
