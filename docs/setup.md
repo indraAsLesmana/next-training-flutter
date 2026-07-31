@@ -98,11 +98,6 @@ source ~/.zshrc
    - Masuk ke **More Actions** -> **SDK Manager** -> tab **SDK Tools**.
    - Centang **Android SDK Command-line Tools (latest)**, **Android SDK Build-Tools**, dan **Android Emulator**.
    - Klik **Apply** dan tunggu instalasi selesai.
-3. Terima Lisensi SDK di PowerShell Baru:
-```powershell
-flutter doctor --android-licenses
-flutter doctor -v
-```
 :::
 :::{tab-item} macOS
 1. Setup Xcode:
@@ -116,11 +111,6 @@ sudo xcodebuild -license accept
 2. Jalankan **Setup Wizard Android Studio** pertama kali.
 3. Buka Android Studio -> **Settings** -> **Languages & Frameworks** -> **Android SDK** -> **SDK Tools**.
 4. Pastikan **Android SDK Command-line Tools** tercentang, lalu **Apply**.
-5. Terima Lisensi SDK di Terminal:
-```bash
-flutter doctor --android-licenses
-flutter doctor -v
-```
 :::
 ::::
 
@@ -157,6 +147,13 @@ Tambahkan konfigurasi ini di VS Code agar IDE otomatis mendeteksi SDK Flutter mi
 5. Install VS Code Extensions:
    - **Flutter** (Dart-Code.flutter)
    - **Dart** (Dart-Code.dart-code)
+
+6. Terima Lisensi Android SDK:
+   Buka terminal di dalam VS Code (tekan `` Ctrl + ` ``) lalu jalankan:
+   ```bash
+   fvm flutter doctor --android-licenses
+   fvm flutter doctor -v
+   ```
 
 ## Bagian 5: Strategi Khusus Lab Komputer SMK (Offline Kit)
 
