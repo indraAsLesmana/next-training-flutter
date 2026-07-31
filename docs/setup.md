@@ -157,12 +157,12 @@ Tambahkan konfigurasi ini di VS Code agar IDE otomatis mendeteksi SDK Flutter mi
 
 7. **(Optional) Mirroring HP Android (Tanpa Emulator)**:
    Untuk mengatasi keterbatasan spek PC/Laptop jika tidak kuat menjalankan Android Emulator:
-   - Minta siswa membawa HP Android dan kabel data.
+   - Siapkan HP Android dan kabel data.
    - Aktifkan **USB Debugging** di HP Android.
    - Install **Scrcpy** menggunakan Package Manager:
      - **Windows (PowerShell Admin):** `choco install scrcpy -y`
      - **macOS (Terminal):** `brew install scrcpy`
-   - Sambungkan HP ke Laptop, buka terminal lalu ketik `scrcpy` untuk me-mirror layar HP ke PC dengan sangat ringan.
+   - Sambungkan HP ke Laptop, buka terminal lalu ketik `scrcpy` untuk me-mirror layar HP ke PC.
 
 ## Bagian 5: Setup Akun Cloud Services (Neon)
 
@@ -171,51 +171,62 @@ Tambahkan konfigurasi ini di VS Code agar IDE otomatis mendeteksi SDK Flutter mi
 3. Buat project baru:
    - **Project Name:** `flutter-training`
    - **Region:** Singapore (pilih terdekat)
-   - **PostgreSQL Version:** 15 atau terbaru
+   - **PostgreSQL Version:** 18 atau terbaru
 
 
-## Bagian 6: Project Setup & Environment Variables
+## Bagian 6: Inisialisasi Project
 
-1. Clone project:
-```bash
-git clone <template-repo-url>
-cd todo_app_flutter
-```
+1. **Buat Project Baru:**
+   Buka terminal, lalu jalankan perintah berikut untuk membuat project Flutter baru:
+   ```bash
+   fvm flutter create --org com.flutter_training --platforms android,ios,web flutter_training
+   cd flutter_training
+   ```
 
-2. Jalankan `flutter pub get`.
+2. **Set Versi Flutter dengan FVM:**
+   Kita akan mengunci versi Flutter untuk project ini.
+   
+   > [!IMPORTANT]
+   > **Khusus Pengguna Windows (Developer Mode):** 
+   > Agar VS Code dapat membuat *symlink* FVM tanpa harus selalu dijalankan sebagai Administrator, Anda **wajib** mengaktifkan Developer Mode:
+   > 1. Tekan `Win + I` untuk membuka **Settings**.
+   > 2. Masuk ke **System** $\rightarrow$ **For developers** (Windows 11) atau **Update & Security** $\rightarrow$ **For developers** (Windows 10).
+   > 3. Aktifkan toggle **Developer Mode** dan konfirmasi (*Yes*).
+   > 4. Tutup dan buka kembali VS Code.
 
-3. Buat file `config.json` di root project Anda:
-```json
-{
-  "API_BASE_URL": "https://<your-neon-function-url>.neon.build",
-  "APP_NAME": "To-Do App",
-  "APP_VERSION": "1.0.0"
-}
-```
-*(Catatan: Anda akan mendapatkan URL Neon Function pada Session 3)*
+   Jalankan perintah ini untuk menggunakan versi spesifik:
+   ```bash
+   fvm use 3.44.8
+   ```
 
-## Bagian 7: Testing Setup
+3. **Install Dependencies & Verifikasi:**
+   ```bash
+   # Unduh package yang dibutuhkan
+   fvm flutter pub get
 
-```bash
-# Build untuk testing
-flutter build apk --debug
+   # Pastikan tidak ada error di dalam environment project
+   fvm flutter doctor
+   ```
 
-# Run di emulator/device dengan config.json
-flutter run --dart-define-from-file=config.json
+## Bagian 7: Testing Aplikasi (Run)
 
-# Run tests
-flutter test
-```
+1. **Siapkan Perangkat:**
+   - Hubungkan HP Android ke Laptop/PC menggunakan kabel data (pastikan **USB Debugging** aktif).
+   - *(Atau jalankan Android Emulator jika spek Laptop memadai).*
+
+2. **Jalankan Aplikasi:**
+   Di dalam folder project `flutter_training`, jalankan:
+   ```bash
+   fvm flutter run 
+   ```
 
 ### Troubleshooting
-- **Database Connection Errors:** Jika `Authentication failed`, periksa username dan password di dashboard Neon.
 - **Flutter doctor errors:** 
   - **Android SDK not found:** Install Android Studio dan setup SDK Tools.
-  - **No devices available:** Enable USB debugging di Android device, atau jalankan emulator.
+  - **No devices available:** Pastikan kabel data tersambung dengan baik dan USB debugging aktif, atau gunakan `scrcpy` untuk mengecek koneksi.
 
 ### Verifikasi Lengkap
 - [ ] Toolchain (FVM, Git, VS Code, Android Studio) terinstall via package manager.
 - [ ] `flutter doctor` status OK.
-- [ ] Akun Neon aktif dan tabel `tasks` sudah dibuat.
-- [ ] File `config.json` siap digunakan.
-- [ ] Flutter app dapat di-run.
+- [ ] Akun Neon aktif.
+- [ ] Project Flutter berhasil di-run ke perangkat/emulator.
