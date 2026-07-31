@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Session 3: Neon Database &amp; API Functions &mdash; Aplikasi Pengumpulan Tugas Training 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/design-tabs.js?v=36754332"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Session 4: State Management &amp; Finalisasi" href="session-4.html" />
+    <link rel="prev" title="Session 2: HTTP Integration &amp; Model" href="session-2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Aplikasi Pengumpulan Tugas Training
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Setup untuk Peserta Training Flutter + Neon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="session-1.html">Session 1: Flutter Basics &amp; Layouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="session-2.html">Session 2: HTTP Integration &amp; Model</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Session 3: Neon Database &amp; API Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#durasi-4-jam">Durasi: 4 jam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#objectives">Objectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#agenda">Agenda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pengenalan-serverless-database-neon">1. Pengenalan Serverless Database &amp; Neon</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#konsep-serverless-database">Konsep Serverless Database</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mengapa-neon">Mengapa Neon?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#setup-neon-sql-basics">2. Setup Neon &amp; SQL Basics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#langkah-setup-neon">Langkah Setup Neon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#membuat-schema-database">Membuat Schema Database</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pengenalan-neon-functions">3. Pengenalan Neon Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#apa-itu-neon-functions">Apa itu Neon Functions?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#membuat-http-functions-crud-api">4. Membuat HTTP Functions (CRUD API)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#testing-api-postman-rest-client">Testing API (Postman / REST Client)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tugas-latihan-sesi-3">Tugas/Latihan Sesi 3</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="session-4.html">Session 4: State Management &amp; Finalisasi</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Aplikasi Pengumpulan Tugas Training</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Session 3: Neon Database &amp; API Functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/session-3.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="session-3-neon-database-api-functions">
+<h1>Session 3: Neon Database &amp; API Functions<a class="headerlink" href="#session-3-neon-database-api-functions" title="Link to this heading"></a></h1>
+<section id="durasi-4-jam">
+<h2>Durasi: 4 jam<a class="headerlink" href="#durasi-4-jam" title="Link to this heading"></a></h2>
+</section>
+<section id="objectives">
+<h2>Objectives<a class="headerlink" href="#objectives" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Memahami konsep Serverless Database dan API Serverless (Neon Functions)</p></li>
+<li><p>Melakukan setup PostgreSQL di Neon</p></li>
+<li><p>Membuat schema database</p></li>
+<li><p>Membuat Serverless API langsung dari Neon Dashboard</p></li>
+<li><p>Menguji API menggunakan Postman atau HTTP Client</p></li>
+</ul>
+</section>
+<section id="agenda">
+<h2>Agenda<a class="headerlink" href="#agenda" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Pengenalan Serverless Database &amp; Neon (45 menit)</p></li>
+<li><p>Setup Neon &amp; SQL Basics (45 menit)</p></li>
+<li><p>Pengenalan Neon Functions (30 menit)</p></li>
+<li><p>Membuat HTTP Functions (120 menit)</p></li>
+</ol>
+</section>
+<section id="pengenalan-serverless-database-neon">
+<h2>1. Pengenalan Serverless Database &amp; Neon<a class="headerlink" href="#pengenalan-serverless-database-neon" title="Link to this heading"></a></h2>
+<section id="konsep-serverless-database">
+<h3>Konsep Serverless Database<a class="headerlink" href="#konsep-serverless-database" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Tidak perlu manage server secara manual</p></li>
+<li><p>Auto-scaling berdasarkan beban</p></li>
+<li><p>Memisahkan storage dan compute</p></li>
+<li><p>Sangat efisien dan mudah dikelola (cocok untuk environment pembelajaran)</p></li>
+</ul>
+</section>
+<section id="mengapa-neon">
+<h3>Mengapa Neon?<a class="headerlink" href="#mengapa-neon" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Berbasis PostgreSQL (relational database standar industri)</p></li>
+<li><p>Gratis (Free tier cukup untuk training)</p></li>
+<li><p>Fitur branching (seperti Git untuk database)</p></li>
+<li><p><strong>Neon Functions</strong>: Menjalankan logika backend API langsung di platform yang sama dengan database, menghasilkan akses data dengan <em>latency</em> nyaris nol.</p></li>
+</ul>
+</section>
+</section>
+<section id="setup-neon-sql-basics">
+<h2>2. Setup Neon &amp; SQL Basics<a class="headerlink" href="#setup-neon-sql-basics" title="Link to this heading"></a></h2>
+<section id="langkah-setup-neon">
+<h3>Langkah Setup Neon<a class="headerlink" href="#langkah-setup-neon" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Buka <a class="reference external" href="https://neon.tech">neon.tech</a></p></li>
+<li><p>Login dengan akun Google/GitHub</p></li>
+<li><p>Buat Project baru:</p>
+<ul class="simple">
+<li><p>Name: <code class="docutils literal notranslate"><span class="pre">todo_app_db</span></code></p></li>
+<li><p>Postgres version: 15 (atau terbaru)</p></li>
+<li><p>Region: Singapore (terdekat)</p></li>
+</ul>
+</li>
+<li><p>Masuk ke dashboard project Anda.</p></li>
+</ol>
+</section>
+<section id="membuat-schema-database">
+<h3>Membuat Schema Database<a class="headerlink" href="#membuat-schema-database" title="Link to this heading"></a></h3>
+<p>Di dashboard Neon, buka menu <strong>SQL Editor</strong> dan jalankan:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- 1. Buat Table Tasks</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">description</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">completed</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span>
+<span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">,</span>
+<span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span>
+<span class="p">);</span>
+
+<span class="c1">-- 2. Insert Dummy Data</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">description</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span>
+<span class="p">(</span><span class="s1">&#39;Belajar Flutter&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Sesi 1-4 training&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;Setup Neon&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Membuat database cloud&#39;</span><span class="p">);</span>
+
+<span class="c1">-- 3. Verifikasi Data (Read)</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">tasks</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="pengenalan-neon-functions">
+<h2>3. Pengenalan Neon Functions<a class="headerlink" href="#pengenalan-neon-functions" title="Link to this heading"></a></h2>
+<p>Sebagai jembatan antara Flutter dan Database, kita membutuhkan Backend API. Alih-alih membuat server terpisah (seperti Node.js atau Python server), kita akan menggunakan <strong>Neon Functions</strong>.</p>
+<section id="apa-itu-neon-functions">
+<h3>Apa itu Neon Functions?<a class="headerlink" href="#apa-itu-neon-functions" title="Link to this heading"></a></h3>
+<p>Neon Functions adalah layanan <em>serverless compute</em> dari Neon yang memungkinkan kita menjalankan kode JavaScript/TypeScript langsung pada database branch yang sama.</p>
+<ul class="simple">
+<li><p>Tidak perlu setup server atau hosting eksternal.</p></li>
+<li><p>Connection string otomatis dikelola secara internal.</p></li>
+<li><p><em>Zero Latency</em> karena kode berjalan di infrastruktur yang sama dengan database.</p></li>
+</ul>
+</section>
+</section>
+<section id="membuat-http-functions-crud-api">
+<h2>4. Membuat HTTP Functions (CRUD API)<a class="headerlink" href="#membuat-http-functions-crud-api" title="Link to this heading"></a></h2>
+<p>Kita akan membuat API endpoint yang menangani method GET, POST, PUT, dan DELETE.</p>
+<ol class="arabic simple">
+<li><p>Di Dashboard Neon, buka menu <strong>Functions</strong>.</p></li>
+<li><p>Klik <strong>Create Function</strong> atau <strong>New Function</strong>.</p></li>
+<li><p>Beri nama function Anda, misalnya <code class="docutils literal notranslate"><span class="pre">tasks</span></code>.</p></li>
+<li><p>Pilih template <strong>HTTP Handler</strong> (JavaScript/TypeScript).</p></li>
+<li><p>Neon akan otomatis menyediakan editor kode. Ganti kode di dalamnya dengan kode berikut:</p></li>
+</ol>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">neon</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@neondatabase/serverless&#39;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Database connection secara otomatis menggunakan DATABASE_URL dari branch</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">sql</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">neon</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">method</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">URL</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">url</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">pathParts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">url</span><span class="p">.</span><span class="nx">pathname</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">).</span><span class="nx">filter</span><span class="p">(</span><span class="nb">Boolean</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 1. GET Request (Read All)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">method</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">&#39;GET&#39;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">pathParts</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">sql</span><span class="sb">`SELECT * FROM tasks ORDER BY created_at DESC`</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Response</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">result</span><span class="p">),</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="mf">200</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;application/json&#39;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 2. POST Request (Create)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">method</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">description</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">body</span><span class="p">;</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">sql</span><span class="sb">`</span>
+<span class="sb">        INSERT INTO tasks (title, description) </span>
+<span class="sb">        VALUES (</span><span class="si">${</span><span class="nx">title</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">description</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="sb">) </span>
+<span class="sb">        RETURNING *</span>
+<span class="sb">      `</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Response</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">result</span><span class="p">[</span><span class="mf">0</span><span class="p">]),</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="mf">201</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;application/json&#39;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Ambil ID dari path: /tasks/123 -&gt; id = 123</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">pathParts</span><span class="p">[</span><span class="mf">0</span><span class="p">];</span>
+
+<span class="w">    </span><span class="c1">// 3. PUT Request (Update Status)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">method</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">&#39;PUT&#39;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">completed</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">body</span><span class="p">;</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">sql</span><span class="sb">`</span>
+<span class="sb">        UPDATE tasks </span>
+<span class="sb">        SET completed = </span><span class="si">${</span><span class="nx">completed</span><span class="si">}</span><span class="sb">, updated_at = CURRENT_TIMESTAMP </span>
+<span class="sb">        WHERE id = </span><span class="si">${</span><span class="nx">id</span><span class="si">}</span><span class="sb"> </span>
+<span class="sb">        RETURNING *</span>
+<span class="sb">      `</span><span class="p">;</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Response</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Task not found&#39;</span><span class="w"> </span><span class="p">}),</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="mf">404</span><span class="w"> </span><span class="p">});</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Response</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">result</span><span class="p">[</span><span class="mf">0</span><span class="p">]),</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="mf">200</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;application/json&#39;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 4. DELETE Request (Remove)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">method</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">&#39;DELETE&#39;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">sql</span><span class="sb">`DELETE FROM tasks WHERE id = </span><span class="si">${</span><span class="nx">id</span><span class="si">}</span><span class="sb"> RETURNING id`</span><span class="p">;</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Response</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Task not found&#39;</span><span class="w"> </span><span class="p">}),</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="mf">404</span><span class="w"> </span><span class="p">});</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Response</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Task deleted successfully&#39;</span><span class="w"> </span><span class="p">}),</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="mf">200</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Fallback jika route tidak ditemukan</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Response</span><span class="p">(</span><span class="s1">&#39;Not Found&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="mf">404</span><span class="w"> </span><span class="p">});</span>
+
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Response</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="w"> </span><span class="p">}),</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="mf">500</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;application/json&#39;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="6">
+<li><p>Simpan / Deploy kode tersebut.</p></li>
+<li><p>Neon akan memberikan URL endpoint publik untuk function ini (contoh: <code class="docutils literal notranslate"><span class="pre">https://ep-name-1234.neon.build/tasks</span></code>).</p></li>
+<li><p><strong>Catat URL dasar (Base URL) ini tanpa path <code class="docutils literal notranslate"><span class="pre">/tasks</span></code>!</strong> (contoh: <code class="docutils literal notranslate"><span class="pre">https://ep-name-1234.neon.build</span></code>). URL ini akan kita masukkan ke <code class="docutils literal notranslate"><span class="pre">config.json</span></code> di aplikasi Flutter kita pada sesi selanjutnya.</p></li>
+</ol>
+<section id="testing-api-postman-rest-client">
+<h3>Testing API (Postman / REST Client)<a class="headerlink" href="#testing-api-postman-rest-client" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Buka Postman atau ekstensi REST Client di VS Code.</p></li>
+<li><p>Lakukan test GET request ke URL endpoint lengkap yang baru saja dibuat.</p></li>
+<li><p>Pastikan data dummy yang Anda inputkan di SQL Editor muncul sebagai response JSON.</p></li>
+</ol>
+</section>
+</section>
+<section id="tugas-latihan-sesi-3">
+<h2>Tugas/Latihan Sesi 3<a class="headerlink" href="#tugas-latihan-sesi-3" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Pastikan Anda bisa mengakses endpoint Function Anda dan tidak mendapatkan error CORS/Connection (secara default Neon HTTP functions mengizinkan request API).</p></li>
+<li><p>Gunakan Postman untuk melakukan POST request (membuat Task baru).</p></li>
+<li><p>Cek kembali SQL Editor di Neon Dashboard (<code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">*</span> <span class="pre">FROM</span> <span class="pre">tasks;</span></code>), verifikasi data baru benar-benar masuk ke database.</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="session-2.html" class="btn btn-neutral float-left" title="Session 2: HTTP Integration &amp; Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="session-4.html" class="btn btn-neutral float-right" title="Session 4: State Management &amp; Finalisasi" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Instructor.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

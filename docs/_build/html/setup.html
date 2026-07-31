@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setup untuk Peserta Training Flutter + Neon &mdash; Aplikasi Pengumpulan Tugas Training 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/design-tabs.js?v=36754332"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Session 1: Flutter Basics &amp; Layouts" href="session-1.html" />
+    <link rel="prev" title="Welcome to Aplikasi Pengumpulan Tugas Training Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Aplikasi Pengumpulan Tugas Training
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Setup untuk Peserta Training Flutter + Neon</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#system-requirements">1. System Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#software-yang-perlu-diinstall">2. Software yang perlu diinstall</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#flutter-sdk">Flutter SDK</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#visual-studio-code">Visual Studio Code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#git">Git</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#akun-cloud-services">3. Akun Cloud Services</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#neon-postgresql">Neon PostgreSQL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#github-opsional">GitHub (Opsional)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#environment-setup">4. Environment Setup</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#clone-project-template">Clone Project Template</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install-dependencies-flutter">Install Dependencies Flutter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#setup-environment-variables">Setup Environment Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#database-setup">6. Database Setup</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#buat-database-di-neon">Buat Database di Neon</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#testing-setup">7. Testing Setup</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#test-flutter-app">Test Flutter App</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#troubleshooting-common-issues">8. Troubleshooting Common Issues</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#flutter-doctor-errors">Flutter doctor errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#database-connection-errors">Database Connection Errors</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#verifikasi-setup-lengkap">9. Verifikasi Setup Lengkap</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#checklist-setup">Checklist Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quick-test">Quick Test</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#resources">10. Resources</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#documentation">Documentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#learning-resources">Learning Resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#support">Support</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#backup-recovery">11. Backup &amp; Recovery</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#export-database">Export Database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backup-code">Backup Code</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ready-for-training">12. Ready for Training</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="session-1.html">Session 1: Flutter Basics &amp; Layouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="session-2.html">Session 2: HTTP Integration &amp; Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="session-3.html">Session 3: Neon Database &amp; API Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="session-4.html">Session 4: State Management &amp; Finalisasi</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Aplikasi Pengumpulan Tugas Training</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Setup untuk Peserta Training Flutter + Neon</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/setup.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="setup-untuk-peserta-training-flutter-neon">
+<h1>Setup untuk Peserta Training Flutter + Neon<a class="headerlink" href="#setup-untuk-peserta-training-flutter-neon" title="Link to this heading"></a></h1>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<section id="system-requirements">
+<h3>1. System Requirements<a class="headerlink" href="#system-requirements" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>OS:</strong> Windows 10/11 (64-bit)</p></li>
+<li><p><strong>RAM:</strong> Minimum 8GB (16GB recommended)</p></li>
+<li><p><strong>Storage:</strong> Minimum 20GB free space</p></li>
+<li><p><strong>Processor:</strong> Intel i5 atau setara</p></li>
+</ul>
+</section>
+<section id="software-yang-perlu-diinstall">
+<h3>2. Software yang perlu diinstall<a class="headerlink" href="#software-yang-perlu-diinstall" title="Link to this heading"></a></h3>
+<section id="flutter-sdk">
+<h4>Flutter SDK<a class="headerlink" href="#flutter-sdk" title="Link to this heading"></a></h4>
+<ol class="arabic">
+<li><p>Download Flutter SDK dari <a class="reference external" href="https://flutter.dev">flutter.dev</a></p></li>
+<li><p>Extract ke folder, contoh: <code class="docutils literal notranslate"><span class="pre">C:\flutter</span></code></p></li>
+<li><p>Tambahkan ke PATH environment variable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">C</span><span class="p">:</span>\<span class="n">flutter</span>\<span class="nb">bin</span>
+</pre></div>
+</div>
+</li>
+<li><p>Verifikasi installasi:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>flutter<span class="w"> </span>doctor
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="visual-studio-code">
+<h4>Visual Studio Code<a class="headerlink" href="#visual-studio-code" title="Link to this heading"></a></h4>
+<ol class="arabic simple">
+<li><p>Download VS Code dari <a class="reference external" href="https://code.visualstudio.com">code.visualstudio.com</a></p></li>
+<li><p>Install extensions:</p>
+<ul class="simple">
+<li><p>Flutter</p></li>
+<li><p>Dart</p></li>
+<li><p>REST Client (opsional)</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="git">
+<h4>Git<a class="headerlink" href="#git" title="Link to this heading"></a></h4>
+<ol class="arabic">
+<li><p>Download Git dari <a class="reference external" href="https://git-scm.com">git-scm.com</a></p></li>
+<li><p>Install dengan default options</p></li>
+<li><p>Konfigurasi:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.name<span class="w"> </span><span class="s2">&quot;Nama Anda&quot;</span>
+git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.email<span class="w"> </span><span class="s2">&quot;email@example.com&quot;</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="akun-cloud-services">
+<h3>3. Akun Cloud Services<a class="headerlink" href="#akun-cloud-services" title="Link to this heading"></a></h3>
+<section id="neon-postgresql">
+<h4>Neon PostgreSQL<a class="headerlink" href="#neon-postgresql" title="Link to this heading"></a></h4>
+<ol class="arabic simple">
+<li><p>Buka <a class="reference external" href="https://neon.tech">neon.tech</a></p></li>
+<li><p>Buat akun gratis dengan GitHub/Google</p></li>
+<li><p>Buat project baru:</p>
+<ul class="simple">
+<li><p><strong>Project Name:</strong> <code class="docutils literal notranslate"><span class="pre">flutter-training</span></code></p></li>
+<li><p><strong>Region:</strong> Singapore (pilih terdekat)</p></li>
+<li><p><strong>PostgreSQL Version:</strong> 15 atau terbaru</p></li>
+</ul>
+</li>
+<li><p>Catat database connection string</p></li>
+</ol>
+</section>
+<section id="github-opsional">
+<h4>GitHub (Opsional)<a class="headerlink" href="#github-opsional" title="Link to this heading"></a></h4>
+<ol class="arabic simple">
+<li><p>Buat akun di <a class="reference external" href="https://github.com">github.com</a></p></li>
+<li><p>Buat repository baru untuk project</p></li>
+</ol>
+</section>
+</section>
+<section id="environment-setup">
+<h3>4. Environment Setup<a class="headerlink" href="#environment-setup" title="Link to this heading"></a></h3>
+<section id="clone-project-template">
+<h4>Clone Project Template<a class="headerlink" href="#clone-project-template" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>&lt;template-repo-url&gt;
+<span class="nb">cd</span><span class="w"> </span>todo_app_flutter
+</pre></div>
+</div>
+</section>
+<section id="install-dependencies-flutter">
+<h4>Install Dependencies Flutter<a class="headerlink" href="#install-dependencies-flutter" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>flutter<span class="w"> </span>pub<span class="w"> </span>get
+</pre></div>
+</div>
+</section>
+<section id="setup-environment-variables">
+<h4>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading"></a></h4>
+<p>Buat file <code class="docutils literal notranslate"><span class="pre">config.json</span></code> di root project Anda:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;API_BASE_URL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://&lt;your-neon-function-url&gt;.neon.build&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;APP_NAME&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;To-Do App&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;APP_VERSION&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><em>(Catatan: Anda akan mendapatkan URL Neon Function pada Session 3)</em></p>
+</section>
+</section>
+<section id="database-setup">
+<h3>6. Database Setup<a class="headerlink" href="#database-setup" title="Link to this heading"></a></h3>
+<section id="buat-database-di-neon">
+<h4>Buat Database di Neon<a class="headerlink" href="#buat-database-di-neon" title="Link to this heading"></a></h4>
+<ol class="arabic simple">
+<li><p>Login ke Neon dashboard</p></li>
+<li><p>Pilih project <code class="docutils literal notranslate"><span class="pre">flutter-training</span></code></p></li>
+<li><p>Klik “SQL Editor”</p></li>
+<li><p>Jalankan script berikut:</p></li>
+</ol>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Buat table tasks</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">description</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">completed</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span>
+<span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">,</span>
+<span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span>
+<span class="p">);</span>
+
+<span class="c1">-- Insert sample data</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">description</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="p">(</span><span class="s1">&#39;Belajar Flutter&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Membuat aplikasi To-Do dengan database&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;Setup Neon&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Konfigurasi PostgreSQL di cloud&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;Buat REST API&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Backend dengan Node.js&#39;</span><span class="p">);</span>
+
+<span class="c1">-- Verifikasi data</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">tasks</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-setup">
+<h3>7. Testing Setup<a class="headerlink" href="#testing-setup" title="Link to this heading"></a></h3>
+<section id="test-flutter-app">
+<h4>Test Flutter App<a class="headerlink" href="#test-flutter-app" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build untuk testing</span>
+flutter<span class="w"> </span>build<span class="w"> </span>apk<span class="w"> </span>--debug
+
+<span class="c1"># Run di emulator/device dengan config.json</span>
+flutter<span class="w"> </span>run<span class="w"> </span>--dart-define-from-file<span class="o">=</span>config.json
+
+<span class="c1"># Run tests</span>
+flutter<span class="w"> </span><span class="nb">test</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="troubleshooting-common-issues">
+<h3>8. Troubleshooting Common Issues<a class="headerlink" href="#troubleshooting-common-issues" title="Link to this heading"></a></h3>
+<section id="flutter-doctor-errors">
+<h4>Flutter doctor errors<a class="headerlink" href="#flutter-doctor-errors" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Android SDK not found:</strong> Install Android Studio dan setup SDK</p></li>
+<li><p><strong>No devices available:</strong> Enable USB debugging di Android device</p></li>
+<li><p><strong>Firewall issues:</strong> Allow Flutter dan Dart di Windows Firewall</p></li>
+</ul>
+</section>
+<section id="database-connection-errors">
+<h4>Database Connection Errors<a class="headerlink" href="#database-connection-errors" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Authentication failed:</strong> Periksa username dan password di Neon dashboard</p></li>
+</ul>
+</section>
+</section>
+<section id="verifikasi-setup-lengkap">
+<h3>9. Verifikasi Setup Lengkap<a class="headerlink" href="#verifikasi-setup-lengkap" title="Link to this heading"></a></h3>
+<section id="checklist-setup">
+<h4>Checklist Setup<a class="headerlink" href="#checklist-setup" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>[ ] Flutter SDK terinstall (<code class="docutils literal notranslate"><span class="pre">flutter</span> <span class="pre">doctor</span></code>)</p></li>
+<li><p>[ ] VS Code dengan extensions Flutter</p></li>
+<li><p>[ ] Git terinstall (<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">--version</span></code>)</p></li>
+<li><p>[ ] Akun Neon dibuat</p></li>
+<li><p>[ ] Database schema dijalankan</p></li>
+<li><p>[ ] File <code class="docutils literal notranslate"><span class="pre">config.json</span></code> telah disiapkan</p></li>
+<li><p>[ ] Flutter app bisa di-run dengan <code class="docutils literal notranslate"><span class="pre">--dart-define-from-file</span></code></p></li>
+</ul>
+</section>
+<section id="quick-test">
+<h4>Quick Test<a class="headerlink" href="#quick-test" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test komponen utama</span>
+<span class="nb">cd</span><span class="w"> </span>todo_app_flutter
+flutter<span class="w"> </span>doctor
+flutter<span class="w"> </span>run<span class="w"> </span>--dart-define-from-file<span class="o">=</span>config.json
+</pre></div>
+</div>
+</section>
+</section>
+<section id="resources">
+<h3>10. Resources<a class="headerlink" href="#resources" title="Link to this heading"></a></h3>
+<section id="documentation">
+<h4>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><a class="reference external" href="https://flutter.dev/docs">Flutter Documentation</a></p></li>
+<li><p><a class="reference external" href="https://neon.tech/docs">Neon Documentation</a></p></li>
+</ul>
+</section>
+<section id="learning-resources">
+<h4>Learning Resources<a class="headerlink" href="#learning-resources" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><a class="reference external" href="https://codelabs.developers.google.com/codelabs/flutter">Flutter Codelabs</a></p></li>
+<li><p><a class="reference external" href="https://www.postgresqltutorial.com">PostgreSQL Tutorial</a></p></li>
+<li><p><a class="reference external" href="https://restfulapi.net">REST API Best Practices</a></p></li>
+</ul>
+</section>
+<section id="support">
+<h4>Support<a class="headerlink" href="#support" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><a class="reference external" href="https://flutter.dev/community">Flutter Community</a></p></li>
+<li><p><a class="reference external" href="https://discord.gg/neon">Neon Discord</a></p></li>
+<li><p><a class="reference external" href="https://stackoverflow.com/questions/tagged/flutter">Stack Overflow</a></p></li>
+</ul>
+</section>
+</section>
+<section id="backup-recovery">
+<h3>11. Backup &amp; Recovery<a class="headerlink" href="#backup-recovery" title="Link to this heading"></a></h3>
+<section id="export-database">
+<h4>Export Database<a class="headerlink" href="#export-database" title="Link to this heading"></a></h4>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Backup data tasks</span>
+<span class="k">COPY</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;/path/to/backup.csv&#39;</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="n">CSV</span><span class="w"> </span><span class="n">HEADER</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="backup-code">
+<h4>Backup Code<a class="headerlink" href="#backup-code" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Commit ke Git</span>
+git<span class="w"> </span>add<span class="w"> </span>.
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Backup sebelum training&quot;</span>
+git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>main
+
+<span class="c1"># Buat zip backup</span>
+tar<span class="w"> </span>-czf<span class="w"> </span>backup-<span class="k">$(</span>date<span class="w"> </span>+%Y%m%d<span class="k">)</span>.tar.gz<span class="w"> </span>todo_app_flutter/
+</pre></div>
+</div>
+</section>
+</section>
+<section id="ready-for-training">
+<h3>12. Ready for Training<a class="headerlink" href="#ready-for-training" title="Link to this heading"></a></h3>
+<p>Setup selesai! Anda sekarang siap untuk mengikuti training Flutter + Neon.</p>
+<p>Jika ada masalah selama setup, konsultasikan dengan instruktur atau lihat bagian troubleshooting.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Aplikasi Pengumpulan Tugas Training Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="session-1.html" class="btn btn-neutral float-right" title="Session 1: Flutter Basics &amp; Layouts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Instructor.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Flutter + Neon Training'
+project = 'Aplikasi Pengumpulan Tugas Training'
 copyright = '2026, Instructor'
 author = 'Instructor'
 release = '1.0.0'
@@ -14,9 +14,10 @@ release = '1.0.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-# Enable MyST parser to read Markdown files
+# Enable MyST parser to read Markdown files + sphinx-design for tabs/cards
 extensions = [
     'myst_parser',
+    'sphinx_design',
 ]
 
 templates_path = ['_templates']
@@ -25,6 +26,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # MyST configurations
 myst_enable_extensions = [
     "colon_fence",
+    "substitution",
 ]
 
 # -- Options for HTML output -------------------------------------------------
