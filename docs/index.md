@@ -2,7 +2,7 @@
 
 Welcome to the training materials for building **Aplikasi Pengumpulan Tugas** (Task Collection App) using **Flutter** and **Neon PostgreSQL**.
 
-Aplikasi ini dirancang untuk sekolah SMK dengan fitur role-based authentication (Guru/Siswa), management kelas, dan sistem pengumpulan tugas yang terhubung ke database cloud.
+Aplikasi ini dirancang untuk pengenalan dasar framework flutter dan Neon database sebagai contoh tren development mobile dan serverless database pada industri saat ini.
 
 ```{toctree}
 ---
