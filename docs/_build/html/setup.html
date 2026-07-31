@@ -55,10 +55,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#bagian-2-install-flutter-sdk-via-fvm">Bagian 2: Install Flutter SDK via FVM</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bagian-3-setup-android-studio-sdk-tools">Bagian 3: Setup Android Studio &amp; SDK Tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bagian-4-konfigurasi-vs-code">Bagian 4: Konfigurasi VS Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#bagian-5-strategi-khusus-lab-komputer-smk-offline-kit">Bagian 5: Strategi Khusus Lab Komputer SMK (Offline Kit)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#bagian-6-setup-akun-cloud-services-neon">Bagian 6: Setup Akun Cloud Services (Neon)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#bagian-7-project-setup-environment-variables">Bagian 7: Project Setup &amp; Environment Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#bagian-8-testing-setup">Bagian 8: Testing Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#bagian-5-setup-akun-cloud-services-neon">Bagian 5: Setup Akun Cloud Services (Neon)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bagian-6-project-setup-environment-variables">Bagian 6: Project Setup &amp; Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bagian-7-testing-setup">Bagian 7: Testing Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#verifikasi-lengkap">Verifikasi Lengkap</a></li>
 </ul>
@@ -278,23 +277,24 @@ fvm<span class="w"> </span>flutter<span class="w"> </span>doctor<span class="w">
 </pre></div>
 </div>
 </li>
-</ol>
-</section>
-<section id="bagian-5-strategi-khusus-lab-komputer-smk-offline-kit">
-<h2>Bagian 5: Strategi Khusus Lab Komputer SMK (Offline Kit)<a class="headerlink" href="#bagian-5-strategi-khusus-lab-komputer-smk-offline-kit" title="Link to this heading"></a></h2>
-<p>Untuk mengatasi keterbatasan spek PC lab &amp; koneksi internet di sekolah:</p>
-<ol class="arabic simple">
-<li><p><strong>HP Fisik + Scrcpy (Tanpa Android Emulator):</strong></p>
+<li><p><strong>(Optional) Mirroring HP Android (Tanpa Emulator)</strong>:
+Untuk mengatasi keterbatasan spek PC/Laptop jika tidak kuat menjalankan Android Emulator:</p>
 <ul class="simple">
-<li><p>Minta guru/siswa membawa HP Android dan kabel data.</p></li>
+<li><p>Minta siswa membawa HP Android dan kabel data.</p></li>
 <li><p>Aktifkan <strong>USB Debugging</strong> di HP Android.</p></li>
-<li><p>Jalankan <code class="docutils literal notranslate"><span class="pre">scrcpy</span></code> dari terminal (Windows/Mac) untuk me-mirror layar HP ke PC secara sangat ringan tanpa membebani RAM PC.</p></li>
+<li><p>Install <strong>Scrcpy</strong> menggunakan Package Manager:</p>
+<ul>
+<li><p><strong>Windows (PowerShell Admin):</strong> <code class="docutils literal notranslate"><span class="pre">choco</span> <span class="pre">install</span> <span class="pre">scrcpy</span> <span class="pre">-y</span></code></p></li>
+<li><p><strong>macOS (Terminal):</strong> <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">scrcpy</span></code></p></li>
+</ul>
+</li>
+<li><p>Sambungkan HP ke Laptop, buka terminal lalu ketik <code class="docutils literal notranslate"><span class="pre">scrcpy</span></code> untuk me-mirror layar HP ke PC dengan sangat ringan.</p></li>
 </ul>
 </li>
 </ol>
 </section>
-<section id="bagian-6-setup-akun-cloud-services-neon">
-<h2>Bagian 6: Setup Akun Cloud Services (Neon)<a class="headerlink" href="#bagian-6-setup-akun-cloud-services-neon" title="Link to this heading"></a></h2>
+<section id="bagian-5-setup-akun-cloud-services-neon">
+<h2>Bagian 5: Setup Akun Cloud Services (Neon)<a class="headerlink" href="#bagian-5-setup-akun-cloud-services-neon" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Buka <a class="reference external" href="https://neon.tech">neon.tech</a></p></li>
 <li><p>Buat akun gratis dengan GitHub/Google</p></li>
@@ -307,8 +307,8 @@ fvm<span class="w"> </span>flutter<span class="w"> </span>doctor<span class="w">
 </li>
 </ol>
 </section>
-<section id="bagian-7-project-setup-environment-variables">
-<h2>Bagian 7: Project Setup &amp; Environment Variables<a class="headerlink" href="#bagian-7-project-setup-environment-variables" title="Link to this heading"></a></h2>
+<section id="bagian-6-project-setup-environment-variables">
+<h2>Bagian 6: Project Setup &amp; Environment Variables<a class="headerlink" href="#bagian-6-project-setup-environment-variables" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Clone project:</p></li>
 </ol>
@@ -329,8 +329,8 @@ fvm<span class="w"> </span>flutter<span class="w"> </span>doctor<span class="w">
 </div>
 <p><em>(Catatan: Anda akan mendapatkan URL Neon Function pada Session 3)</em></p>
 </section>
-<section id="bagian-8-testing-setup">
-<h2>Bagian 8: Testing Setup<a class="headerlink" href="#bagian-8-testing-setup" title="Link to this heading"></a></h2>
+<section id="bagian-7-testing-setup">
+<h2>Bagian 7: Testing Setup<a class="headerlink" href="#bagian-7-testing-setup" title="Link to this heading"></a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build untuk testing</span>
 flutter<span class="w"> </span>build<span class="w"> </span>apk<span class="w"> </span>--debug
 
