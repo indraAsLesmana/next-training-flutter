@@ -71,7 +71,7 @@ fvm install stable
 fvm global stable
 
 # 3. Tambahkan symlink FVM ke User PATH Windows
-[Environment]::SetEnvironmentVariable("Path", $env:Path + ";$env:USERPROFILE\\fvm\\default\\bin", "User")
+[Environment]::SetEnvironmentVariable("Path", $env:Path + ";$env:USERPROFILE\fvm\default\bin", "User")
 ```
 :::
 :::{tab-item} macOS
