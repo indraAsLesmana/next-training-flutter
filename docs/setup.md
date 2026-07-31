@@ -190,7 +190,7 @@ Tambahkan konfigurasi ini di VS Code agar IDE otomatis mendeteksi SDK Flutter mi
    > **Khusus Pengguna Windows (Developer Mode):** 
    > Agar VS Code dapat membuat *symlink* FVM tanpa harus selalu dijalankan sebagai Administrator, Anda **wajib** mengaktifkan Developer Mode:
    > 1. Tekan `Win + I` untuk membuka **Settings**.
-   > 2. Masuk ke **System** $\rightarrow$ **For developers** (Windows 11) atau **Update & Security** $\rightarrow$ **For developers** (Windows 10).
+   > 2. Masuk ke **System** -> **For developers** (Windows 11) atau **Update & Security** -> **For developers** (Windows 10).
    > 3. Aktifkan toggle **Developer Mode** dan konfirmasi (*Yes*).
    > 4. Tutup dan buka kembali VS Code.
 
