@@ -56,8 +56,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#bagian-3-setup-android-studio-sdk-tools">Bagian 3: Setup Android Studio &amp; SDK Tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bagian-4-konfigurasi-vs-code">Bagian 4: Konfigurasi VS Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bagian-5-setup-akun-cloud-services-neon">Bagian 5: Setup Akun Cloud Services (Neon)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#bagian-6-project-setup-environment-variables">Bagian 6: Project Setup &amp; Environment Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#bagian-7-testing-setup">Bagian 7: Testing Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#bagian-6-inisialisasi-project">Bagian 6: Inisialisasi Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bagian-7-testing-aplikasi-run">Bagian 7: Testing Aplikasi (Run)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#verifikasi-lengkap">Verifikasi Lengkap</a></li>
 </ul>
@@ -280,7 +280,7 @@ fvm<span class="w"> </span>flutter<span class="w"> </span>doctor<span class="w">
 <li><p><strong>(Optional) Mirroring HP Android (Tanpa Emulator)</strong>:
 Untuk mengatasi keterbatasan spek PC/Laptop jika tidak kuat menjalankan Android Emulator:</p>
 <ul class="simple">
-<li><p>Minta siswa membawa HP Android dan kabel data.</p></li>
+<li><p>Siapkan HP Android dan kabel data.</p></li>
 <li><p>Aktifkan <strong>USB Debugging</strong> di HP Android.</p></li>
 <li><p>Install <strong>Scrcpy</strong> menggunakan Package Manager:</p>
 <ul>
@@ -288,7 +288,7 @@ Untuk mengatasi keterbatasan spek PC/Laptop jika tidak kuat menjalankan Android 
 <li><p><strong>macOS (Terminal):</strong> <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">scrcpy</span></code></p></li>
 </ul>
 </li>
-<li><p>Sambungkan HP ke Laptop, buka terminal lalu ketik <code class="docutils literal notranslate"><span class="pre">scrcpy</span></code> untuk me-mirror layar HP ke PC dengan sangat ringan.</p></li>
+<li><p>Sambungkan HP ke Laptop, buka terminal lalu ketik <code class="docutils literal notranslate"><span class="pre">scrcpy</span></code> untuk me-mirror layar HP ke PC.</p></li>
 </ul>
 </li>
 </ol>
@@ -302,53 +302,73 @@ Untuk mengatasi keterbatasan spek PC/Laptop jika tidak kuat menjalankan Android 
 <ul class="simple">
 <li><p><strong>Project Name:</strong> <code class="docutils literal notranslate"><span class="pre">flutter-training</span></code></p></li>
 <li><p><strong>Region:</strong> Singapore (pilih terdekat)</p></li>
-<li><p><strong>PostgreSQL Version:</strong> 15 atau terbaru</p></li>
+<li><p><strong>PostgreSQL Version:</strong> 18 atau terbaru</p></li>
 </ul>
 </li>
 </ol>
 </section>
-<section id="bagian-6-project-setup-environment-variables">
-<h2>Bagian 6: Project Setup &amp; Environment Variables<a class="headerlink" href="#bagian-6-project-setup-environment-variables" title="Link to this heading"></a></h2>
+<section id="bagian-6-inisialisasi-project">
+<h2>Bagian 6: Inisialisasi Project<a class="headerlink" href="#bagian-6-inisialisasi-project" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Buat Project Baru:</strong>
+Buka terminal, lalu jalankan perintah berikut untuk membuat project Flutter baru:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fvm<span class="w"> </span>flutter<span class="w"> </span>create<span class="w"> </span>--org<span class="w"> </span>com.flutter_training<span class="w"> </span>--platforms<span class="w"> </span>android,ios,web<span class="w"> </span>flutter_training
+<span class="nb">cd</span><span class="w"> </span>flutter_training
+</pre></div>
+</div>
+</li>
+<li><p><strong>Set Versi Flutter dengan FVM:</strong>
+Kita akan mengunci versi Flutter untuk project ini.</p>
+<blockquote>
+<div><p>[!IMPORTANT]
+<strong>Khusus Pengguna Windows (Developer Mode):</strong>
+Agar VS Code dapat membuat <em>symlink</em> FVM tanpa harus selalu dijalankan sebagai Administrator, Anda <strong>wajib</strong> mengaktifkan Developer Mode:</p>
 <ol class="arabic simple">
-<li><p>Clone project:</p></li>
+<li><p>Tekan <code class="docutils literal notranslate"><span class="pre">Win</span> <span class="pre">+</span> <span class="pre">I</span></code> untuk membuka <strong>Settings</strong>.</p></li>
+<li><p>Masuk ke <strong>System</strong> $\rightarrow$ <strong>For developers</strong> (Windows 11) atau <strong>Update &amp; Security</strong> $\rightarrow$ <strong>For developers</strong> (Windows 10).</p></li>
+<li><p>Aktifkan toggle <strong>Developer Mode</strong> dan konfirmasi (<em>Yes</em>).</p></li>
+<li><p>Tutup dan buka kembali VS Code.</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>&lt;template-repo-url&gt;
-<span class="nb">cd</span><span class="w"> </span>todo_app_flutter
+</div></blockquote>
+<p>Jalankan perintah ini untuk menggunakan versi spesifik:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fvm<span class="w"> </span>use<span class="w"> </span><span class="m">3</span>.44.8
 </pre></div>
 </div>
-<ol class="arabic simple" start="2">
-<li><p>Jalankan <code class="docutils literal notranslate"><span class="pre">flutter</span> <span class="pre">pub</span> <span class="pre">get</span></code>.</p></li>
-<li><p>Buat file <code class="docutils literal notranslate"><span class="pre">config.json</span></code> di root project Anda:</p></li>
-</ol>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;API_BASE_URL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://&lt;your-neon-function-url&gt;.neon.build&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;APP_NAME&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;To-Do App&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;APP_VERSION&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span>
-<span class="p">}</span>
+</li>
+<li><p><strong>Install Dependencies &amp; Verifikasi:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Unduh package yang dibutuhkan</span>
+fvm<span class="w"> </span>flutter<span class="w"> </span>pub<span class="w"> </span>get
+
+<span class="c1"># Pastikan tidak ada error di dalam environment project</span>
+fvm<span class="w"> </span>flutter<span class="w"> </span>doctor
 </pre></div>
 </div>
-<p><em>(Catatan: Anda akan mendapatkan URL Neon Function pada Session 3)</em></p>
+</li>
+</ol>
 </section>
-<section id="bagian-7-testing-setup">
-<h2>Bagian 7: Testing Setup<a class="headerlink" href="#bagian-7-testing-setup" title="Link to this heading"></a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build untuk testing</span>
-flutter<span class="w"> </span>build<span class="w"> </span>apk<span class="w"> </span>--debug
-
-<span class="c1"># Run di emulator/device dengan config.json</span>
-flutter<span class="w"> </span>run<span class="w"> </span>--dart-define-from-file<span class="o">=</span>config.json
-
-<span class="c1"># Run tests</span>
-flutter<span class="w"> </span><span class="nb">test</span>
+<section id="bagian-7-testing-aplikasi-run">
+<h2>Bagian 7: Testing Aplikasi (Run)<a class="headerlink" href="#bagian-7-testing-aplikasi-run" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Siapkan Perangkat:</strong></p>
+<ul class="simple">
+<li><p>Hubungkan HP Android ke Laptop/PC menggunakan kabel data (pastikan <strong>USB Debugging</strong> aktif).</p></li>
+<li><p><em>(Atau jalankan Android Emulator jika spek Laptop memadai).</em></p></li>
+</ul>
+</li>
+<li><p><strong>Jalankan Aplikasi:</strong>
+Di dalam folder project <code class="docutils literal notranslate"><span class="pre">flutter_training</span></code>, jalankan:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fvm<span class="w"> </span>flutter<span class="w"> </span>run<span class="w"> </span>
 </pre></div>
 </div>
+</li>
+</ol>
 <section id="troubleshooting">
 <h3>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Database Connection Errors:</strong> Jika <code class="docutils literal notranslate"><span class="pre">Authentication</span> <span class="pre">failed</span></code>, periksa username dan password di dashboard Neon.</p></li>
 <li><p><strong>Flutter doctor errors:</strong></p>
 <ul>
 <li><p><strong>Android SDK not found:</strong> Install Android Studio dan setup SDK Tools.</p></li>
-<li><p><strong>No devices available:</strong> Enable USB debugging di Android device, atau jalankan emulator.</p></li>
+<li><p><strong>No devices available:</strong> Pastikan kabel data tersambung dengan baik dan USB debugging aktif, atau gunakan <code class="docutils literal notranslate"><span class="pre">scrcpy</span></code> untuk mengecek koneksi.</p></li>
 </ul>
 </li>
 </ul>
@@ -358,9 +378,8 @@ flutter<span class="w"> </span><span class="nb">test</span>
 <ul class="simple">
 <li><p>[ ] Toolchain (FVM, Git, VS Code, Android Studio) terinstall via package manager.</p></li>
 <li><p>[ ] <code class="docutils literal notranslate"><span class="pre">flutter</span> <span class="pre">doctor</span></code> status OK.</p></li>
-<li><p>[ ] Akun Neon aktif dan tabel <code class="docutils literal notranslate"><span class="pre">tasks</span></code> sudah dibuat.</p></li>
-<li><p>[ ] File <code class="docutils literal notranslate"><span class="pre">config.json</span></code> siap digunakan.</p></li>
-<li><p>[ ] Flutter app dapat di-run.</p></li>
+<li><p>[ ] Akun Neon aktif.</p></li>
+<li><p>[ ] Project Flutter berhasil di-run ke perangkat/emulator.</p></li>
 </ul>
 </section>
 </section>
