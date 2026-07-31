@@ -183,7 +183,7 @@ Tambahkan konfigurasi ini di VS Code agar IDE otomatis mendeteksi SDK Flutter mi
 2. **Set Versi Flutter dengan FVM:**
    Kita akan mengunci versi Flutter untuk project ini.
    
-   > [!Penting]
+   > [!IMPORTANT]
    > **Khusus Pengguna Windows (Developer Mode):** 
    > Agar VS Code dapat membuat *symlink* FVM tanpa harus selalu dijalankan sebagai Administrator, Anda **wajib** mengaktifkan Developer Mode:
    > 1. Tekan `Win + I` untuk membuka **Settings**.
