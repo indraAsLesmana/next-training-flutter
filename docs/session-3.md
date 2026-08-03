@@ -35,7 +35,7 @@
 1. Buka [neon.tech](https://neon.tech)
 2. Login dengan akun Google/GitHub
 3. Buat Project baru:
-   - Name: `todo_app_db`
+   - Name: `tugas_db`
    - Postgres version: 15 (atau terbaru)
    - Region: Singapore (terdekat)
 4. Masuk ke dashboard project Anda.

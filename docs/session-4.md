@@ -26,7 +26,7 @@
 - Menggunakan konsep Dependency Injection dan Observer Pattern (`ChangeNotifier`).
 
 ### Instalasi
-Tambahkan di project Flutter (`todo_app_flutter`):
+Tambahkan di project Flutter (`flutter_training`):
 ```bash
 flutter pub add provider
 ```
@@ -147,7 +147,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'To-Do Neon App',
+      title: 'Aplikasi Pengumpulan Tugas',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: HomeScreen(),
     );

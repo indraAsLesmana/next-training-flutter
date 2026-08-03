@@ -30,13 +30,13 @@
 ### Setup Project Baru
 ```bash
 # Create new Flutter project
-flutter create todo_app_flutter
+fvm flutter create --org com.flutter_training --platforms android,ios,web flutter_training
 
 # Navigate to project
-cd todo_app_flutter
+cd flutter_training
 
 # Run the app
-flutter run
+fvm flutter run
 ```
 
 ## 2. Dart Programming Basics
@@ -217,12 +217,12 @@ Buat screen dengan komponen:
 4. List untuk menampilkan items
 
 ```dart
-class SimpleTodoScreen extends StatelessWidget {
+class SimpleTaskScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Simple To-Do'),
+        title: Text('Pengumpulan Tugas'),
       ),
       body: Column(
         children: [
@@ -268,12 +268,12 @@ Tambah state management sederhana:
 4. Update UI saat state berubah
 
 ```dart
-class InteractiveTodoScreen extends StatefulWidget {
+class InteractiveTaskScreen extends StatefulWidget {
   @override
-  _InteractiveTodoScreenState createState() => _InteractiveTodoScreenState();
+  _InteractiveTaskScreenState createState() => _InteractiveTaskScreenState();
 }
 
-class _InteractiveTodoScreenState extends State<InteractiveTodoScreen> {
+class _InteractiveTaskScreenState extends State<InteractiveTaskScreen> {
   final TextEditingController _controller = TextEditingController();
   List<String> _tasks = [];
 

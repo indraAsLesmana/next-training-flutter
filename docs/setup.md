@@ -221,6 +221,13 @@ Tambahkan konfigurasi ini di VS Code agar IDE otomatis mendeteksi SDK Flutter mi
 - **Flutter doctor errors:** 
   - **Android SDK not found:** Install Android Studio dan setup SDK Tools.
   - **No devices available:** Pastikan kabel data tersambung dengan baik dan USB debugging aktif, atau gunakan `scrcpy` untuk mengecek koneksi.
+- **Gradle Build Failed (Java Version Mismatch):**
+  - **Masalah:** Jika proses build gagal dengan pesan seperti `FAILURE: Build failed with an exception` atau menyebutkan versi Java (misal `25.0.2`), itu karena Gradle bawaan Flutter belum sepenuhnya mendukung versi Java terbaru di komputer Anda.
+  - **Solusi 1 (Menjalankan di Web):** Jalankan aplikasi di browser menggunakan perintah: `fvm flutter run -d web`
+  - **Solusi 2 (Menggunakan JDK 17):** Unduh OpenJDK 17 (misalnya dari Eclipse Temurin/Adoptium), lalu konfigurasikan Flutter untuk menggunakan JDK tersebut dengan menjalankan:
+    ```bash
+    fvm flutter config --jdk-dir=/path/ke/folder/jdk-17
+    ```
 
 ### Verifikasi Lengkap
 - [ ] Toolchain (FVM, Git, VS Code, Android Studio) terinstall via package manager.
