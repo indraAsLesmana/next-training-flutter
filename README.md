@@ -249,8 +249,11 @@ cd task_collection_app
 # Install dependencies
 fvm flutter pub add http provider flutter_dotenv shared_preferences intl
 
-# Run the app (dengan config API URL)
-fvm flutter run --dart-define-from-file=config.json
+# Run the app in Development Mode (Local Hono Server)
+fvm flutter run --dart-define-from-file=config_dev.json
+
+# Run the app in Production Mode (Neon Cloud API)
+fvm flutter run --dart-define-from-file=config_prod.json
 ```
 
 ## Dokumentasi Lengkap
