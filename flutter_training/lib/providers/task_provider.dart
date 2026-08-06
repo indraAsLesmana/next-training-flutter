@@ -1,75 +1,76 @@
 import 'package:flutter/material.dart';
-import '../models/task.dart';
-import '../services/api_service.dart';
+import '../repositories/task_repository.dart';
 
 class TaskProvider with ChangeNotifier {
-  final ApiService _apiService = ApiService();
+  final TaskRepository _taskRepo;
   
-  List<Task> _tasks = [];
   bool _isLoading = false;
   String? _error;
 
-  List<Task> get tasks => _tasks;
+  TaskProvider(this._taskRepo);
+
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  Future<void> fetchTasks() async {
+  Future<bool> createNewTask({
+    required String guruId,
+    required String classId,
+    required String description,
+    required String startDate,
+    required String endDate,
+    String? attachmentUrl,
+  }) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
-    try {
-      _tasks = await _apiService.getTasks();
-    } catch (e) {
-      _error = e.toString();
-    } finally {
-      _isLoading = false;
+    final response = await _taskRepo.createTask(
+      guruId: guruId,
+      classId: classId,
+      description: description,
+      startDate: startDate,
+      endDate: endDate,
+      attachmentUrl: attachmentUrl,
+    );
+
+    _isLoading = false;
+
+    if (response.success) {
       notifyListeners();
+      return true;
+    } else {
+      _error = response.message;
+      notifyListeners();
+      return false;
     }
   }
 
-  Future<void> addTask(String title, String description) async {
-    try {
-      final newTask = await _apiService.createTask(title, description);
-      _tasks.insert(0, newTask);
-      notifyListeners();
-    } catch (e) {
-      _error = e.toString();
-      notifyListeners();
-      rethrow;
-    }
-  }
+  Future<bool> submitStudentTask({
+    required String taskId,
+    required String siswaId,
+    required String submitUrl,
+    String? notes,
+  }) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
 
-  Future<void> toggleTaskCompletion(int taskId, bool currentStatus) async {
-    try {
-      // Optimistic UI Update
-      final index = _tasks.indexWhere((t) => t.id == taskId);
-      if (index != -1) {
-        _tasks[index] = Task(
-          id: _tasks[index].id,
-          title: _tasks[index].title,
-          description: _tasks[index].description,
-          completed: !currentStatus,
-        );
-        notifyListeners();
-      }
+    final response = await _taskRepo.submitTask(
+      taskId: taskId,
+      siswaId: siswaId,
+      submitUrl: submitUrl,
+      notes: notes,
+    );
 
-      await _apiService.updateTask(taskId, !currentStatus);
-    } catch (e) {
-      // Revert if error
-      fetchTasks();
-    }
-  }
+    _isLoading = false;
 
-  Future<void> deleteTask(int taskId) async {
-    try {
-      await _apiService.deleteTask(taskId);
-      _tasks.removeWhere((t) => t.id == taskId);
+    if (response.success) {
       notifyListeners();
-    } catch (e) {
-      _error = e.toString();
+      return true;
+    } else {
+      _error = response.message;
       notifyListeners();
-      rethrow;
+      return false;
     }
   }
 }

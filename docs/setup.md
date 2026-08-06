@@ -161,17 +161,7 @@ Tambahkan konfigurasi ini di VS Code agar IDE otomatis mendeteksi SDK Flutter mi
      - **macOS (Terminal):** `brew install scrcpy`
    - Sambungkan HP ke Laptop, buka terminal lalu ketik `scrcpy` untuk me-mirror layar HP ke PC.
 
-## Bagian 5: Setup Akun Cloud Services (Neon)
-
-1. Buka [neon.tech](https://neon.tech)
-2. Buat akun gratis dengan GitHub/Google
-3. Buat project baru:
-   - **Project Name:** `flutter-training`
-   - **Region:** Singapore (pilih terdekat)
-   - **PostgreSQL Version:** 18 atau terbaru
-
-
-## Bagian 6: Inisialisasi Project
+## Bagian 5: Inisialisasi Project
 
 1. **Buat Project Baru:**
    Buka terminal, lalu jalankan perintah berikut untuk membuat project Flutter baru:
@@ -205,7 +195,7 @@ Tambahkan konfigurasi ini di VS Code agar IDE otomatis mendeteksi SDK Flutter mi
    fvm flutter doctor
    ```
 
-## Bagian 7: Testing Aplikasi (Run)
+## Bagian 6: Testing Aplikasi (Run)
 
 1. **Siapkan Perangkat:**
    - Hubungkan HP Android ke Laptop/PC menggunakan kabel data (pastikan **USB Debugging** aktif).
@@ -232,5 +222,4 @@ Tambahkan konfigurasi ini di VS Code agar IDE otomatis mendeteksi SDK Flutter mi
 ### Verifikasi Lengkap
 - [ ] Toolchain (FVM, Git, VS Code, Android Studio) terinstall via package manager.
 - [ ] `flutter doctor` status OK.
-- [ ] Akun Neon aktif.
 - [ ] Project Flutter berhasil di-run ke perangkat/emulator.

@@ -1,15 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'core/network/dio_client.dart';
+import 'repositories/auth_repository.dart';
+import 'repositories/school_repository.dart';
+import 'repositories/task_repository.dart';
+
+import 'providers/auth_provider.dart';
+import 'providers/school_provider.dart';
 import 'providers/task_provider.dart';
-import 'screens/home_screen.dart';
+
+import 'screens/auth/register_screen.dart';
+import 'screens/guru/teacher_home_screen.dart';
+import 'screens/siswa/student_home_screen.dart';
 
 void main() {
+  final dioClient = DioClient();
+  final authRepo = AuthRepository(dioClient);
+  final schoolRepo = SchoolRepository(dioClient);
+  final taskRepo = TaskRepository(dioClient);
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => TaskProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider(authRepo)),
+        ChangeNotifierProvider(create: (_) => SchoolProvider(schoolRepo)..fetchClasses()),
+        ChangeNotifierProvider(create: (_) => TaskProvider(taskRepo)),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -21,8 +39,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Aplikasi Pengumpulan Tugas',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: HomeScreen(),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
+      ),
+      home: Consumer<AuthProvider>(
+        builder: (context, authProvider, _) {
+          if (!authProvider.isAuthenticated) {
+            return const RegisterScreen();
+          }
+
+          if (authProvider.currentUser?.role == 'guru') {
+            return const TeacherHomeScreen();
+          } else {
+            return const StudentHomeScreen();
+          }
+        },
+      ),
     );
   }
 }
