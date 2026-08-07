@@ -5,6 +5,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx src/db/seed.ts",
+    "db:reset": "tsx src/db/reset.ts",
+    "db:reseed": "npm run db:reset && npm run db:seed",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {

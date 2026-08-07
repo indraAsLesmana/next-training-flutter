@@ -6,7 +6,9 @@ export const classes = pgTable('classes', {
   tingkat: varchar('tingkat', { length: 5 }).notNull(), // 'X', 'XI', 'XII'
   namaKelas: varchar('nama_kelas', { length: 5 }).notNull(), // 'a', 'b', 'c', 'd'
   createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+}, (table) => [
+  uniqueIndex('tingkat_nama_kelas_idx').on(table.tingkat, table.namaKelas),
+]);
 
 // 2. Tabel Users
 export const users = pgTable('users', {

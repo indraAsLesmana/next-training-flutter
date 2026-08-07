@@ -4,11 +4,16 @@ import { classes } from './schema';
 import { config as loadEnv } from 'dotenv';
 import { parseEnv } from '@neon/env';
 import neonConfig from '../../neon';
+import { resetDatabase } from './reset';
 
-// Load .env.local fallback
 loadEnv({ path: '.env.local' });
 
 async function seed() {
+    // If --clean or --reset flag is provided, reset all tables first
+    if (process.argv.includes('--clean') || process.argv.includes('--reset')) {
+        await resetDatabase();
+    }
+
     let databaseUrl: string | undefined;
 
     try {
@@ -43,9 +48,9 @@ async function seed() {
     ];
 
     try {
-        // Insert data (abaikan jika ada bentrok/ON CONFLICT)
-        await db.insert(classes).values(dataClasses).onConflictDoNothing();
-        console.log('✅ Seeding berhasil!');
+        // Safe idempotent insert (on conflict do nothing based on unique constraint)
+        const result = await db.insert(classes).values(dataClasses).onConflictDoNothing();
+        console.log('✅ Seeding data kelas selesai (idempotent)!');
     } catch (error) {
         console.error('❌ Gagal seeding data:', error);
     }
