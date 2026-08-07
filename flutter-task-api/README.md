@@ -69,6 +69,17 @@ npm run db:push
 neon dev
 ```
 
+## Launch Drizzle Studio (Database Visualizer)
+
+Inspect and manage your Neon database tables (users, classes, tasks, submissions) visually:
+
+```bash
+npm run db:studio
+```
+
+This will automatically launch Drizzle Studio in your browser (usually at `https://local.drizzle.studio` or `http://127.0.0.1:4983`).
+
+
 Then in another shell (use the port `neon dev` printed):
 
 ```bash
