@@ -44,13 +44,21 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> _saveSession(UserModel user) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_userSessionKey, jsonEncode(user.toJson()));
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_userSessionKey, jsonEncode(user.toJson()));
+    } catch (e) {
+      debugPrint('Failed to save user session: $e');
+    }
   }
 
   Future<void> _clearSession() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_userSessionKey);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_userSessionKey);
+    } catch (e) {
+      debugPrint('Failed to clear user session: $e');
+    }
   }
 
   Future<bool> register({

@@ -59,7 +59,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       classId: _role == 'siswa' ? _selectedClassId : null,
     );
 
-    if (!success && mounted) {
+    if (success && mounted) {
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+    } else if (!success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(authProvider.error ?? 'Gagal mendaftar')),
       );
