@@ -228,6 +228,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ? const CircularProgressIndicator()
                             : const Text('Daftar'),
                       ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Sudah punya akun?'),
+                          TextButton(
+                            onPressed: () {
+                              if (Navigator.canPop(context)) {
+                                Navigator.pop(context);
+                              }
+                            },
+                            child: const Text('Masuk di sini'),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),

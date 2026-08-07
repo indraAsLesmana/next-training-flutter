@@ -52,6 +52,29 @@ app.post('/api/auth/register', async (c) => {
 });
 
 // -------------------------------------------------------------
+// POST: Login User
+// -------------------------------------------------------------
+app.post('/api/auth/login', async (c) => {
+  const db = getDb();
+  const { nipNik, password } = await c.req.json();
+
+  try {
+    const foundUsers = await db
+      .select()
+      .from(users)
+      .where(and(eq(users.nipNik, nipNik), eq(users.passwordHash, password)));
+
+    if (foundUsers.length === 0) {
+      return c.json({ success: false, message: 'NIP/NIK atau password salah' }, 401);
+    }
+
+    return c.json({ success: true, data: foundUsers[0] }, 200);
+  } catch (err: any) {
+    return c.json({ success: false, message: err.message }, 500);
+  }
+});
+
+// -------------------------------------------------------------
 // POST: Guru Tambah Tugas Baru
 // -------------------------------------------------------------
 app.post('/api/tasks', async (c) => {

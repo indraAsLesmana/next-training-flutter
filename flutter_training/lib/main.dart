@@ -10,11 +10,13 @@ import 'providers/auth_provider.dart';
 import 'providers/school_provider.dart';
 import 'providers/task_provider.dart';
 
-import 'screens/auth/register_screen.dart';
+import 'screens/auth/login_screen.dart';
 import 'screens/guru/teacher_home_screen.dart';
 import 'screens/siswa/student_home_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   final dioClient = DioClient();
   final authRepo = AuthRepository(dioClient);
   final schoolRepo = SchoolRepository(dioClient);
@@ -23,7 +25,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider(authRepo)),
+        ChangeNotifierProvider(create: (_) => AuthProvider(authRepo)..loadSession()),
         ChangeNotifierProvider(create: (_) => SchoolProvider(schoolRepo)..fetchClasses()),
         ChangeNotifierProvider(create: (_) => TaskProvider(taskRepo)),
       ],
@@ -45,8 +47,16 @@ class MyApp extends StatelessWidget {
       ),
       home: Consumer<AuthProvider>(
         builder: (context, authProvider, _) {
+          if (authProvider.isInitializing) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+
           if (!authProvider.isAuthenticated) {
-            return const RegisterScreen();
+            return const LoginScreen();
           }
 
           if (authProvider.currentUser?.role == 'guru') {
