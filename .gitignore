@@ -1,1 +1,21 @@
+# Python / Sphinx docs build output
 docs/_build/
+__pycache__/
+*.py[cod]
+
+# Local virtualenvs
+.venv/
+.venv-docs/
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# IDE / editor
+.vscode/
+.idea/
+
+# Flutter/Dart build artifacts (if a sample app is added later)
+build/
+.dart_tool/
+*.iml

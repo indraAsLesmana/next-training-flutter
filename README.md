@@ -188,8 +188,9 @@ GET     /api/tasks/:id/submissions → Get submission status
 
 ### 🖥️ **Setup Environment (Modern Approach)**
 
-```{tabs}
-```{tab} Windows (Chocolatey + FVM)
+<details>
+<summary><b>Windows (Chocolatey + FVM)</b></summary>
+
 ```powershell
 # Run PowerShell as Administrator
 # 1. Install Chocolatey package manager
@@ -208,7 +209,11 @@ fvm global stable
 [Environment]::SetEnvironmentVariable("Path", $env:Path + ";$env:USERPROFILE\fvm\default\bin", "User")
 ```
 
-```{tab} macOS (Homebrew + FVM)
+</details>
+
+<details>
+<summary><b>macOS (Homebrew + FVM)</b></summary>
+
 ```bash
 # 1. Install Homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -225,7 +230,8 @@ fvm global stable
 echo 'export PATH="$HOME/fvm/default/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
-```
+
+</details>
 
 ### 🛠️ **Verifikasi Setup**
 ```bash
@@ -242,6 +248,7 @@ flutter doctor -v
 4. Buat file konfig `config.json` untuk menyimpan URL Neon Function API
 
 ### 🚀 **Create & Run App**
+```bash
 # Create Flutter project
 fvm flutter create task_collection_app
 cd task_collection_app
@@ -256,18 +263,11 @@ fvm flutter run --dart-define-from-file=config.json
 ## Dokumentasi Lengkap
 Lihat folder `docs/` untuk dokumentasi detail, atau kunjungi [dokumentasi online](https://next-training-flutter.readthedocs.io):
 
-- `setup.md` - Setup lengkap dengan FVM untuk Windows/macOS
-- `session-1.md` - Materi Session 1: Flutter Basics & Layouts untuk Aplikasi Pengumpulan Tugas
-- `session-2.md` - Materi Session 2: HTTP Integration & Model dengan Role-based API
-- `session-3.md` - Materi Session 3: Neon Database & API Functions dengan schema role-based
-- `session-4.md` - Materi Session 4: State Management & Finalisasi dengan Provider untuk Guru/Siswa
+- `docs/setup.md` - Setup lengkap dengan FVM untuk Windows/macOS
+- `REQUIREMENTS.md` - Spesifikasi kebutuhan aplikasi (role, screen flow, API)
+- `README.md` - Ringkasan proyek, struktur training, schema database, dan API
 
-## Struktur Training (4 Sesi x 4 Jam)
-Training ini tetap menggunakan struktur 4 sesi dengan fokus aplikasi pengumpulan tugas:
-1. **Session 1**: Flutter Basics → UI untuk Guru/Siswa
-2. **Session 2**: HTTP Integration → API untuk auth dan tugas
-3. **Session 3**: Neon Database → Schema role-based
-4. **Session 4**: State Management → Provider untuk manajemen role
+> ℹ️ Materi per-sesi (`session-1.md` s/d `session-4.md`) sedang dalam pengembangan dan akan ditambahkan ke folder `docs/` pada rilis berikutnya.
 
 ## Support & Resources
 - **Dokumentasi Online**: https://next-training-flutter.readthedocs.io
@@ -275,9 +275,9 @@ Training ini tetap menggunakan struktur 4 sesi dengan fokus aplikasi pengumpulan
 - **Untuk SMK Labs**: Gunakan strategi offline kit dan scrcpy untuk testing di lab sekolah
 
 ## Troubleshooting
-Common issues dan solusi ada di `docs/troubleshooting.md`
+Common issues dan solusi ada di bagian **Troubleshooting** pada `docs/setup.md`.
 
-Untuk pertanyaan atau masalah selama training, hubungi instruktur atau lihat `docs/faq.md`
+Untuk pertanyaan atau masalah selama training, hubungi instruktur.
 
 ## License
 Training materials ini tersedia untuk tujuan edukasi.
