@@ -4,12 +4,13 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 class DioClient {
   late final Dio dio;
+  String? _token;
 
   DioClient() {
     // Determine base URL dynamically
     // Use 10.0.2.2 for Android Emulator, otherwise localhost
     String baseUrl = const String.fromEnvironment('API_BASE_URL', defaultValue: 'http://localhost:8787');
-    
+
     if (!kIsWeb && Platform.isAndroid && baseUrl.contains('localhost')) {
       baseUrl = baseUrl.replaceAll('localhost', '10.0.2.2');
     }
@@ -26,6 +27,16 @@ class DioClient {
       ),
     );
 
+    // Otomatis lampirkan token JWT (jika ada) ke setiap request
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        if (_token != null) {
+          options.headers['Authorization'] = 'Bearer $_token';
+        }
+        handler.next(options);
+      },
+    ));
+
     dio.interceptors.add(LogInterceptor(
       request: true,
       requestHeader: true,
@@ -34,5 +45,9 @@ class DioClient {
       responseBody: true,
       error: true,
     ));
+  }
+
+  void setToken(String? token) {
+    _token = token;
   }
 }

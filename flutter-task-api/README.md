@@ -119,3 +119,46 @@ curl -X POST https://<your-branch>-todos.compute.<region>.aws.neon.tech/todos \
   -H 'content-type: application/json' \
   -d '{"text":"ship it"}'
 ```
+
+## Autentikasi (JWT)
+
+Sejak versi ini, API menggunakan autentikasi berbasis token **JWT**:
+
+- **Register** (`POST /api/auth/register`) — menyimpan password sebagai **hash bcrypt** (bukan plaintext) dan langsung mengembalikan token.
+- **Login** (`POST /api/auth/login`) — memverifikasi bcrypt, lalu mengembalikan `{ data, token }`.
+- **Endpoint yang dilindungi** (`/api/tasks`, `/api/submissions`) — wajib mengirim header `Authorization: Bearer <token>`.
+- **Role-based access**: hanya role `guru` yang bisa membuat tugas (`/api/tasks`), hanya role `siswa` yang bisa mengumpulkan (`/api/submissions`). Role & id user diambil dari token, bukan dari body request.
+
+### Environment variable
+
+Tambahkan `JWT_SECRET` di `.env.local` (lihat `.env.example`):
+
+```bash
+JWT_SECRET="ganti-dengan-secret-acak-yang-kuat"
+```
+
+> ⚠️ Default fallback `dev-insecure-secret-change-in-production` hanya untuk pengembangan lokal. **Wajib** diganti di produksi.
+
+### Contoh pemakaian (curl)
+
+```bash
+# 1. Login sebagai demo guru
+curl -X POST http://localhost:8787/api/auth/login \
+  -H 'content-type: application/json' \
+  -d '{"nipNik":"GURU001","password":"demo123"}'
+
+# 2. Buat tugas (pakai token dari response login)
+curl -X POST http://localhost:8787/api/tasks \
+  -H 'content-type: application/json' \
+  -H 'Authorization: Bearer <TOKEN>' \
+  -d '{"classId":"<UUID>","description":"Tugas 1","startDate":"2026-08-01T00:00:00.000Z","endDate":"2026-08-08T00:00:00.000Z"}'
+```
+
+### Akun demo (seed)
+
+Jalankan `npm run db:seed` untuk membuat akun demo:
+
+| NIP/NIK  | Role  | Password |
+|----------|-------|----------|
+| `GURU001` | guru  | `demo123` |
+| `SISWA001`| siswa | `demo123` |

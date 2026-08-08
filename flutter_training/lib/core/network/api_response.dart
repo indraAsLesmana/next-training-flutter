@@ -3,12 +3,14 @@ class ApiResponse<T> {
   final T? data;
   final String? message;
   final String? error;
+  final String? token;
 
   ApiResponse({
     required this.success,
     this.data,
     this.message,
     this.error,
+    this.token,
   });
 
   factory ApiResponse.fromJson(
@@ -22,6 +24,7 @@ class ApiResponse<T> {
           : null,
       message: json['message'],
       error: json['error'],
+      token: json['token'],
     );
   }
 }
