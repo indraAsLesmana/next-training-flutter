@@ -1,5 +1,5 @@
 {
-  "name": "with-hono",
+  "name": "flutter-task-api",
   "scripts": {
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",

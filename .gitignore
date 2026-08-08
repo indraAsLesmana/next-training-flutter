@@ -1,0 +1,12 @@
+# Build artifacts (generated Sphinx output) — jangan commit
+docs/_build/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+
+# Node (fallback safety, sudah ada di flutter-task-api/.gitignore)
+node_modules/
