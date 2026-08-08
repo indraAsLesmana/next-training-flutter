@@ -8,6 +8,13 @@ class AuthRepository {
 
   AuthRepository(this._client);
 
+  // Parsing response { success, data: user, token } -> UserModel dengan token.
+  ApiResponse<UserModel> _parseAuthResponse(Map<String, dynamic> map) {
+    final baseUser = UserModel.fromJson(map['data'] as Map<String, dynamic>);
+    final user = baseUser.copyWith(token: map['token'] as String?);
+    return ApiResponse<UserModel>(success: true, data: user);
+  }
+
   Future<ApiResponse<UserModel>> registerUser({
     required String nama,
     required String role,
@@ -26,10 +33,7 @@ class AuthRepository {
         'classId': classId,
       });
 
-      return ApiResponse<UserModel>.fromJson(
-        response.data,
-        (json) => UserModel.fromJson(json as Map<String, dynamic>),
-      );
+      return _parseAuthResponse(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       return ApiResponse<UserModel>(
         success: false,
@@ -54,10 +58,7 @@ class AuthRepository {
         'password': password,
       });
 
-      return ApiResponse<UserModel>.fromJson(
-        response.data,
-        (json) => UserModel.fromJson(json as Map<String, dynamic>),
-      );
+      return _parseAuthResponse(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       return ApiResponse<UserModel>(
         success: false,

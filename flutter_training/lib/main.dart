@@ -25,7 +25,12 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider(authRepo)..loadSession()),
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(
+            authRepo,
+            onTokenChanged: (token) => dioClient.authToken = token,
+          )..loadSession(),
+        ),
         ChangeNotifierProvider(create: (_) => SchoolProvider(schoolRepo)..fetchClasses()),
         ChangeNotifierProvider(create: (_) => TaskProvider(taskRepo)),
       ],

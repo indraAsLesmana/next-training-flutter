@@ -7,6 +7,10 @@ import '../models/user_model.dart';
 class AuthProvider with ChangeNotifier {
   final AuthRepository _authRepo;
 
+  // Dipanggil setiap kali token sesi berubah, supaya DioClient
+  // otomatis menyertakan `Authorization: Bearer <token>` pada request.
+  final ValueChanged<String?>? onTokenChanged;
+
   static const String _userSessionKey = 'user_session';
 
   UserModel? _currentUser;
@@ -14,7 +18,7 @@ class AuthProvider with ChangeNotifier {
   bool _isInitializing = true;
   String? _error;
 
-  AuthProvider(this._authRepo);
+  AuthProvider(this._authRepo, {this.onTokenChanged});
 
   UserModel? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
@@ -38,6 +42,8 @@ class AuthProvider with ChangeNotifier {
       debugPrint('Failed to load user session: $e');
       _currentUser = null;
     } finally {
+      // Terapkan token ke DioClient setelah sesi dipulihkan.
+      onTokenChanged?.call(_currentUser?.token);
       _isInitializing = false;
       notifyListeners();
     }
@@ -50,6 +56,7 @@ class AuthProvider with ChangeNotifier {
     } catch (e) {
       debugPrint('Failed to save user session: $e');
     }
+    onTokenChanged?.call(user.token);
   }
 
   Future<void> _clearSession() async {
@@ -59,6 +66,7 @@ class AuthProvider with ChangeNotifier {
     } catch (e) {
       debugPrint('Failed to clear user session: $e');
     }
+    onTokenChanged?.call(null);
   }
 
   Future<bool> register({
