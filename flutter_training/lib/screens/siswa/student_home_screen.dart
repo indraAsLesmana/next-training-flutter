@@ -28,11 +28,9 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     final taskProvider = context.read<TaskProvider>();
-    final authProvider = context.read<AuthProvider>();
 
     final success = await taskProvider.submitStudentTask(
       taskId: _taskIdController.text,
-      siswaId: authProvider.currentUser!.id,
       submitUrl: _submitUrlController.text,
       notes: _notesController.text.isEmpty ? null : _notesController.text,
     );

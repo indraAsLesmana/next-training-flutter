@@ -278,9 +278,7 @@ Training ini tetap menggunakan struktur 4 sesi dengan fokus aplikasi pengumpulan
 - **Untuk SMK Labs**: Gunakan strategi offline kit dan scrcpy untuk testing di lab sekolah
 
 ## Troubleshooting
-Common issues dan solusi ada di `docs/troubleshooting.md`
-
-Untuk pertanyaan atau masalah selama training, hubungi instruktur atau lihat `docs/faq.md`
+Untuk pertanyaan umum dan masalah selama training, lihat file [`FAQ.md`](./FAQ.md) atau hubungi instruktur.
 
 ## License
 Training materials ini tersedia untuk tujuan edukasi.

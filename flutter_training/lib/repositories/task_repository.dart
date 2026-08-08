@@ -10,7 +10,6 @@ class TaskRepository {
   TaskRepository(this._client);
 
   Future<ApiResponse<TaskModel>> createTask({
-    required String guruId,
     required String classId,
     required String description,
     required String startDate,
@@ -18,8 +17,8 @@ class TaskRepository {
     String? attachmentUrl,
   }) async {
     try {
+      // guruId diambil dari token di backend, tidak perlu dikirim dari client
       final response = await _client.dio.post('/api/tasks', data: {
-        'guruId': guruId,
         'classId': classId,
         'description': description,
         'startDate': startDate,
@@ -47,14 +46,13 @@ class TaskRepository {
 
   Future<ApiResponse<SubmissionModel>> submitTask({
     required String taskId,
-    required String siswaId,
     required String submitUrl,
     String? notes,
   }) async {
     try {
+      // siswaId diambil dari token di backend, tidak perlu dikirim dari client
       final response = await _client.dio.post('/api/submissions', data: {
         'taskId': taskId,
-        'siswaId': siswaId,
         'submitUrl': submitUrl,
         'notes': notes,
       });

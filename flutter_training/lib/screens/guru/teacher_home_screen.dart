@@ -36,10 +36,8 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
     }
 
     final taskProvider = context.read<TaskProvider>();
-    final authProvider = context.read<AuthProvider>();
 
     final success = await taskProvider.createNewTask(
-      guruId: authProvider.currentUser!.id,
       classId: _selectedClassId!,
       description: _descController.text,
       startDate: _startDate!.toIso8601String(),

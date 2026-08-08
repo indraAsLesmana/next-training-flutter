@@ -1,10 +1,12 @@
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-import { classes } from './schema';
+import { classes, users } from './schema';
+import { eq } from 'drizzle-orm';
 import { config as loadEnv } from 'dotenv';
 import { parseEnv } from '@neon/env';
 import neonConfig from '../../neon';
 import { resetDatabase } from './reset';
+import { hashPassword } from '../auth';
 
 loadEnv({ path: '.env.local' });
 
@@ -53,6 +55,56 @@ async function seed() {
         console.log('✅ Seeding data kelas selesai (idempotent)!');
     } catch (error) {
         console.error('❌ Gagal seeding data:', error);
+    }
+
+    // ---------------------------------------------------------
+    // Seed akun demo (idempotent) agar aplikasi bisa langsung diuji
+    // ---------------------------------------------------------
+    console.log('👤 Seeding akun demo...');
+
+    const demoUsers = [
+        {
+            nama: 'Demo Guru',
+            role: 'guru',
+            nipNik: 'GURU001',
+            email: 'guru@demo.sch.id',
+            password: 'demo123',
+            classId: null as string | null,
+        },
+        {
+            nama: 'Demo Siswa',
+            role: 'siswa',
+            nipNik: 'SISWA001',
+            email: 'siswa@demo.sch.id',
+            password: 'demo123',
+            classId: null as string | null,
+        },
+    ];
+
+    try {
+        for (const u of demoUsers) {
+            const existing = await db.select().from(users).where(eq(users.nipNik, u.nipNik));
+            if (existing.length > 0) {
+                console.log(`⏭️  Akun ${u.nipNik} sudah ada, dilewati`);
+                continue;
+            }
+            const passwordHash = await hashPassword(u.password);
+            // Siswa demo dihubungkan ke kelas pertama (X a)
+            const classForStudent = u.role === 'siswa'
+                ? (await db.select().from(classes).limit(1))[0]?.id ?? null
+                : null;
+            await db.insert(users).values({
+                nama: u.nama,
+                role: u.role,
+                nipNik: u.nipNik,
+                email: u.email,
+                passwordHash,
+                classId: classForStudent,
+            });
+            console.log(`✅ Akun demo ${u.nipNik} (${u.role}) dibuat`);
+        }
+    } catch (error) {
+        console.error('❌ Gagal seeding akun demo:', error);
     }
 }
 

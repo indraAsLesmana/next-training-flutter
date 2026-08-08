@@ -3,7 +3,7 @@ import '../repositories/task_repository.dart';
 
 class TaskProvider with ChangeNotifier {
   final TaskRepository _taskRepo;
-  
+
   bool _isLoading = false;
   String? _error;
 
@@ -13,7 +13,6 @@ class TaskProvider with ChangeNotifier {
   String? get error => _error;
 
   Future<bool> createNewTask({
-    required String guruId,
     required String classId,
     required String description,
     required String startDate,
@@ -25,7 +24,6 @@ class TaskProvider with ChangeNotifier {
     notifyListeners();
 
     final response = await _taskRepo.createTask(
-      guruId: guruId,
       classId: classId,
       description: description,
       startDate: startDate,
@@ -47,7 +45,6 @@ class TaskProvider with ChangeNotifier {
 
   Future<bool> submitStudentTask({
     required String taskId,
-    required String siswaId,
     required String submitUrl,
     String? notes,
   }) async {
@@ -57,7 +54,6 @@ class TaskProvider with ChangeNotifier {
 
     final response = await _taskRepo.submitTask(
       taskId: taskId,
-      siswaId: siswaId,
       submitUrl: submitUrl,
       notes: notes,
     );
