@@ -75,6 +75,29 @@ app.post('/api/auth/login', async (c) => {
 });
 
 // -------------------------------------------------------------
+// GET: List Tasks (Filterable by classId or guruId)
+// -------------------------------------------------------------
+app.get('/api/tasks', async (c) => {
+  const db = getDb();
+  const classId = c.req.query('classId');
+  const guruId = c.req.query('guruId');
+
+  try {
+    const conditions = [];
+    if (classId) conditions.push(eq(tasks.classId, classId));
+    if (guruId) conditions.push(eq(tasks.guruId, guruId));
+
+    const data = conditions.length > 0
+      ? await db.select().from(tasks).where(and(...conditions))
+      : await db.select().from(tasks);
+
+    return c.json({ success: true, data });
+  } catch (err: any) {
+    return c.json({ success: false, message: err.message }, 500);
+  }
+});
+
+// -------------------------------------------------------------
 // POST: Guru Tambah Tugas Baru
 // -------------------------------------------------------------
 app.post('/api/tasks', async (c) => {

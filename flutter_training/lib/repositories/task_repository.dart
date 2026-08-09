@@ -9,6 +9,41 @@ class TaskRepository {
 
   TaskRepository(this._client);
 
+  Future<ApiResponse<List<TaskModel>>> getTasks({
+    String? classId,
+    String? guruId,
+  }) async {
+    try {
+      final Map<String, dynamic> queryParams = {};
+      if (classId != null && classId.isNotEmpty) queryParams['classId'] = classId;
+      if (guruId != null && guruId.isNotEmpty) queryParams['guruId'] = guruId;
+
+      final response = await _client.dio.get(
+        '/api/tasks',
+        queryParameters: queryParams.isNotEmpty ? queryParams : null,
+      );
+
+      return ApiResponse<List<TaskModel>>.fromJson(
+        response.data,
+        (json) {
+          final list = json as List<dynamic>;
+          return list.map((e) => TaskModel.fromJson(e as Map<String, dynamic>)).toList();
+        },
+      );
+    } on DioException catch (e) {
+      return ApiResponse<List<TaskModel>>(
+        success: false,
+        message: DioClient.getErrorMessage(e),
+        error: e.response?.data?['error'],
+      );
+    } catch (e) {
+      return ApiResponse<List<TaskModel>>(
+        success: false,
+        message: 'Terjadi kesalahan: ${e.toString()}',
+      );
+    }
+  }
+
   Future<ApiResponse<TaskModel>> createTask({
     required String guruId,
     required String classId,
