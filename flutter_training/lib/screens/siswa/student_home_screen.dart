@@ -23,8 +23,11 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
 
   void _loadTasks() {
     final authProvider = context.read<AuthProvider>();
-    final classId = authProvider.currentUser?.classId;
-    context.read<TaskProvider>().fetchTasks(classId: classId);
+    final currentUser = authProvider.currentUser;
+    context.read<TaskProvider>().fetchTasks(
+          classId: currentUser?.classId,
+          siswaId: currentUser?.id,
+        );
   }
 
   void _showSubmitTaskBottomSheet(BuildContext context, {TaskModel? task}) {
@@ -140,6 +143,8 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                         itemCount: taskProvider.tasks.length,
                         itemBuilder: (context, index) {
                           final task = taskProvider.tasks[index];
+                          final isSubmitted = task.isSubmitted;
+
                           return Card(
                             margin: const EdgeInsets.only(bottom: 12),
                             elevation: 2,
@@ -151,12 +156,57 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    task.description,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          task.description,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      if (isSubmitted)
+                                        Chip(
+                                          label: Text(
+                                            'Sudah Dikumpulkan',
+                                            style: TextStyle(
+                                              color: Colors.green[800],
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 11,
+                                            ),
+                                          ),
+                                          avatar: const Icon(
+                                            Icons.check_circle,
+                                            size: 15,
+                                            color: Colors.green,
+                                          ),
+                                          backgroundColor: Colors.green[50],
+                                          side: BorderSide(color: Colors.green[300]!),
+                                          visualDensity: VisualDensity.compact,
+                                        )
+                                      else
+                                        Chip(
+                                          label: Text(
+                                            'Belum Dikumpulkan',
+                                            style: TextStyle(
+                                              color: Colors.orange[800],
+                                              fontSize: 11,
+                                            ),
+                                          ),
+                                          avatar: Icon(
+                                            Icons.schedule,
+                                            size: 15,
+                                            color: Colors.orange[800],
+                                          ),
+                                          backgroundColor: Colors.orange[50],
+                                          side: BorderSide(color: Colors.orange[300]!),
+                                          visualDensity: VisualDensity.compact,
+                                        ),
+                                    ],
                                   ),
                                   const SizedBox(height: 12),
                                   Row(
@@ -215,6 +265,29 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                       ],
                                     ),
                                   ],
+                                  if (isSubmitted && task.submitUrl != null) ...[
+                                    const SizedBox(height: 8),
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[100],
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.check_circle_outline, size: 14, color: Colors.green),
+                                          const SizedBox(width: 6),
+                                          Expanded(
+                                            child: Text(
+                                              'Hasil: ${task.submitUrl}',
+                                              style: TextStyle(fontSize: 12, color: Colors.grey[800]),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                   const SizedBox(height: 12),
                                   Align(
                                     alignment: Alignment.centerRight,
@@ -224,13 +297,15 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                             context,
                                             task: task,
                                           ),
-                                      icon: const Icon(
-                                        Icons.upload_file,
+                                      icon: Icon(
+                                        isSubmitted ? Icons.edit : Icons.upload_file,
                                         size: 16,
                                       ),
-                                      label: const Text('Kumpulkan'),
+                                      label: Text(isSubmitted ? 'Edit Pengumpulan' : 'Kumpulkan'),
                                       style: ElevatedButton.styleFrom(
                                         visualDensity: VisualDensity.compact,
+                                        backgroundColor: isSubmitted ? Colors.grey[200] : null,
+                                        foregroundColor: isSubmitted ? Colors.black87 : null,
                                       ),
                                     ),
                                   ),
@@ -261,8 +336,8 @@ class _SubmitTaskForm extends StatefulWidget {
 class _SubmitTaskFormState extends State<_SubmitTaskForm> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _taskIdController;
-  final _submitUrlController = TextEditingController();
-  final _notesController = TextEditingController();
+  late final TextEditingController _submitUrlController;
+  late final TextEditingController _notesController;
   String? _formError;
 
   @override
@@ -270,6 +345,12 @@ class _SubmitTaskFormState extends State<_SubmitTaskForm> {
     super.initState();
     _taskIdController = TextEditingController(
       text: widget.initialTask?.id ?? '',
+    );
+    _submitUrlController = TextEditingController(
+      text: widget.initialTask?.submitUrl ?? '',
+    );
+    _notesController = TextEditingController(
+      text: widget.initialTask?.submissionNotes ?? '',
     );
   }
 
@@ -307,8 +388,12 @@ class _SubmitTaskFormState extends State<_SubmitTaskForm> {
       if (success && mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Tugas berhasil dikumpulkan!'),
+          SnackBar(
+            content: Text(
+              widget.initialTask?.isSubmitted == true
+                  ? 'Pengumpulan tugas berhasil diperbarui!'
+                  : 'Tugas berhasil dikumpulkan!',
+            ),
             backgroundColor: Colors.green,
           ),
         );
@@ -329,6 +414,7 @@ class _SubmitTaskFormState extends State<_SubmitTaskForm> {
   @override
   Widget build(BuildContext context) {
     final taskProvider = context.watch<TaskProvider>();
+    final isEditing = widget.initialTask?.isSubmitted == true;
 
     return Padding(
       padding: EdgeInsets.only(
@@ -348,7 +434,7 @@ class _SubmitTaskFormState extends State<_SubmitTaskForm> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Kumpulkan Tugas',
+                    isEditing ? 'Edit Pengumpulan Tugas' : 'Kumpulkan Tugas',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -446,9 +532,9 @@ class _SubmitTaskFormState extends State<_SubmitTaskForm> {
                         width: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Text(
-                        'Kumpulkan Tugas',
-                        style: TextStyle(fontSize: 16),
+                    : Text(
+                        isEditing ? 'Simpan Perubahan' : 'Kumpulkan Tugas',
+                        style: const TextStyle(fontSize: 16),
                       ),
               ),
             ],

@@ -75,23 +75,46 @@ app.post('/api/auth/login', async (c) => {
 });
 
 // -------------------------------------------------------------
-// GET: List Tasks (Filterable by classId or guruId)
+// GET: List Tasks (Filterable by classId, guruId, or siswaId)
 // -------------------------------------------------------------
 app.get('/api/tasks', async (c) => {
   const db = getDb();
   const classId = c.req.query('classId');
   const guruId = c.req.query('guruId');
+  const siswaId = c.req.query('siswaId');
 
   try {
     const conditions = [];
     if (classId) conditions.push(eq(tasks.classId, classId));
     if (guruId) conditions.push(eq(tasks.guruId, guruId));
 
-    const data = conditions.length > 0
+    const taskList = conditions.length > 0
       ? await db.select().from(tasks).where(and(...conditions))
       : await db.select().from(tasks);
 
-    return c.json({ success: true, data });
+    if (siswaId) {
+      const userSubmissions = await db
+        .select()
+        .from(submissions)
+        .where(eq(submissions.siswaId, siswaId));
+      
+      const submissionMap = new Map(userSubmissions.map(s => [s.taskId, s]));
+
+      const data = taskList.map(task => {
+        const sub = submissionMap.get(task.id);
+        return {
+          ...task,
+          isSubmitted: !!sub,
+          submittedAt: sub ? sub.submittedAt : null,
+          submitUrl: sub ? sub.submitUrl : null,
+          submissionNotes: sub ? sub.notes : null,
+        };
+      });
+
+      return c.json({ success: true, data });
+    }
+
+    return c.json({ success: true, data: taskList });
   } catch (err: any) {
     return c.json({ success: false, message: err.message }, 500);
   }
@@ -121,21 +144,44 @@ app.post('/api/tasks', async (c) => {
 });
 
 // -------------------------------------------------------------
-// POST: Siswa Submit Tugas
+// POST: Siswa Submit / Edit Tugas
 // -------------------------------------------------------------
 app.post('/api/submissions', async (c) => {
   const db = getDb();
   const { taskId, siswaId, submitUrl, notes } = await c.req.json();
 
   try {
-    const newSubmission = await db.insert(submissions).values({
-      taskId,
-      siswaId,
-      submitUrl,
-      notes: notes || null,
-    }).returning();
+    const existing = await db
+      .select()
+      .from(submissions)
+      .where(and(eq(submissions.taskId, taskId), eq(submissions.siswaId, siswaId)));
 
-    return c.json({ success: true, data: newSubmission[0] }, 201);
+    let result;
+    if (existing.length > 0) {
+      const updated = await db
+        .update(submissions)
+        .set({
+          submitUrl,
+          notes: notes || null,
+          submittedAt: new Date(),
+        })
+        .where(eq(submissions.id, existing[0].id))
+        .returning();
+      result = updated[0];
+    } else {
+      const inserted = await db
+        .insert(submissions)
+        .values({
+          taskId,
+          siswaId,
+          submitUrl,
+          notes: notes || null,
+        })
+        .returning();
+      result = inserted[0];
+    }
+
+    return c.json({ success: true, data: result }, 201);
   } catch (err: any) {
     return c.json({ success: false, message: err.message }, 500);
   }

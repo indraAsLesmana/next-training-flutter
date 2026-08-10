@@ -15,12 +15,12 @@ class TaskProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  Future<void> fetchTasks({String? classId, String? guruId}) async {
+  Future<void> fetchTasks({String? classId, String? guruId, String? siswaId}) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
-    final response = await _taskRepo.getTasks(classId: classId, guruId: guruId);
+    final response = await _taskRepo.getTasks(classId: classId, guruId: guruId, siswaId: siswaId);
 
     _isLoading = false;
 
@@ -89,6 +89,23 @@ class TaskProvider with ChangeNotifier {
     _isLoading = false;
 
     if (response.success) {
+      final index = _tasks.indexWhere((t) => t.id == taskId);
+      if (index != -1) {
+        final old = _tasks[index];
+        _tasks[index] = TaskModel(
+          id: old.id,
+          guruId: old.guruId,
+          classId: old.classId,
+          description: old.description,
+          startDate: old.startDate,
+          endDate: old.endDate,
+          attachmentUrl: old.attachmentUrl,
+          isSubmitted: true,
+          submittedAt: response.data?.submittedAt ?? DateTime.now().toIso8601String(),
+          submitUrl: submitUrl,
+          submissionNotes: notes,
+        );
+      }
       notifyListeners();
       return true;
     } else {

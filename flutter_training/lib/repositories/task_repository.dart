@@ -12,11 +12,13 @@ class TaskRepository {
   Future<ApiResponse<List<TaskModel>>> getTasks({
     String? classId,
     String? guruId,
+    String? siswaId,
   }) async {
     try {
       final Map<String, dynamic> queryParams = {};
       if (classId != null && classId.isNotEmpty) queryParams['classId'] = classId;
       if (guruId != null && guruId.isNotEmpty) queryParams['guruId'] = guruId;
+      if (siswaId != null && siswaId.isNotEmpty) queryParams['siswaId'] = siswaId;
 
       final response = await _client.dio.get(
         '/api/tasks',
