@@ -187,4 +187,56 @@ app.post('/api/submissions', async (c) => {
   }
 });
 
+// -------------------------------------------------------------
+// GET: Detail Submissions per Task (for Teacher)
+// -------------------------------------------------------------
+app.get('/api/tasks/:id/submissions', async (c) => {
+  const db = getDb();
+  const taskId = c.req.param('id');
+
+  try {
+    const taskData = await db.select().from(tasks).where(eq(tasks.id, taskId));
+    if (taskData.length === 0) {
+      return c.json({ success: false, message: 'Tugas tidak ditemukan' }, 404);
+    }
+    const task = taskData[0];
+
+    const studentsInClass = await db
+      .select()
+      .from(users)
+      .where(and(eq(users.role, 'siswa'), eq(users.classId, task.classId)));
+
+    const taskSubmissions = await db
+      .select()
+      .from(submissions)
+      .where(eq(submissions.taskId, taskId));
+
+    const submissionMap = new Map(taskSubmissions.map((s) => [s.siswaId, s]));
+
+    const studentList = studentsInClass.map((student) => {
+      const sub = submissionMap.get(student.id);
+      return {
+        siswaId: student.id,
+        nama: student.nama,
+        nipNik: student.nipNik,
+        email: student.email,
+        isSubmitted: !!sub,
+        submitUrl: sub ? sub.submitUrl : null,
+        notes: sub ? sub.notes : null,
+        submittedAt: sub ? sub.submittedAt : null,
+      };
+    });
+
+    return c.json({
+      success: true,
+      data: {
+        task,
+        students: studentList,
+      },
+    });
+  } catch (err: any) {
+    return c.json({ success: false, message: err.message }, 500);
+  }
+});
+
 export default app;

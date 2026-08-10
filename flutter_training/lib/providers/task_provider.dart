@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import '../models/task_model.dart';
+import '../models/student_submission_model.dart';
 import '../repositories/task_repository.dart';
 
 class TaskProvider with ChangeNotifier {
   final TaskRepository _taskRepo;
   
   List<TaskModel> _tasks = [];
+  List<StudentSubmissionModel> _studentSubmissions = [];
   bool _isLoading = false;
+  bool _isDetailLoading = false;
   String? _error;
 
   TaskProvider(this._taskRepo);
 
   List<TaskModel> get tasks => _tasks;
+  List<StudentSubmissionModel> get studentSubmissions => _studentSubmissions;
   bool get isLoading => _isLoading;
+  bool get isDetailLoading => _isDetailLoading;
   String? get error => _error;
 
   Future<void> fetchTasks({String? classId, String? guruId, String? siswaId}) async {
@@ -113,5 +118,23 @@ class TaskProvider with ChangeNotifier {
       notifyListeners();
       return false;
     }
+  }
+
+  Future<void> fetchTaskSubmissions(String taskId) async {
+    _isDetailLoading = true;
+    _error = null;
+    _studentSubmissions = [];
+    notifyListeners();
+
+    final response = await _taskRepo.getTaskSubmissions(taskId);
+
+    _isDetailLoading = false;
+
+    if (response.success && response.data != null) {
+      _studentSubmissions = response.data!;
+    } else {
+      _error = response.message ?? 'Gagal mengambil detail pengumpulan siswa';
+    }
+    notifyListeners();
   }
 }

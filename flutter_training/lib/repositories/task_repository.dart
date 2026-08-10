@@ -2,6 +2,7 @@ import '../core/network/dio_client.dart';
 import '../core/network/api_response.dart';
 import '../models/task_model.dart';
 import '../models/submission_model.dart';
+import '../models/student_submission_model.dart';
 import 'package:dio/dio.dart';
 
 class TaskRepository {
@@ -108,6 +109,32 @@ class TaskRepository {
       );
     } catch (e) {
       return ApiResponse<SubmissionModel>(
+        success: false,
+        message: 'Terjadi kesalahan: ${e.toString()}',
+      );
+    }
+  }
+
+  Future<ApiResponse<List<StudentSubmissionModel>>> getTaskSubmissions(String taskId) async {
+    try {
+      final response = await _client.dio.get('/api/tasks/$taskId/submissions');
+
+      return ApiResponse<List<StudentSubmissionModel>>.fromJson(
+        response.data,
+        (json) {
+          final dataMap = json as Map<String, dynamic>;
+          final studentsList = dataMap['students'] as List<dynamic>? ?? [];
+          return studentsList.map((e) => StudentSubmissionModel.fromJson(e as Map<String, dynamic>)).toList();
+        },
+      );
+    } on DioException catch (e) {
+      return ApiResponse<List<StudentSubmissionModel>>(
+        success: false,
+        message: DioClient.getErrorMessage(e),
+        error: e.response?.data?['error'],
+      );
+    } catch (e) {
+      return ApiResponse<List<StudentSubmissionModel>>(
         success: false,
         message: 'Terjadi kesalahan: ${e.toString()}',
       );

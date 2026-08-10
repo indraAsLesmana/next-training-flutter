@@ -4,6 +4,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/task_provider.dart';
 import '../../models/task_model.dart';
 import '../../widgets/empty_state_widget.dart';
+import '../../core/utils/url_launcher_utils.dart';
 
 class StudentHomeScreen extends StatefulWidget {
   const StudentHomeScreen({super.key});
@@ -244,47 +245,62 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                   if (task.attachmentUrl != null &&
                                       task.attachmentUrl!.isNotEmpty) ...[
                                     const SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.link,
-                                          size: 14,
-                                          color: Colors.blue,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Expanded(
-                                          child: Text(
-                                            task.attachmentUrl!,
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.blue,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
+                                    InkWell(
+                                      onTap: () => openUrl(context, task.attachmentUrl!),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.link,
+                                            size: 14,
+                                            color: Colors.blue,
                                           ),
-                                        ),
-                                      ],
+                                          const SizedBox(width: 4),
+                                          Expanded(
+                                            child: Text(
+                                              task.attachmentUrl!,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.blue,
+                                                decoration: TextDecoration.underline,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          const Icon(Icons.open_in_new, size: 12, color: Colors.blue),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                   if (isSubmitted && task.submitUrl != null) ...[
                                     const SizedBox(height: 8),
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[100],
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          const Icon(Icons.check_circle_outline, size: 14, color: Colors.green),
-                                          const SizedBox(width: 6),
-                                          Expanded(
-                                            child: Text(
-                                              'Hasil: ${task.submitUrl}',
-                                              style: TextStyle(fontSize: 12, color: Colors.grey[800]),
-                                              overflow: TextOverflow.ellipsis,
+                                    InkWell(
+                                      onTap: () => openUrl(context, task.submitUrl!),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[100],
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            const Icon(Icons.check_circle_outline, size: 14, color: Colors.green),
+                                            const SizedBox(width: 6),
+                                            Expanded(
+                                              child: Text(
+                                                'Hasil: ${task.submitUrl}',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.blue[700],
+                                                  decoration: TextDecoration.underline,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                            const SizedBox(width: 4),
+                                            const Icon(Icons.open_in_new, size: 12, color: Colors.blue),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],
