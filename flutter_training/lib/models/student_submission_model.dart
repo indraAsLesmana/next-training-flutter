@@ -1,3 +1,31 @@
+class TeamMemberInfo {
+  final String siswaId;
+  final String nama;
+  final String nipNik;
+
+  TeamMemberInfo({
+    required this.siswaId,
+    required this.nama,
+    required this.nipNik,
+  });
+
+  factory TeamMemberInfo.fromJson(Map<String, dynamic> json) {
+    return TeamMemberInfo(
+      siswaId: json['siswaId'] ?? json['siswa_id'] ?? json['id'] ?? '',
+      nama: json['nama'] ?? '',
+      nipNik: json['nipNik'] ?? json['nip_nik'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'siswaId': siswaId,
+      'nama': nama,
+      'nipNik': nipNik,
+    };
+  }
+}
+
 class StudentSubmissionModel {
   final String siswaId;
   final String nama;
@@ -7,6 +35,7 @@ class StudentSubmissionModel {
   final String? submitUrl;
   final String? notes;
   final String? submittedAt;
+  final List<TeamMemberInfo> teamMembers;
 
   StudentSubmissionModel({
     required this.siswaId,
@@ -17,9 +46,16 @@ class StudentSubmissionModel {
     this.submitUrl,
     this.notes,
     this.submittedAt,
+    this.teamMembers = const [],
   });
 
   factory StudentSubmissionModel.fromJson(Map<String, dynamic> json) {
+    final rawMembers = json['teamMembers'] ?? json['team_members'];
+    List<TeamMemberInfo> membersList = [];
+    if (rawMembers is List) {
+      membersList = rawMembers.map((e) => TeamMemberInfo.fromJson(e as Map<String, dynamic>)).toList();
+    }
+
     return StudentSubmissionModel(
       siswaId: json['siswaId'] ?? json['siswa_id'] ?? '',
       nama: json['nama'] ?? '',
@@ -29,6 +65,7 @@ class StudentSubmissionModel {
       submitUrl: json['submitUrl'] ?? json['submit_url'],
       notes: json['notes'],
       submittedAt: json['submittedAt'] ?? json['submitted_at'],
+      teamMembers: membersList,
     );
   }
 
@@ -42,6 +79,7 @@ class StudentSubmissionModel {
       'submitUrl': submitUrl,
       'notes': notes,
       'submittedAt': submittedAt,
+      'teamMembers': teamMembers.map((m) => m.toJson()).toList(),
     };
   }
 }

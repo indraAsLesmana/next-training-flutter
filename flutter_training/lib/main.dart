@@ -25,6 +25,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
+        Provider.value(value: schoolRepo),
         ChangeNotifierProvider(create: (_) => AuthProvider(authRepo)..loadSession()),
         ChangeNotifierProvider(create: (_) => SchoolProvider(schoolRepo)..fetchClasses()),
         ChangeNotifierProvider(create: (_) => TaskProvider(taskRepo)),

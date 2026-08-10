@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, uniqueIndex, boolean, integer } from 'drizzle-orm/pg-core';
 
 // 1. Tabel Classes
 export const classes = pgTable('classes', {
@@ -31,6 +31,8 @@ export const tasks = pgTable('tasks', {
   startDate: timestamp('start_date').notNull(),
   endDate: timestamp('end_date').notNull(),
   attachmentUrl: text('attachment_url'),
+  isTeamTask: boolean('is_team_task').default(false).notNull(),
+  maxTeamMembers: integer('max_team_members').default(5).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -43,3 +45,13 @@ export const submissions = pgTable('submissions', {
   notes: text('notes'),
   submittedAt: timestamp('submitted_at').defaultNow().notNull(),
 });
+
+// 5. Tabel Submission Members (Team Task Members)
+export const submissionMembers = pgTable('submission_members', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  submissionId: uuid('submission_id').notNull().references(() => submissions.id, { onDelete: 'cascade' }),
+  siswaId: uuid('siswa_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex('submission_siswa_idx').on(table.submissionId, table.siswaId),
+]);

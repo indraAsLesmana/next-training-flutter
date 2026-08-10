@@ -82,11 +82,29 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Chip(
-                            label: Text(widget.className ?? 'Kelas ID: ${widget.task.classId.substring(0, widget.task.classId.length > 8 ? 8 : widget.task.classId.length)}...'),
-                            visualDensity: VisualDensity.compact,
+                          Expanded(
+                            child: Wrap(
+                              spacing: 6,
+                              runSpacing: 4,
+                              children: [
+                                Chip(
+                                  label: Text(widget.className ?? 'Kelas ID: ${widget.task.classId.substring(0, widget.task.classId.length > 8 ? 8 : widget.task.classId.length)}...'),
+                                  visualDensity: VisualDensity.compact,
+                                ),
+                                if (widget.task.isTeamTask)
+                                  Chip(
+                                    label: Text('Kelompok (Maks ${widget.task.maxTeamMembers})'),
+                                    avatar: const Icon(Icons.groups, size: 14, color: Colors.blue),
+                                    backgroundColor: Colors.blue[50],
+                                    side: BorderSide(color: Colors.blue[300]!),
+                                    visualDensity: VisualDensity.compact,
+                                  ),
+                              ],
+                            ),
                           ),
+                          const SizedBox(width: 8),
                           SelectableText(
                             'ID: ${widget.task.id.substring(0, widget.task.id.length > 8 ? 8 : widget.task.id.length)}...',
                             style: TextStyle(
@@ -417,6 +435,22 @@ class _StudentSubmissionCard extends StatelessWidget {
                       child: Text(
                         'Catatan: ${student.notes}',
                         style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+              if (student.teamMembers.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.groups, size: 14, color: Colors.blue),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        'Anggota Kelompok (${student.teamMembers.length}): ${student.teamMembers.map((m) => m.nama).join(", ")}',
+                        style: TextStyle(fontSize: 12, color: Colors.blue[900], fontWeight: FontWeight.w500),
                       ),
                     ),
                   ],

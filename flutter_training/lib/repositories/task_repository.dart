@@ -54,6 +54,8 @@ class TaskRepository {
     required String startDate,
     required String endDate,
     String? attachmentUrl,
+    bool isTeamTask = false,
+    int maxTeamMembers = 5,
   }) async {
     try {
       final response = await _client.dio.post('/api/tasks', data: {
@@ -63,6 +65,8 @@ class TaskRepository {
         'startDate': startDate,
         'endDate': endDate,
         'attachmentUrl': attachmentUrl,
+        'isTeamTask': isTeamTask,
+        'maxTeamMembers': maxTeamMembers,
       });
 
       return ApiResponse<TaskModel>.fromJson(
@@ -88,6 +92,7 @@ class TaskRepository {
     required String siswaId,
     required String submitUrl,
     String? notes,
+    List<String>? teamMemberIds,
   }) async {
     try {
       final response = await _client.dio.post('/api/submissions', data: {
@@ -95,6 +100,7 @@ class TaskRepository {
         'siswaId': siswaId,
         'submitUrl': submitUrl,
         'notes': notes,
+        'teamMemberIds': teamMemberIds ?? [],
       });
 
       return ApiResponse<SubmissionModel>.fromJson(

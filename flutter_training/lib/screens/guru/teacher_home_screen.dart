@@ -177,11 +177,29 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                                       children: [
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
-                                            Chip(
-                                              label: Text(className),
-                                              visualDensity: VisualDensity.compact,
+                                            Expanded(
+                                              child: Wrap(
+                                                spacing: 6,
+                                                runSpacing: 4,
+                                                children: [
+                                                  Chip(
+                                                    label: Text(className),
+                                                    visualDensity: VisualDensity.compact,
+                                                  ),
+                                                  if (task.isTeamTask)
+                                                    Chip(
+                                                      label: Text('Kelompok (Maks ${task.maxTeamMembers})'),
+                                                      avatar: const Icon(Icons.groups, size: 14, color: Colors.blue),
+                                                      backgroundColor: Colors.blue[50],
+                                                      side: BorderSide(color: Colors.blue[300]!),
+                                                      visualDensity: VisualDensity.compact,
+                                                    ),
+                                                ],
+                                              ),
                                             ),
+                                            const SizedBox(width: 8),
                                             SelectableText(
                                               'ID: ${task.id.substring(0, task.id.length > 8 ? 8 : task.id.length)}...',
                                               style: TextStyle(
@@ -279,15 +297,18 @@ class _CreateTaskFormState extends State<_CreateTaskForm> {
   final _formKey = GlobalKey<FormState>();
   final _descController = TextEditingController();
   final _attachmentUrlController = TextEditingController();
+  final _maxMembersController = TextEditingController(text: '5');
   String? _selectedClassId;
   DateTime? _startDate;
   DateTime? _endDate;
+  bool _isTeamTask = false;
   String? _formError;
 
   @override
   void dispose() {
     _descController.dispose();
     _attachmentUrlController.dispose();
+    _maxMembersController.dispose();
     super.dispose();
   }
 
@@ -325,6 +346,8 @@ class _CreateTaskFormState extends State<_CreateTaskForm> {
         startDate: startDateToUse.toIso8601String(),
         endDate: _endDate!.toIso8601String(),
         attachmentUrl: _attachmentUrlController.text.isEmpty ? null : _attachmentUrlController.text,
+        isTeamTask: _isTeamTask,
+        maxTeamMembers: int.tryParse(_maxMembersController.text) ?? 5,
       );
 
       if (success && mounted) {
@@ -499,11 +522,45 @@ class _CreateTaskFormState extends State<_CreateTaskForm> {
               TextFormField(
                 controller: _attachmentUrlController,
                 decoration: const InputDecoration(
-                  labelText: 'URL Lampiran (Opsional)',
+                  labelText: 'URL Lampiran / Link Referensi (Opsional)',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.link),
+                  hintText: 'https://...',
                 ),
               ),
+              const SizedBox(height: 16),
+              SwitchListTile(
+                value: _isTeamTask,
+                title: const Text('Tugas Kelompok (Team Task)'),
+                subtitle: const Text('Izinkan siswa menambahkan anggota kelompok saat mengumpulkan'),
+                secondary: const Icon(Icons.groups),
+                onChanged: (val) {
+                  setState(() {
+                    _isTeamTask = val;
+                  });
+                },
+              ),
+              if (_isTeamTask) ...[
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _maxMembersController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Maksimal Anggota per Kelompok',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.group_add),
+                    hintText: '5',
+                  ),
+                  validator: (v) {
+                    if (!_isTeamTask) return null;
+                    final num = int.tryParse(v ?? '');
+                    if (num == null || num < 2) {
+                      return 'Minimal 2 anggota per kelompok';
+                    }
+                    return null;
+                  },
+                ),
+              ],
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: taskProvider.isLoading ? null : _submit,

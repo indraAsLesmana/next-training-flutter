@@ -44,6 +44,8 @@ class TaskProvider with ChangeNotifier {
     required String startDate,
     required String endDate,
     String? attachmentUrl,
+    bool isTeamTask = false,
+    int maxTeamMembers = 5,
   }) async {
     _isLoading = true;
     _error = null;
@@ -56,6 +58,8 @@ class TaskProvider with ChangeNotifier {
       startDate: startDate,
       endDate: endDate,
       attachmentUrl: attachmentUrl,
+      isTeamTask: isTeamTask,
+      maxTeamMembers: maxTeamMembers,
     );
 
     _isLoading = false;
@@ -79,6 +83,7 @@ class TaskProvider with ChangeNotifier {
     required String siswaId,
     required String submitUrl,
     String? notes,
+    List<String>? teamMemberIds,
   }) async {
     _isLoading = true;
     _error = null;
@@ -89,6 +94,7 @@ class TaskProvider with ChangeNotifier {
       siswaId: siswaId,
       submitUrl: submitUrl,
       notes: notes,
+      teamMemberIds: teamMemberIds,
     );
 
     _isLoading = false;
@@ -105,6 +111,8 @@ class TaskProvider with ChangeNotifier {
           startDate: old.startDate,
           endDate: old.endDate,
           attachmentUrl: old.attachmentUrl,
+          isTeamTask: old.isTeamTask,
+          maxTeamMembers: old.maxTeamMembers,
           isSubmitted: true,
           submittedAt: response.data?.submittedAt ?? DateTime.now().toIso8601String(),
           submitUrl: submitUrl,

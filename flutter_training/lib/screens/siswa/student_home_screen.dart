@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/task_provider.dart';
 import '../../models/task_model.dart';
+import '../../models/student_submission_model.dart';
+import '../../repositories/school_repository.dart';
 import '../../widgets/empty_state_widget.dart';
 import '../../core/utils/url_launcher_utils.dart';
 
@@ -169,15 +171,36 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(width: 8),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Wrap(
+                                    spacing: 6,
+                                    runSpacing: 6,
+                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                    children: [
+                                      Chip(
+                                        label: Text(
+                                          'ID: ${task.id.substring(0, task.id.length > 8 ? 8 : task.id.length)}...',
+                                        ),
+                                        visualDensity: VisualDensity.compact,
+                                      ),
+                                      if (task.isTeamTask)
+                                        Chip(
+                                          label: Text('Kelompok (Maks ${task.maxTeamMembers})'),
+                                          avatar: const Icon(Icons.groups, size: 14, color: Colors.blue),
+                                          backgroundColor: Colors.blue[50],
+                                          side: BorderSide(color: Colors.blue[300]!),
+                                          visualDensity: VisualDensity.compact,
+                                        ),
                                       if (isSubmitted)
                                         Chip(
                                           label: Text(
                                             'Sudah Dikumpulkan',
                                             style: TextStyle(
                                               color: Colors.green[800],
-                                              fontWeight: FontWeight.bold,
                                               fontSize: 11,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                           avatar: const Icon(
@@ -304,6 +327,22 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                       ),
                                     ),
                                   ],
+                                  if (isSubmitted && task.isTeamTask && task.teamMembers.isNotEmpty) ...[
+                                    const SizedBox(height: 6),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.groups, size: 14, color: Colors.blue),
+                                        const SizedBox(width: 6),
+                                        Expanded(
+                                          child: Text(
+                                            'Anggota (${task.teamMembers.length}): ${task.teamMembers.map((m) => m.nama).join(", ")}',
+                                            style: TextStyle(fontSize: 12, color: Colors.blue[800], fontWeight: FontWeight.w500),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                   const SizedBox(height: 12),
                                   Align(
                                     alignment: Alignment.centerRight,
@@ -354,6 +393,11 @@ class _SubmitTaskFormState extends State<_SubmitTaskForm> {
   late final TextEditingController _taskIdController;
   late final TextEditingController _submitUrlController;
   late final TextEditingController _notesController;
+  final TextEditingController _searchStudentController = TextEditingController();
+
+  List<TeamMemberInfo> _selectedTeamMembers = [];
+  List<TeamMemberInfo> _searchResults = [];
+  bool _isSearching = false;
   String? _formError;
 
   @override
@@ -368,6 +412,19 @@ class _SubmitTaskFormState extends State<_SubmitTaskForm> {
     _notesController = TextEditingController(
       text: widget.initialTask?.submissionNotes ?? '',
     );
+
+    final currentUser = context.read<AuthProvider>().currentUser;
+    if (widget.initialTask?.teamMembers != null && widget.initialTask!.teamMembers.isNotEmpty) {
+      _selectedTeamMembers = List.from(widget.initialTask!.teamMembers);
+    } else if (currentUser != null) {
+      _selectedTeamMembers = [
+        TeamMemberInfo(
+          siswaId: currentUser.id,
+          nama: currentUser.nama,
+          nipNik: currentUser.nipNik,
+        ),
+      ];
+    }
   }
 
   @override
@@ -375,7 +432,79 @@ class _SubmitTaskFormState extends State<_SubmitTaskForm> {
     _taskIdController.dispose();
     _submitUrlController.dispose();
     _notesController.dispose();
+    _searchStudentController.dispose();
     super.dispose();
+  }
+
+  void _searchStudents(String query) async {
+    final currentUser = context.read<AuthProvider>().currentUser;
+    if (currentUser?.classId == null || query.trim().isEmpty) {
+      setState(() {
+        _searchResults = [];
+        _isSearching = false;
+      });
+      return;
+    }
+
+    setState(() => _isSearching = true);
+
+    try {
+      final schoolRepo = context.read<SchoolRepository>();
+      final response = await schoolRepo.searchStudents(
+        classId: currentUser!.classId!,
+        query: query.trim(),
+      );
+
+      if (mounted) {
+        setState(() {
+          if (response.success && response.data != null) {
+            final selectedIds = _selectedTeamMembers.map((m) => m.siswaId).toSet();
+            _searchResults = response.data!.where((s) => !selectedIds.contains(s.siswaId)).toList();
+          } else {
+            _searchResults = [];
+          }
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _searchResults = [];
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSearching = false;
+        });
+      }
+    }
+  }
+
+  void _addTeamMember(TeamMemberInfo student) {
+    final maxMembers = widget.initialTask?.maxTeamMembers ?? 5;
+    if (_selectedTeamMembers.length >= maxMembers) {
+      setState(() {
+        _formError = 'Maksimal $maxMembers anggota per kelompok untuk tugas ini.';
+      });
+      return;
+    }
+
+    setState(() {
+      _selectedTeamMembers.add(student);
+      _searchResults.removeWhere((s) => s.siswaId == student.siswaId);
+      _searchStudentController.clear();
+      _formError = null;
+    });
+  }
+
+  void _removeTeamMember(String siswaId) {
+    final currentUser = context.read<AuthProvider>().currentUser;
+    if (siswaId == currentUser?.id) return;
+
+    setState(() {
+      _selectedTeamMembers.removeWhere((m) => m.siswaId == siswaId);
+      _formError = null;
+    });
   }
 
   void _submit() async {
@@ -399,6 +528,10 @@ class _SubmitTaskFormState extends State<_SubmitTaskForm> {
         siswaId: authProvider.currentUser!.id,
         submitUrl: _submitUrlController.text,
         notes: _notesController.text.isEmpty ? null : _notesController.text,
+        teamMemberIds: _selectedTeamMembers
+            .map((m) => m.siswaId)
+            .where((id) => id.trim().isNotEmpty)
+            .toList(),
       );
 
       if (success && mounted) {
@@ -536,6 +669,104 @@ class _SubmitTaskFormState extends State<_SubmitTaskForm> {
                 ),
                 maxLines: 3,
               ),
+              if (widget.initialTask?.isTeamTask == true) ...[
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.blue[50],
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.blue[200]!),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.groups, color: Colors.blue, size: 20),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Tugas Kelompok (Maks ${_selectedTeamMembers.length}/${widget.initialTask?.maxTeamMembers} Anggota)',
+                            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 4,
+                        children: _selectedTeamMembers.map((member) {
+                          final isSelf = member.siswaId == context.read<AuthProvider>().currentUser?.id;
+                          return Chip(
+                            avatar: Icon(
+                              isSelf ? Icons.star : Icons.person,
+                              size: 16,
+                              color: isSelf ? Colors.amber[800] : Colors.blue[800],
+                            ),
+                            label: Text(
+                              '${member.nama} ${isSelf ? "(Ketua)" : "(${member.nipNik})"}'
+                            ),
+                            deleteIcon: isSelf ? null : const Icon(Icons.close, size: 16),
+                            onDeleted: isSelf ? null : () => _removeTeamMember(member.siswaId),
+                            visualDensity: VisualDensity.compact,
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: _searchStudentController,
+                        decoration: InputDecoration(
+                          hintText: 'Cari Anggota (Ketik Nama atau NIK)...',
+                          prefixIcon: const Icon(Icons.search, size: 20),
+                          suffixIcon: _isSearching
+                              ? const Padding(
+                                  padding: EdgeInsets.all(12.0),
+                                  child: SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  ),
+                                )
+                              : null,
+                          isDense: true,
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: const OutlineInputBorder(),
+                        ),
+                        onChanged: _searchStudents,
+                      ),
+                      if (_searchResults.isNotEmpty) ...[
+                        const SizedBox(height: 6),
+                        Container(
+                          constraints: const BoxConstraints(maxHeight: 150),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: Colors.grey[300]!),
+                          ),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: _searchResults.length,
+                            itemBuilder: (context, index) {
+                              final student = _searchResults[index];
+                              return Material(
+                                color: Colors.transparent,
+                                child: ListTile(
+                                  dense: true,
+                                  title: Text(student.nama, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                  subtitle: Text('NIS/NIK: ${student.nipNik}'),
+                                  trailing: const Icon(Icons.add_circle_outline, color: Colors.blue),
+                                  onTap: () => _addTeamMember(student),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: taskProvider.isLoading ? null : _submit,
