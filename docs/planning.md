@@ -33,9 +33,8 @@ flowchart LR
 
 ```{mermaid}
 flowchart LR
-    F[Flutter App<br/>flutter_training/] -->|HTTP / JSON| A[Hono API<br/>flutter-task-api/]
-    A --> D[(Neon PostgreSQL<br/>5 tabel)]
-    F --> S[SharedPreferences<br/>sesi login lokal]
+    F["Flutter App<br>flutter_training/"] -->|"HTTP / JSON"| A["Hono API<br>flutter-task-api/"]
+    A --> D[("Neon PostgreSQL<br>5 tabel")]
 ```
 
 - **Flutter** (client) — UI, state management (Provider), HTTP client (Dio)
