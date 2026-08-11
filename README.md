@@ -18,170 +18,128 @@ Training program untuk guru SMK tentang pengembangan aplikasi mobile dengan Flut
 - ✅ Management kelas dan tingkat (X, XI, XII dengan section a,b,c,d)
 - ✅ Sistem pengumpulan tugas dengan attachment URL
 - ✅ Tracking submission status (sudah/belum kumpul)
+- ✅ Dukungan tugas kelompok (team task) dengan anggota tim
 - ✅ Koneksi ke Neon PostgreSQL
 - ✅ State management dengan Provider
-- ✅ REST API integration
-- ✅ Responsive UI dengan Flutter
+- ✅ REST API integration dengan Dio
 
-## Struktur Training
-4 sesi pertemuan, masing-masing 4 jam:
+## Struktur Training (2 Sesi x 4 Jam)
 
-1. **Session 1: Flutter Basics & Layouts (4 Jam)**
-   - Pengenalan Flutter & Dart
-   - Widget fundamental (Stateless/Stateful)
-   - Layouting & UI Design dasar
-   - Hands-on: Membuat UI Aplikasi To-Do statis
+Training disusun dalam **2 sesi pertemuan, masing-masing 4 jam**, membangun aplikasi nyata di folder `flutter_training/` (mobile) dan `flutter-task-api/` (backend):
 
-2. **Session 2: HTTP Integration & Model (4 Jam)**
-   - Konsep REST API & JSON
-   - Data Models & Serialization
-   - Menggunakan package `http`
-   - Hands-on: Koneksi ke Mock API / JSON placeholder
+1. **Session 1: Dasar Flutter & Dashboard Siswa (4 Jam)**
+   - Dart essentials: null-safety, class, factory constructor
+   - Widget & layout Flutter: Stateless/Stateful, BuildContext
+   - Membangun UI dashboard siswa (login, list tugas, empty state)
+   - Hasil: aplikasi statis tanpa backend
 
-3. **Session 3: Neon Database & Backend (4 Jam)**
-   - Setup Neon PostgreSQL Cloud
-   - Pengenalan singkat Backend (Node.js/Express)
-   - Koneksi Backend ke Neon
-   - Hands-on: Build API dan jalankan server lokal
+2. **Session 2: Backend API, Dio & Provider (4 Jam)**
+   - REST API dengan Hono + Drizzle + Neon Functions
+   - Schema database 5 tabel (classes, users, tasks, submissions, submission_members)
+   - Dio client & repository pattern di Flutter
+   - State management dengan Provider (Auth, School, Task)
+   - Hasil: aplikasi lengkap end-to-end (register → login → buat tugas → kumpulkan)
 
-4. **Session 4: State Management & Finalisasi (4 Jam)**
-   - Konsep State Management (Provider)
-   - Integrasi penuh: Flutter -> Backend -> Neon Database (CRUD)
-   - Error Handling & UI Polish
-   - Final Project Review
+### Branch Workflow per Sesi
+
+Setiap sesi memiliki branch **sebelum** (start) dan **sesudah** (final) pengerjaan, sehingga peserta bisa membandingkan hasil dan mengejar ketertinggalan:
+
+| Branch | Isi | Untuk |
+|---|---|---|
+| `session-1-start` | Skeleton project sebelum Session 1 | Peserta clone & mulai coding |
+| `session-1-final` | Hasil akhir Session 1 (dashboard statis) | Referensi / diff / merge |
+| `session-2-start` | = `session-1-final` (lanjutan) | Peserta clone & mulai coding |
+| `session-2-final` | Aplikasi lengkap (setara `build-project`) | Referensi / diff / merge |
+
+Alur per sesi: peserta bekerja dari branch `start`, lalu di akhir sesi membandingkan dengan `git diff` dan mengambil hasil referensi dengan `git merge <branch-final>`.
 
 ## Teknologi Stack
-- **Frontend:** Flutter 3.x (Dart)
-- **Backend:** Neon Functions (Serverless API)
-- **Database:** Neon PostgreSQL
-- **Tools:** VS Code, Android Studio, Postman
+- **Frontend:** Flutter 3.x (Dart) + Provider + Dio
+- **Backend:** Hono + Drizzle ORM di Neon Functions
+- **Database:** Neon PostgreSQL (serverless)
+- **Tools:** VS Code, Android Studio, Postman, FVM
 
 ## Setup Requirements
 
 ### Untuk Peserta:
-1. Laptop Windows dengan Flutter SDK terinstall
+1. Laptop Windows/macOS dengan Flutter SDK terinstall (via FVM)
 2. VS Code atau Android Studio
-3. Akun Neon (gratis)
+3. Akun Neon (gratis) — buat project di region `aws-us-east-2` (satu-satunya region yang mendukung Neon Functions)
 4. Git untuk version control
+5. Node.js >= 20 (untuk backend di Session 2)
 
 ### Untuk Instruktur:
-1. Contoh kode lengkap (Flutter + Backend)
-2. Database schema ready
-3. Environment variables template
+1. Contoh kode lengkap (Flutter + Backend) di branch `build-project`
+2. Database schema ready (Drizzle + migration)
+3. Environment variables template (`.env.example`)
 4. Slide presentasi per session
 
 ## Struktur Proyek
-```
-task_collection_app/
-├── flutter_app/
-│   ├── lib/
-│   │   ├── models/
-│   │   │   ├── user.dart
-│   │   │   ├── class.dart
-│   │   │   ├── task.dart
-│   │   │   └── submission.dart
-│   │   ├── services/
-│   │   │   ├── api_service.dart
-│   │   │   └── auth_service.dart
-│   │   ├── providers/
-│   │   │   ├── auth_provider.dart
-│   │   │   ├── task_provider.dart
-│   │   │   └── notification_provider.dart
-│   │   ├── screens/
-│   │   │   ├── onboarding_screen.dart
-│   │   │   ├── auth/
-│   │   │   │   ├── register_screen.dart
-│   │   │   │   └── login_screen.dart
-│   │   │   ├── teacher/
-│   │   │   │   ├── home_screen.dart
-│   │   │   │   ├── create_task_screen.dart
-│   │   │   │   └── task_detail_screen.dart
-│   │   │   └── student/
-│   │   │       ├── home_screen.dart
-│   │   │       ├── task_list_screen.dart
-│   │   │       └── submission_screen.dart
-│   │   └── widgets/
-│   │       ├── role_selection.dart
-│   │       ├── class_selector.dart
-│   │       └── submission_table.dart
-├── docs/
-│   ├── setup.md
-│   ├── session-1.md
-│   ├── session-2.md
-│   ├── session-3.md
-│   └── session-4.md
-└── README.md
+```text
+next-training-flutter/
+├── flutter_training/           # Aplikasi Flutter (mobile)
+│   └── lib/
+│       ├── main.dart           # Entry point + MultiProvider + routing role
+│       ├── core/
+│       │   ├── network/        # dio_client.dart, api_response.dart
+│       │   └── utils/          # url_launcher_utils.dart
+│       ├── models/             # user_model, task_model, class_model, submission_model
+│       ├── providers/          # auth_provider, school_provider, task_provider
+│       ├── repositories/       # auth_repository, school_repository, task_repository
+│       ├── screens/
+│       │   ├── auth/           # login_screen, register_screen
+│       │   ├── guru/           # teacher_home_screen, task_detail_screen
+│       │   └── siswa/          # student_home_screen
+│       └── widgets/            # empty_state_widget
+├── flutter-task-api/           # Backend API (Hono + Drizzle + Neon)
+│   └── src/
+│       ├── index.ts            # Semua routes API
+│       └── db/                 # schema.ts, seed.ts, reset.ts, client.ts
+└── docs/                       # Dokumentasi ReadTheDocs (Sphinx + MyST)
+    ├── index.md
+    ├── setup.md
+    ├── session-1.md
+    └── session-2.md
 ```
 
-## Database Schema (Outline)
-```sql
--- Users table (Guru/Siswa)
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255),
-    role VARCHAR(20) NOT NULL, -- 'teacher' or 'student'
-    identification VARCHAR(50), -- NIP for teachers, NIK for students
-    grade VARCHAR(10), -- X, XI, XII
-    section VARCHAR(10), -- a, b, c, d
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+## Database Schema
 
--- Classes table (managed by teachers)
-CREATE TABLE classes (
-    id SERIAL PRIMARY KEY,
-    teacher_id INTEGER REFERENCES users(id),
-    grade VARCHAR(10) NOT NULL, -- X, XI, XII
-    section VARCHAR(10) NOT NULL, -- a, b, c, d
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+5 tabel (definisi lengkap di `flutter-task-api/src/db/schema.ts`, migration di `flutter-task-api/drizzle/`):
 
--- Tasks table (assigned by teachers)
-CREATE TABLE tasks (
-    id SERIAL PRIMARY KEY,
-    teacher_id INTEGER REFERENCES users(id),
-    class_id INTEGER REFERENCES classes(id),
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    attachment_url TEXT,
-    due_date TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Submissions table (by students)
-CREATE TABLE submissions (
-    id SERIAL PRIMARY KEY,
-    task_id INTEGER REFERENCES tasks(id),
-    student_id INTEGER REFERENCES users(id),
-    attachment_url TEXT,
-    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(20) DEFAULT 'submitted'
-);
+```text
+classes 1───* users 1───* tasks 1───* submissions 1───* submission_members
+                       │                                  │
+                       └────────── users (team members) ──┘
 ```
 
-## API Endpoints (Outline)
-```
+- **classes**: `id`, `tingkat` (X/XI/XII), `nama_kelas` (a-d)
+- **users**: `id`, `nama`, `role` (guru/siswa), `nip_nik` (unique), `email`, `password_hash`, `class_id` (FK)
+- **tasks**: `id`, `guru_id` (FK), `class_id` (FK), `description`, `start_date`, `end_date`, `attachment_url`, `is_team_task`, `max_team_members`
+- **submissions**: `id`, `task_id` (FK), `siswa_id` (FK), `submit_url`, `notes`, `submitted_at`
+- **submission_members**: `id`, `submission_id` (FK), `siswa_id` (FK)
+
+## API Endpoints
+
+Semua endpoint di `flutter-task-api/src/index.ts`, response berbentuk `{ success, data }`:
+
+```text
 # Authentication
-POST    /api/auth/register     → Register Guru/Siswa
-POST    /api/auth/login        → Login
-
-# Users
-GET     /api/users/profile     → Get user profile
+POST    /api/auth/register      → Daftar guru (NIP) / siswa (NIK + kelas)
+POST    /api/auth/login         → Login dengan NIP/NIK + password
 
 # Classes
-GET     /api/classes           → Get all classes (Guru only)
-POST    /api/classes           → Create class (Guru only)
-GET     /api/classes/:id       → Get class details
+GET     /api/classes            → Ambil semua kelas
+
+# Students
+GET     /api/students/search    → Cari siswa dalam kelas (query: classId, query)
 
 # Tasks
-GET     /api/tasks             → Get tasks (filter by class/grade)
-POST    /api/tasks             → Create task (Guru only)
-PUT     /api/tasks/:id         → Update task (Guru only)
-DELETE  /api/tasks/:id         → Delete task (Guru only)
+GET     /api/tasks              → List tugas (filter: classId, guruId, siswaId)
+POST    /api/tasks              → Guru membuat tugas baru
 
 # Submissions
-POST    /api/tasks/:id/submit  → Submit assignment (Siswa)
-GET     /api/tasks/:id/submissions → Get submission status
+POST    /api/submissions        → Siswa kumpulkan/update tugas (support team)
+GET     /api/tasks/:id/submissions → Guru lihat status pengumpulan per siswa
 ```
 
 ## Quick Start Guide
@@ -227,43 +185,47 @@ source ~/.zshrc
 ```
 ```
 
+> Panduan setup lengkap (toolchain, Android Studio, VS Code, akun Neon) ada di `docs/setup.md`.
+
 ### 🛠️ **Verifikasi Setup**
 ```bash
 # Setup Android SDK Command-line Tools melalui Android Studio
 # Kemudian jalankan:
-flutter doctor --android-licenses
-flutter doctor -v
+fvm flutter doctor --android-licenses
+fvm flutter doctor -v
 ```
 
 ### 🗄️ **Setup Neon Database & Functions**
 1. Buat akun di [neon.tech](https://neon.tech)
-2. Buat project baru `task-collection-app`
-3. Jalankan schema SQL di atas melalui Neon SQL Editor
-4. Buat file konfig `config.json` untuk menyimpan URL Neon Function API
+2. Buat project baru `tugas_db` — **region wajib `aws-us-east-2`** (satu-satunya region yang mendukung Neon Functions)
+3. Push schema via Drizzle: `npm run db:push` (di folder `flutter-task-api/`)
+4. Seed data kelas: `npm run db:seed`
+5. Buat file konfig `config_dev.json` / `config_prod.json` untuk `API_BASE_URL` aplikasi Flutter
 
 ### 🚀 **Create & Run App**
-# Create Flutter project
-fvm flutter create task_collection_app
-cd task_collection_app
+```bash
+# Clone repository
+git clone https://github.com/indraAsLesmana/next-training-flutter.git
+cd next-training-flutter
 
-# Install dependencies
-fvm flutter pub add http provider flutter_dotenv shared_preferences intl
+# Jalankan aplikasi Flutter (di folder flutter_training)
+fvm flutter pub get
+fvm flutter run --dart-define-from-file=config_dev.json   # Development (local API)
+fvm flutter run --dart-define-from-file=config_prod.json  # Production (Neon cloud)
 
-# Run the app in Development Mode (Local Hono Server)
-fvm flutter run --dart-define-from-file=config_dev.json
-
-# Run the app in Production Mode (Neon Cloud API)
-fvm flutter run --dart-define-from-file=config_prod.json
+# Jalankan backend Hono (di folder flutter-task-api)
+npm install
+npm run db:push
+npm run db:seed
+npm run dev
 ```
 
 ## Dokumentasi Lengkap
 Lihat folder `docs/` untuk dokumentasi detail, atau kunjungi [dokumentasi online](https://next-training-flutter.readthedocs.io):
 
-- `setup.md` - Setup lengkap dengan FVM untuk Windows/macOS
-- `session-1.md` - Materi Session 1: Flutter Basics & Layouts untuk Aplikasi Pengumpulan Tugas
-- `session-2.md` - Materi Session 2: HTTP Integration & Model dengan Role-based API
-- `session-3.md` - Materi Session 3: Neon Database & API Functions dengan schema role-based
-- `session-4.md` - Materi Session 4: State Management & Finalisasi dengan Provider untuk Guru/Siswa
+- `setup.md` - Setup lengkap toolchain (FVM, Android Studio, VS Code) + akun Neon
+- `session-1.md` - Materi Session 1: Dasar Flutter & Dashboard Siswa (4 jam)
+- `session-2.md` - Materi Session 2: Backend API, Dio & Provider (4 jam)
 
 ### 📖 **Menjalankan ReadTheDocs Secara Lokal (Python & Sphinx)**
 
@@ -285,22 +247,10 @@ Buka browser di **`http://localhost:8000`** untuk melihat preview dokumentasi lo
 > sphinx-autobuild docs docs/_build/html
 > ```
 
-## Struktur Training (4 Sesi x 4 Jam)
-Training ini tetap menggunakan struktur 4 sesi dengan fokus aplikasi pengumpulan tugas:
-1. **Session 1**: Flutter Basics → UI untuk Guru/Siswa
-2. **Session 2**: HTTP Integration → API untuk auth dan tugas
-3. **Session 3**: Neon Database → Schema role-based
-4. **Session 4**: State Management → Provider untuk manajemen role
-
 ## Support & Resources
 - **Dokumentasi Online**: https://next-training-flutter.readthedocs.io
 - **GitHub Repository**: https://github.com/indraAsLesmana/next-training-flutter
 - **Untuk SMK Labs**: Gunakan strategi offline kit dan scrcpy untuk testing di lab sekolah
-
-## Troubleshooting
-Common issues dan solusi ada di `docs/troubleshooting.md`
-
-Untuk pertanyaan atau masalah selama training, hubungi instruktur atau lihat `docs/faq.md`
 
 ## License
 Training materials ini tersedia untuk tujuan edukasi.

@@ -161,7 +161,29 @@ Tambahkan konfigurasi ini di VS Code agar IDE otomatis mendeteksi SDK Flutter mi
      - **macOS (Terminal):** `brew install scrcpy`
    - Sambungkan HP ke Laptop, buka terminal lalu ketik `scrcpy` untuk me-mirror layar HP ke PC.
 
-## Bagian 5: Inisialisasi Project
+## Bagian 5: Setup Akun Cloud Services (Neon)
+
+Backend API pada training ini berjalan di **Neon Functions** (serverless compute Neon) dengan database **Neon PostgreSQL**. Siapkan akun dan project sekarang, karena di Session 2 kita akan langsung menggunakannya.
+
+1. Buka [neon.tech](https://neon.tech), login dengan akun Google/GitHub.
+2. Klik **Create a project**.
+3. Isi konfigurasi project:
+   - **Name:** `tugas_db`
+   - **Postgres version:** 16 (atau versi terbaru yang tersedia)
+   - **Region:** **`aws-us-east-2`** (AWS US East, Ohio)
+     > [!IMPORTANT]
+     > **Pilih region `aws-us-east-2`**, bukan region terdekat (mis. Singapore). **Neon Functions** — layanan serverless compute untuk menjalankan backend API di platform yang sama dengan database — saat ini *beta* dan **hanya tersedia di region AWS US East (Ohio) `aws-us-east-2`**. Project yang dibuat di region lain tidak akan membuka fitur/menu Functions.
+     > Sumber: [Neon Docs — Compute Functions Overview](https://neon.com/docs/compute/functions/overview)
+4. Klik **Create project**. Tunggu hingga project aktif.
+5. Simpan **connection string** (`DATABASE_URL`) yang ditampilkan — akan dipakai backend di Session 2.
+
+> **Toolchain tambahan untuk Session 2:** Backend `flutter-task-api` ditulis dalam TypeScript dan dijalankan dengan [Neon CLI](https://github.com/neondatabase/neon) + Node.js. Instal dulu:
+> ```bash
+> npm install -g neon
+> node --version   # pastikan Node.js >= 20 terinstall
+> ```
+
+## Bagian 6: Inisialisasi Project
 
 1. **Buat Project Baru:**
    Buka terminal, lalu jalankan perintah berikut untuk membuat project Flutter baru:
@@ -195,7 +217,7 @@ Tambahkan konfigurasi ini di VS Code agar IDE otomatis mendeteksi SDK Flutter mi
    fvm flutter doctor
    ```
 
-## Bagian 6: Testing Aplikasi (Run)
+## Bagian 7: Testing Aplikasi (Run)
 
 1. **Siapkan Perangkat:**
    - Hubungkan HP Android ke Laptop/PC menggunakan kabel data (pastikan **USB Debugging** aktif).

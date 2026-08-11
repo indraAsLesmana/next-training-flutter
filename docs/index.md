@@ -2,7 +2,7 @@
 
 Welcome to the training materials for building **Aplikasi Pengumpulan Tugas** (Task Collection App) using **Flutter** and **Neon PostgreSQL**.
 
-Aplikasi ini dirancang untuk pengenalan dasar framework flutter dan Neon database sebagai contoh tren development mobile dan serverless database pada industri saat ini.
+Training ini dirancang untuk mengenalkan dasar-dasar Flutter (UI framework) dan Neon (serverless database) melalui pembangunan aplikasi nyata: aplikasi pengumpulan tugas berbasis peran (Guru/Siswa) yang terhubung ke database cloud PostgreSQL di Neon.
 
 ```{toctree}
 ---
@@ -12,8 +12,6 @@ caption: Table of Contents
 setup
 session-1
 session-2
-session-3
-session-4
 ```
 
 ---
