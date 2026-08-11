@@ -265,6 +265,26 @@ Lihat folder `docs/` untuk dokumentasi detail, atau kunjungi [dokumentasi online
 - `session-3.md` - Materi Session 3: Neon Database & API Functions dengan schema role-based
 - `session-4.md` - Materi Session 4: State Management & Finalisasi dengan Provider untuk Guru/Siswa
 
+### 📖 **Menjalankan ReadTheDocs Secara Lokal (Python & Sphinx)**
+
+```bash
+# 1. Install dependensi Sphinx
+pip install -r docs/requirements.txt
+
+# 2. Build HTML documentation dari folder docs
+sphinx-build -b html docs docs/_build/html
+
+# 3. Jalankan HTTP Server lokal dengan Python
+python3 -m http.server 8000 --directory docs/_build/html
+```
+Buka browser di **`http://localhost:8000`** untuk melihat preview dokumentasi lokal.
+
+> **Tip Live-Reload**: Anda juga bisa menggunakan `sphinx-autobuild` untuk auto-refresh saat mengedit file `.md`:
+> ```bash
+> pip install sphinx-autobuild
+> sphinx-autobuild docs docs/_build/html
+> ```
+
 ## Struktur Training (4 Sesi x 4 Jam)
 Training ini tetap menggunakan struktur 4 sesi dengan fokus aplikasi pengumpulan tugas:
 1. **Session 1**: Flutter Basics → UI untuk Guru/Siswa
