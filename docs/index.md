@@ -10,6 +10,7 @@ maxdepth: 2
 caption: Table of Contents
 ---
 setup
+planning
 session-1
 session-2
 ```

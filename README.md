@@ -224,6 +224,7 @@ npm run dev
 Lihat folder `docs/` untuk dokumentasi detail, atau kunjungi [dokumentasi online](https://next-training-flutter.readthedocs.io):
 
 - `setup.md` - Setup lengkap toolchain (FVM, Android Studio, VS Code) + akun Neon
+- `planning.md` - Perencanaan & desain aplikasi (alur pengguna, arsitektur, ERD database)
 - `session-1.md` - Materi Session 1: Dasar Flutter & Dashboard Siswa (4 jam)
 - `session-2.md` - Materi Session 2: Backend API, Dio & Provider (4 jam)
 
