@@ -119,7 +119,10 @@ next-training-flutter/
     ├── index.md
     ├── setup.md
     ├── session-1.md
-    └── session-2.md
+    ├── session-2.md
+    ├── session-3.md
+    ├── session-4.md
+    └── rundown/                 # Panduan mengajar instruktur (tidak di RTD)
 ```
 
 ## Database Schema

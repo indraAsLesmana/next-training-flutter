@@ -1,224 +1,196 @@
-# Session 2: Backend API (Hono + Neon), Dio & State Management dengan Provider
+# Session 2: Arsitektur Berlapis, Model, Repository & Dio
 
-## Durasi: 4 jam
+> **Hari 2 — Minggu, 16 Agustus** (09:00–12:00 pagi, 13:00–15:00 siang, break 12:00–13:00)
 
 > **Branch workflow sesi ini:**
-> - Mulai dari branch **`session-2-start`** (= hasil `session-1-final`)
-> - Hasil akhir sesi ini tersimpan di branch **`session-2-final`**
-> - Di akhir sesi kita akan `git diff` dan `git merge session-2-final` untuk memverifikasi hasil.
+> - Mulai dari branch **`session-2-start`** (= hasil akhir `session-1-final`)
+> - Hasil akhir sesi ini tersimpan di branch **`session-2-final`** (re-arch lengkap dengan Dio)
+> - Di akhir sesi bandingkan dengan `git diff` dan ambil referensi dengan `git merge session-2-final`
 
 ## Objectives
-- Memahami konsep REST API dan JSON
-- Membangun backend API dengan **Hono + Drizzle + Neon** (PostgreSQL serverless)
-- Mengenal arsitektur database: 5 tabel dengan relasi foreign key
-- Menggunakan **Dio** untuk HTTP requests di Flutter (GET/POST)
-- Menerapkan **Provider** untuk state management: auth, kelas, dan tugas
-- Menghubungkan aplikasi Flutter ke backend secara end-to-end
+- Memahami **arsitektur berlapis**: `models/` → `repositories/` → `providers/` → `screens/`
+- Membuat model Dart lengkap dengan `fromJson`/`toJson` (serialization manual)
+- Memahami **repository pattern** sebagai abstraksi sumber data
+- Mengganti `http` → **Dio** (interceptor, error handling, `ApiResponse` wrapper)
+- Membuat **halaman role-based** (siswa & guru) dengan routing otomatis
 
-## Agenda
-1. Konsep REST API & Arsitektur Backend (30 menit)
-2. Database Schema & Seed (30 menit)
-3. Hono API: Routes & Endpoints (45 menit)
-4. Dio Client & Repository Layer di Flutter (45 menit)
-5. Provider: Auth, School, Task (45 menit)
-6. End-to-End Testing & Review (45 menit)
+## Agenda (4 jam efektif)
+1. Review Sesi 1 & preview target (15 menit)
+2. Arsitektur berlapis (30 menit)
+3. Model lengkap: `fromJson`/`toJson` (45 menit)
+4. Repository pattern (30 menit)
+5. Dio client & error handling (45 menit)
+6. Home screen siswa (40 menit)
+7. Home screen guru + role-based routing (40 menit)
+8. Integrasi & polish (20 menit)
+9. Review, merge, preview Sesi 3 (15 menit)
 
 ---
 
-## 1. Konsep REST API & Arsitektur Backend
+## 1. Review Sesi 1 & Preview Target
 
-### Client-Server & HTTP Methods
+Kemarin kita membangun app tugas minimal dengan `http` + `Provider`. Hari ini kita **re-architect** menjadi struktur berlapis yang dipakai di industri:
 
-Aplikasi Flutter (client) berkomunikasi dengan backend melalui HTTP:
+```text
+lib/
+├── main.dart                    # Entry point + DI (dependency injection)
+├── core/network/                # DioClient, ApiResponse
+├── models/                      # TaskModel, UserModel, ClassModel, SubmissionModel
+├── repositories/                # AuthRepository, SchoolRepository, TaskRepository
+├── providers/                   # AuthProvider, SchoolProvider, TaskProvider
+└── screens/
+    ├── auth/                    # register_screen.dart
+    ├── guru/                    # teacher_home_screen.dart
+    └── siswa/                   # student_home_screen.dart
+```
 
-| Method | Fungsi | Contoh endpoint |
+> **Kenapa berlapis?** Memisahkan UI (screens), state (providers), akses data (repositories), dan representasi data (models) → mudah diuji, dirawat, dan dipahami.
+
+---
+
+## 2. Arsitektur Berlapis
+
+```text
+Screen (UI)
+   ↓  context.watch<T>()
+Provider (state)
+   ↓  panggil method
+Repository (akses data)
+   ↓  Dio HTTP
+API (backend Hono)
+```
+
+| Layer | Tanggung jawab | Contoh |
 |---|---|---|
-| `GET` | Mengambil data (Read) | `GET /api/classes` |
-| `POST` | Membuat data baru (Create) | `POST /api/auth/register` |
-| `PUT/PATCH` | Mengubah data (Update) | (pada project ini submit menggunakan POST) |
-| `DELETE` | Menghapus data (Delete) | — |
+| `screens/` | Tampilan UI, menangani interaksi pengguna | `StudentHomeScreen` |
+| `providers/` | State management, memanggil repository | `TaskProvider` |
+| `repositories/` | Abstraksi sumber data (API), parsing response | `TaskRepository` |
+| `models/` | Representasi data (JSON ↔ object) | `TaskModel` |
+| `core/network/` | Infrastruktur HTTP (Dio, ApiResponse) | `DioClient` |
 
-Setiap response backend berbentuk JSON dengan struktur konsisten:
-
-```text
-{ "success": true, "data": { ... } }
-```
-
-atau saat error:
-
-```text
-{ "success": false, "message": "NIP/NIK atau password salah" }
-```
-
-### Stack Backend di `flutter-task-api/`
-
-> **Prasyarat:** Pastikan Neon CLI sudah terpasang & terautentikasi dari [Setup (Bagian 5)](setup) — perintah `neon link` dan `neon db push` di sesi ini membutuhkannya. Cek dengan `neon me`.
-
-```text
-flutter-task-api/
-├── src/
-│   ├── index.ts          # Hono app: semua routes API
-│   └── db/
-│       ├── schema.ts     # Definisi tabel (Drizzle ORM)
-│       ├── seed.ts       # Seeder data kelas
-│       ├── reset.ts      # Reset database
-│       └── client.ts     # Koneksi Neon
-├── drizzle/              # Hasil generate migration SQL
-├── neon.ts               # Konfigurasi Neon Functions
-└── package.json          # Dependency: hono, drizzle-orm, @neondatabase/serverless
-```
-
-| Komponen | Peran |
-|---|---|
-| **Hono** | Framework web ringan untuk API (mirip Express, tapi modern & cepat) |
-| **Drizzle ORM** | Type-safe SQL builder untuk TypeScript |
-| **Neon** | PostgreSQL serverless di cloud (auto-scaling, branch seperti git) |
+**Aliran data (satu arah):** Screen → Provider → Repository → API → Database.
 
 ---
 
-## 2. Database Schema & Seed
+## 3. Model Lengkap: `fromJson`/`toJson`
 
-### 5 Tabel dengan Relasi
+Model di project nyata lebih kompleks dari `Task` kemarin. Lihat `lib/models/task_model.dart`:
 
-`src/db/schema.ts` mendefinisikan 5 tabel:
+```dart
+class TaskModel {
+  final String id;
+  final String guruId;
+  final String classId;
+  final String description;
+  final String startDate;
+  final String endDate;
+  final String? attachmentUrl;
 
-```text
-classes 1───* users 1───* tasks 1───* submissions 1───* submission_members
-                       │                                  │
-                       └────────── users (team members) ──┘
-```
+  TaskModel({
+    required this.id,
+    required this.guruId,
+    required this.classId,
+    required this.description,
+    required this.startDate,
+    required this.endDate,
+    this.attachmentUrl,
+  });
 
-1. **`classes`** — data kelas: `tingkat` (X/XI/XII), `nama_kelas` (a/b/c/d), unique index `(tingkat, nama_kelas)`
-2. **`users`** — guru & siswa: `nama`, `role`, `nip_nik` (unique), `email`, `password_hash`, `class_id` (FK → classes, `onDelete: set null`)
-3. **`tasks`** — tugas: `guru_id` (FK → users), `class_id` (FK → classes), `description`, `start_date`, `end_date`, `attachment_url`, `is_team_task`, `max_team_members`
-4. **`submissions`** — pengumpulan tugas: `task_id` (FK → tasks), `siswa_id` (FK → users), `submit_url`, `notes`, `submitted_at`
-5. **`submission_members`** — anggota tim pada tugas kelompok: `submission_id` (FK → submissions), `siswa_id` (FK → users), unique `(submission_id, siswa_id)`
+  factory TaskModel.fromJson(Map<String, dynamic> json) {
+    return TaskModel(
+      id: json['id'],
+      guruId: json['guruId'] ?? json['guru_id'],
+      classId: json['classId'] ?? json['class_id'],
+      description: json['description'],
+      startDate: json['startDate'] ?? json['start_date'],
+      endDate: json['endDate'] ?? json['end_date'],
+      attachmentUrl: json['attachmentUrl'] ?? json['attachment_url'],
+    );
+  }
 
-Contoh definisi Drizzle:
-
-```typescript
-export const classes = pgTable('classes', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  tingkat: varchar('tingkat', { length: 5 }).notNull(),   // 'X', 'XI', 'XII'
-  namaKelas: varchar('nama_kelas', { length: 5 }).notNull(), // 'a', 'b', 'c', 'd'
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-}, (table) => [
-  uniqueIndex('tingkat_nama_kelas_idx').on(table.tingkat, table.namaKelas),
-]);
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'guruId': guruId,
+      'classId': classId,
+      'description': description,
+      'startDate': startDate,
+      'endDate': endDate,
+      'attachmentUrl': attachmentUrl,
+    };
+  }
+}
 ```
 
 **Poin penting:**
-- `defaultRandom()` → UUID otomatis
-- `references(() => users.id, { onDelete: 'cascade' })` → jika guru dihapus, tugasnya ikut terhapus
-- `onDelete: 'set null'` untuk `users.class_id` → jika kelas dihapus, siswa tetap ada tapi `class_id` menjadi null
+- `json['guruId'] ?? json['guru_id']` → **fallback key** — backend bisa kirim camelCase atau snake_case
+- `String? attachmentUrl` → nullable (tugas tidak wajib punya lampiran)
+- `toJson()` → kebalikan dari `fromJson`, untuk kirim data ke API
 
-### Seed Data
-
-`src/db/seed.ts` mengisi 12 kelas (X a-d, XI a-d, XII a-d) secara **idempotent**:
-
-```typescript
-const dataClasses = [
-  { tingkat: 'X', namaKelas: 'a' },
-  { tingkat: 'X', namaKelas: 'b' },
-  // ...
-];
-
-await db.insert(classes).values(dataClasses).onConflictDoNothing();
-```
-
-`onConflictDoNothing()` → aman dijalankan berkali-kali tanpa duplikasi.
+**Latihan:** buat `UserModel` (id, nama, role, nipNik, email?, classId?) dengan `fromJson`/`toJson`.
 
 ---
 
-## 3. Hono API: Routes & Endpoints
+## 4. Repository Pattern
 
-`src/index.ts` mendefinisikan semua endpoint. Pola umumnya:
-
-```typescript
-const app = new Hono();
-app.use('*', cors());  // Izinkan request dari aplikasi Flutter
-
-function getDb() {
-  const sql = neon(process.env.DATABASE_URL!);
-  return drizzle(sql);
-}
-
-app.get('/api/classes', async (c) => {
-  const db = getDb();
-  try {
-    const data = await db.select().from(classes);
-    return c.json({ success: true, data });
-  } catch (err: any) {
-    return c.json({ success: false, message: err.message }, 500);
-  }
-});
-```
-
-### Endpoint Lengkap
-
-| Method | Endpoint | Fungsi |
-|---|---|---|
-| `GET` | `/api/classes` | Ambil semua kelas |
-| `GET` | `/api/students/search?classId=..&query=..` | Cari siswa dalam kelas (nama/NIK, max 20) |
-| `POST` | `/api/auth/register` | Daftar (guru/siswa) |
-| `POST` | `/api/auth/login` | Login dengan NIP/NIK + password |
-| `GET` | `/api/tasks?classId=&guruId=&siswaId=` | List tugas dengan filter; jika `siswaId` diberikan, sertakan status `isSubmitted`, `submitUrl`, `teamMembers` |
-| `POST` | `/api/tasks` | Guru membuat tugas baru |
-| `POST` | `/api/submissions` | Siswa mengumpulkan/update tugas (support tugas kelompok) |
-| `GET` | `/api/tasks/:id/submissions` | Guru melihat detail pengumpulan per siswa |
-
-### Contoh: Login
-
-```typescript
-app.post('/api/auth/login', async (c) => {
-  const db = getDb();
-  const { nipNik, password } = await c.req.json();
-
-  const foundUsers = await db
-    .select()
-    .from(users)
-    .where(and(eq(users.nipNik, nipNik), eq(users.passwordHash, password)));
-
-  if (foundUsers.length === 0) {
-    return c.json({ success: false, message: 'NIP/NIK atau password salah' }, 401);
-  }
-  return c.json({ success: true, data: foundUsers[0] }, 200);
-});
-```
-
-### Contoh: Submit Tugas (dengan Team Task)
-
-```typescript
-app.post('/api/submissions', async (c) => {
-  const db = getDb();
-  const { taskId, siswaId, submitUrl, notes, teamMemberIds } = await c.req.json();
-
-  // 1. Cek apakah siswa sudah pernah submit
-  const existingDirect = await db.select().from(submissions)
-    .where(and(eq(submissions.taskId, taskId), eq(submissions.siswaId, siswaId)));
-
-  // 2. Update jika sudah ada, insert jika belum
-  // 3. Simpan anggota tim di submission_members (hapus dulu, lalu insert ulang)
-});
-```
-
-**Poin penting:** endpoint submit menggunakan pola *upsert* — jika siswa sudah mengumpulkan, request berikutnya akan *memperbarui* alih-alih membuat duplikat.
-
----
-
-## 4. Dio Client & Repository Layer di Flutter
-
-### Kenapa Dio?
-
-Project menggunakan **Dio** (`dio: ^5.11.0`) — HTTP client populer untuk Dart/Flutter yang menawarkan:
-- Interceptors (log request/response otomatis)
-- Timeout configurable
-- Error handling terstruktur (`DioException`)
-- Mudah membaca response JSON
-
-### `DioClient` (`lib/core/network/dio_client.dart`)
+Repository = **abstraksi sumber data**. Screen tidak perlu tahu apakah data datang dari API, cache, atau database lokal — cukup panggil method repository.
 
 ```dart
+// lib/repositories/task_repository.dart
+class TaskRepository {
+  final DioClient _client;
+
+  TaskRepository(this._client);
+
+  Future<ApiResponse<TaskModel>> createTask({
+    required String guruId,
+    required String classId,
+    required String description,
+    required String startDate,
+    required String endDate,
+    String? attachmentUrl,
+  }) async {
+    try {
+      final response = await _client.dio.post('/api/tasks', data: {
+        'guruId': guruId,
+        'classId': classId,
+        'description': description,
+        'startDate': startDate,
+        'endDate': endDate,
+        'attachmentUrl': attachmentUrl,
+      });
+
+      return ApiResponse<TaskModel>.fromJson(
+        response.data,
+        (json) => TaskModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on DioException catch (e) {
+      return ApiResponse<TaskModel>(
+        success: false,
+        message: e.response?.data?['message'] ?? e.message,
+        error: e.response?.data?['error'],
+      );
+    } catch (e) {
+      return ApiResponse<TaskModel>(success: false, message: e.toString());
+    }
+  }
+  // ... submitTask(), fetchTasks(), dll.
+}
+```
+
+**Poin penting:**
+- Repository menerima `DioClient` via **constructor** (dependency injection)
+- `DioException` → tangkap error jaringan/HTTP, parse pesan dari response
+- Selalu mengembalikan `ApiResponse` (bukan raw exception) → UI mudah menangani
+
+---
+
+## 5. Dio Client & Error Handling
+
+### 5.1 `DioClient` — Konfigurasi HTTP
+
+```dart
+// lib/core/network/dio_client.dart
 class DioClient {
   late final Dio dio;
 
@@ -228,239 +200,257 @@ class DioClient {
       defaultValue: 'http://localhost:8787',
     );
 
-    // Android Emulator: localhost host tidak bisa diakses langsung
+    // Android emulator: localhost -> 10.0.2.2
     if (!kIsWeb && Platform.isAndroid && baseUrl.contains('localhost')) {
       baseUrl = baseUrl.replaceAll('localhost', '10.0.2.2');
     }
 
-    dio = Dio(BaseOptions(
-      baseUrl: baseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+    dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ),
+    );
+
+    dio.interceptors.add(LogInterceptor(
+      request: true,
+      requestHeader: true,
+      requestBody: true,
+      responseHeader: true,
+      responseBody: true,
+      error: true,
     ));
-
-    dio.interceptors.add(LogInterceptor(request: true, responseBody: true));
-  }
-
-  static String getErrorMessage(DioException e) {
-    switch (e.type) {
-      case DioExceptionType.connectionTimeout:
-      case DioExceptionType.sendTimeout:
-      case DioExceptionType.receiveTimeout:
-        return 'Koneksi ke server timeout. Periksa koneksi internet atau server backend.';
-      case DioExceptionType.connectionError:
-        return 'Gagal terhubung ke server backend. Pastikan server aktif.';
-      case DioExceptionType.badResponse:
-        return e.response?.data?['message'] ?? 'Terjadi kesalahan pada server (${e.response?.statusCode}).';
-      case DioExceptionType.cancel:
-        return 'Permintaan dibatalkan.';
-      default:
-        return e.message ?? 'Terjadi kesalahan jaringan tidak terduga.';
-    }
   }
 }
 ```
 
 **Poin penting:**
-- `String.fromEnvironment('API_BASE_URL')` → konfigurasi lewat `--dart-define-from-file` (lihat `config_dev.json`/`config_prod.json`), bukan hardcode
-- **Android emulator memakai `10.0.2.2`** untuk mengakses localhost host machine
-- `getErrorMessage` → pesan error ramah pengguna dalam Bahasa Indonesia
+- `10.0.2.2` → alamat host dari Android Emulator (bukan `localhost`)
+- `connectTimeout`/`receiveTimeout` → 10 detik, cegah hang selamanya
+- `LogInterceptor` → debug request/response di console
+- `--dart-define=API_BASE_URL=...` → override base URL saat build
 
-### Repository Pattern
-
-Repository membungkus pemanggilan API dan mengembalikan `ApiResponse<T>`:
-
-```dart
-class AuthRepository {
-  final DioClient _client;
-  AuthRepository(this._client);
-
-  Future<ApiResponse<UserModel>> loginUser({
-    required String nipNik,
-    required String password,
-  }) async {
-    try {
-      final response = await _client.dio.post('/api/auth/login', data: {
-        'nipNik': nipNik,
-        'password': password,
-      });
-      return ApiResponse<UserModel>.fromJson(
-        response.data,
-        (json) => UserModel.fromJson(json as Map<String, dynamic>),
-      );
-    } on DioException catch (e) {
-      return ApiResponse<UserModel>(
-        success: false,
-        message: DioClient.getErrorMessage(e),
-      );
-    }
-  }
-}
-```
-
-**Poin penting:**
-- Repository = satu-satunya tempat yang tahu "cara bicara ke API" (endpoint, method, JSON)
-- UI tidak pernah memanggil Dio langsung — selalu lewat repository
-- Semua error ditangkap dan diubah jadi `ApiResponse` dengan pesan yang bisa ditampilkan
-
-### `ApiResponse<T>` (Generic)
+### 5.2 `ApiResponse<T>` — Wrapper Response
 
 ```dart
+// lib/core/network/api_response.dart
 class ApiResponse<T> {
   final bool success;
   final T? data;
   final String? message;
   final String? error;
-  // ... constructor + fromJson
-}
-```
 
-`T` adalah tipe data generik — `ApiResponse<UserModel>`, `ApiResponse<List<TaskModel>>`, dll. Satu class untuk semua response.
+  ApiResponse({
+    required this.success,
+    this.data,
+    this.message,
+    this.error,
+  });
 
----
-
-## 5. Provider: Auth, School, Task
-
-### Apa itu Provider?
-
-**Provider** adalah state management resmi yang direkomendasikan untuk pemula. Konsep inti:
-
-- `ChangeNotifier` → class yang bisa "memberitahu" UI bahwa ada perubahan (`notifyListeners()`)
-- `ChangeNotifierProvider` → mendaftarkan notifier ke widget tree
-- `Consumer` / `context.watch` → widget yang *mendengarkan* dan rebuild saat ada perubahan
-
-### `AuthProvider` (Login + Session)
-
-```dart
-class AuthProvider with ChangeNotifier {
-  static const String _userSessionKey = 'user_session';
-
-  UserModel? _currentUser;
-  bool _isLoading = false;
-  bool _isInitializing = true;
-  String? _error;
-
-  UserModel? get currentUser => _currentUser;
-  bool get isAuthenticated => _currentUser != null;
-
-  Future<bool> login({required String nipNik, required String password}) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
-
-    final response = await _authRepo.loginUser(nipNik: nipNik, password: password);
-    _isLoading = false;
-
-    if (response.success && response.data != null) {
-      _currentUser = response.data;
-      await _saveSession(_currentUser!);
-      notifyListeners();
-      return true;
-    } else {
-      _error = response.message ?? 'NIP/NIK atau password salah';
-      notifyListeners();
-      return false;
-    }
+  factory ApiResponse.fromJson(
+    Map<String, dynamic> json,
+    T Function(Object? json)? fromJsonT,
+  ) {
+    return ApiResponse<T>(
+      success: json['success'] ?? false,
+      data: (json['data'] != null && fromJsonT != null)
+          ? fromJsonT(json['data'])
+          : null,
+      message: json['message'],
+      error: json['error'],
+    );
   }
 }
 ```
 
 **Poin penting:**
-- `_saveSession` menyimpan user ke **`SharedPreferences`** (JSON) — jadi login tetap tersimpan walau app ditutup
-- `loadSession()` dipanggil di `main.dart` saat startup (`AuthProvider(authRepo)..loadSession()`)
-- `_isInitializing` → menampilkan loading spinner di `main.dart` selama session dimuat
+- Generic `<T>` → bisa dipakai untuk response apa pun (TaskModel, UserModel, dll.)
+- `success` → cepat cek apakah request berhasil
+- `message`/`error` → pesan untuk ditampilkan ke user
 
-### `TaskProvider` (Fetch + Submit)
+---
+
+## 6. Home Screen Siswa
 
 ```dart
-class TaskProvider with ChangeNotifier {
-  List<TaskModel> _tasks = [];
-  bool _isLoading = false;
-  String? _error;
+// lib/screens/siswa/student_home_screen.dart
+class _StudentHomeScreenState extends State<StudentHomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadTasks();
+    });
+  }
 
-  Future<void> fetchTasks({String? classId, String? guruId, String? siswaId}) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
+  void _loadTasks() {
+    final authProvider = context.read<AuthProvider>();
+    final currentUser = authProvider.currentUser;
+    context.read<TaskProvider>().fetchTasks(
+          classId: currentUser?.classId,
+          siswaId: currentUser?.id,
+        );
+  }
 
-    final response = await _taskRepo.getTasks(classId: classId, guruId: guruId, siswaId: siswaId);
-    _isLoading = false;
+  @override
+  Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+    final taskProvider = context.watch<TaskProvider>();
 
-    if (response.success && response.data != null) {
-      _tasks = response.data!;
-    } else {
-      _error = response.message ?? 'Gagal mengambil daftar tugas';
-    }
-    notifyListeners();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Dashboard Siswa'),
+        actions: [
+          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadTasks),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => authProvider.logout(),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _showSubmitTaskBottomSheet(context),
+        icon: const Icon(Icons.upload_file),
+        label: const Text('Kumpulkan Tugas'),
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async => _loadTasks(),
+        child: /* ListView tugas atau EmptyStateWidget */,
+      ),
+    );
   }
 }
 ```
 
-### Menggunakan Provider di UI
+**Poin penting:**
+- `addPostFrameCallback` → panggil aksi setelah frame pertama (cegah error saat build)
+- `context.read<T>()` → baca provider sekali (untuk aksi)
+- `context.watch<T>()` → subscribe & rebuild saat provider berubah (untuk tampilan)
+- `FloatingActionButton.extended` → FAB dengan ikon + teks
+
+---
+
+## 7. Home Screen Guru & Role-Based Routing
+
+### 7.1 Routing Berdasarkan Role
 
 ```dart
-// Aksi (baca sekali)
-context.read<TaskProvider>().fetchTasks(classId: currentUser?.classId);
-
-// Tampilan (subscribe — rebuild saat berubah)
-final taskProvider = context.watch<TaskProvider>();
-
-// Atau dengan Consumer untuk rebuild bagian tertentu saja
-Consumer<TaskProvider>(
-  builder: (context, provider, child) {
-    if (provider.isLoading) return const Center(child: CircularProgressIndicator());
-    if (provider.tasks.isEmpty) return const EmptyStateWidget(...);
-    return ListView.builder(...);
+// lib/main.dart
+home: Consumer<AuthProvider>(
+  builder: (context, authProvider, _) {
+    if (!authProvider.isAuthenticated) {
+      return const RegisterScreen();
+    }
+    if (authProvider.currentUser?.role == 'guru') {
+      return const TeacherHomeScreen();
+    } else {
+      return const StudentHomeScreen();
+    }
   },
+),
+```
+
+**Poin penting:**
+- Aplikasi memilih halaman awal berdasarkan **status login + role** pengguna
+- `Consumer<AuthProvider>` → rebuild otomatis saat `notifyListeners()`
+
+### 7.2 Dependency Injection di `main.dart`
+
+```dart
+void main() {
+  final dioClient = DioClient();
+  final authRepo = AuthRepository(dioClient);
+  final schoolRepo = SchoolRepository(dioClient);
+  final taskRepo = TaskRepository(dioClient);
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider(authRepo)),
+        ChangeNotifierProvider(create: (_) => SchoolProvider(schoolRepo)..fetchClasses()),
+        ChangeNotifierProvider(create: (_) => TaskProvider(taskRepo)),
+      ],
+      child: const MyApp(),
+    ),
+  );
+}
+```
+
+**Poin penting:**
+- **Dependency Injection**: `DioClient` dibuat sekali, disuntikkan ke semua repository
+- `..fetchClasses()` → cascade operator, panggil method setelah create
+
+### 7.3 Teacher Home Screen
+
+```dart
+// lib/screens/guru/teacher_home_screen.dart
+// Konten berbeda dari siswa: daftar kelas, buat tugas, lihat pengumpulan
+Scaffold(
+  appBar: AppBar(
+    title: const Text('Dashboard Guru'),
+    actions: [/* logout */],
+  ),
+  floatingActionButton: FloatingActionButton.extended(
+    onPressed: () => _showCreateTaskDialog(context),
+    icon: const Icon(Icons.add_task),
+    label: const Text('Buat Tugas'),
+  ),
+  body: /* daftar kelas + tugas yang dibuat guru */,
 )
 ```
 
-**Poin penting:**
-- `read` → jangan pernah pakai untuk tampilan (tidak rebuild)
-- `watch`/`Consumer` → jangan pernah pakai di dalam callback (mis. `onPressed`)
-- Prinsip: **UI membaca state, provider mengubah state, repository memanggil API**
+**Latihan:** implement `TeacherHomeScreen` — tampilkan daftar tugas milik guru (filter `guruId`), tombol buat tugas.
+
+> **Checkpoint:** bisa navigasi siswa ↔ guru berdasarkan role.
 
 ---
 
-## 6. End-to-End Testing & Review
+## 8. Integrasi & Polish
 
-### Alur Lengkap Aplikasi
+- Pastikan `main.dart` memakai `MultiProvider` (Auth, School, Task)
+- Semua screen membaca state dari provider (bukan `setState` lokal)
+- `RefreshIndicator` untuk pull-to-refresh di kedua home screen
+- Error state & empty state ditampilkan rapi
 
-1. **Daftar** sebagai guru (NIP) atau siswa (NIK + pilih kelas) → `POST /api/auth/register`
-2. **Login** → `POST /api/auth/login` → user disimpan di `SharedPreferences`
-3. **Guru:** buat tugas baru (pilih kelas, tanggal mulai/selesai, opsi tugas kelompok) → `POST /api/tasks`
-4. **Siswa:** lihat daftar tugas (filter `classId` + `siswaId`) → `GET /api/tasks`
-5. **Siswa:** kumpulkan tugas (submit URL + catatan + anggota tim) → `POST /api/submissions`
-6. **Guru:** lihat detail pengumpulan per siswa → `GET /api/tasks/:id/submissions`
+> **Checkpoint:** app jalan end-to-end dengan struktur bersih.
 
-### Checklist Hasil Akhir Sesi 2
-- [ ] Database Neon dibuat di region `aws-us-east-2`, schema ter-push (5 tabel), seed 12 kelas berhasil
-- [ ] API Hono berjalan lokal (`localhost:8787`), semua endpoint bisa diuji dengan Postman/REST Client
-- [ ] `DioClient` memahami base URL switching (emulator `10.0.2.2`)
-- [ ] `AuthProvider.login` menyimpan session dan `loadSession()` bekerja setelah app restart
-- [ ] Guru bisa membuat tugas; siswa bisa melihat & mengumpulkan tugas; status berubah di UI
-- [ ] Alur end-to-end lengkap berjalan tanpa error
+---
 
-### Diff & Merge `session-2-final`
+## 9. Review, Merge & Preview Sesi 3
 
 ```bash
+# 1. Bandingkan dengan referensi
 git diff session-2-start..session-2-final --stat
-git diff session-2-start..session-2-final -- flutter_training/lib/providers/task_provider.dart
+
+# 2. Ambil hasil referensi (jika tertinggal)
 git merge session-2-final
 ```
 
+> **Kenapa `git merge` di sesi ini?** Karena `session-2-start` dan `session-2-final` berbagi struktur yang sama (peserta melanjutkan dari `session-1-final`) — merge akan berjalan mulus tanpa konflik besar.
+
+**Preview Sesi 3 (Sabtu depan):** backend Hono + Neon PostgreSQL, Dio integration sungguhan, login dengan NIP/NIK, sesi persisten via `shared_preferences`.
+
+### Checklist Hasil Akhir Sesi 2
+- [ ] Struktur folder berlapis dipahami (core, models, repositories, providers, screens)
+- [ ] Model lengkap dengan `fromJson`/`toJson` (fallback key camelCase/snake_case)
+- [ ] Repository pattern dengan `ApiResponse<T>` dipahami
+- [ ] `DioClient` dengan interceptor & timeout berfungsi
+- [ ] Role-based routing (guru/siswa) berjalan
+- [ ] App jalan end-to-end (data dari API lokal)
+
 ---
 
-## Latihan / Tugas Akhir
-
-1. Tambahkan endpoint baru di backend: `DELETE /api/tasks/:id` (hapus tugas) dan implementasikan di `TaskRepository` + `TaskProvider`.
-2. Tambahkan validasi di backend: `POST /api/auth/register` harus menolak jika `nipNik` sudah terdaftar (saat ini error datang dari constraint unique — coba tangani lebih baik).
-3. Buat halaman "Riwayat Pengumpulan" di aplikasi siswa yang menampilkan tugas yang sudah dikumpulkan beserta tanggalnya.
+## Latihan / Tugas Rumah
+1. Buat `ClassModel` (id, nama, tingkatan) dengan `fromJson`/`toJson`.
+2. Implement `AuthRepository.register()` — POST `/api/auth/register` dengan `ApiResponse<UserModel>`.
+3. Jelaskan aliran data: dari tombol "Kumpulkan Tugas" di UI sampai tersimpan di database — sebutkan layer yang terlibat.
 
 ## Sumber Belajar
-- [Hono Documentation](https://hono.dev)
-- [Drizzle ORM](https://orm.drizzle.team)
-- [Neon Docs — Functions](https://neon.com/docs/compute/functions/overview)
 - [Dio Package](https://pub.dev/packages/dio)
 - [Provider Package](https://pub.dev/packages/provider)
+- [JSON Serialization in Flutter](https://docs.flutter.dev/data-and-backend/json)

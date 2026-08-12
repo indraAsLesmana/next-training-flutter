@@ -1,411 +1,542 @@
-# Session 1: Dasar Flutter & Membangun Dashboard Siswa
+# Session 1: Perencanaan & Desain Aplikasi + Dasar Flutter
 
-## Durasi: 4 jam
+> **Hari 1 — Sabtu, 15 Agustus** (09:00–12:00 pagi, 13:00–15:00 siang, break 12:00–13:00)
 
 > **Branch workflow sesi ini:**
-> - Mulai dari branch **`session-1-start`**
-> - Hasil akhir sesi ini tersimpan di branch **`session-1-final`**
-> - Di akhir sesi kita akan `git diff` dan `git merge session-1-final` untuk memverifikasi hasil.
+> - Mulai dari branch **`session-1-start`** (scaffold `fvm flutter create` — kosong)
+> - Hasil akhir sesi ini tersimpan di branch **`session-1-final`** (app tugas minimal)
+> - Di akhir sesi kita bandingkan dengan `git diff` dan mengambil referensi dengan `git checkout session-1-final -- flutter_training/`
 
 ## Objectives
-- Memahami dasar bahasa Dart: tipe data, null-safety, class, dan `factory` constructor
-- Memahami widget Flutter: `StatelessWidget` vs `StatefulWidget`, `BuildContext`, layout
-- Membangun UI dashboard siswa secara bertahap mengikuti kode nyata di `flutter_training/`
-- Mengenal arsitektur folder project Flutter: `lib/core`, `lib/models`, `lib/screens`, dll.
+- Memahami **gambaran besar aplikasi**: alur pengguna, arsitektur, ERD 5 tabel, dan peta 4 sesi
+- Membuat project Flutter dari nol dengan `fvm flutter create`
+- Memahami dasar bahasa Dart: variabel, tipe data, class, constructor
+- Memahami widget Flutter: `StatelessWidget` vs `StatefulWidget`, widget tree, layout
+- Membangun **aplikasi tugas minimal**: daftar tugas, checkbox, tambah/hapus, dengan `setState` + `Provider`
+- Mengenal HTTP dasar dengan package `http`
 
-## Agenda
-1. Pengenalan Flutter & struktur project (30 menit)
-2. Dart Essentials: class, null-safety, factory (60 menit)
-3. Widget & Layout Flutter (45 menit)
-4. Hands-on: Membangun UI Dashboard Siswa (75 menit)
-5. Review, `git diff`, dan merge `session-1-final` (30 menit)
+## Agenda (4 jam efektif)
+1. Pembukaan & ice-breaking (10 menit)
+2. **Perencanaan & Desain Aplikasi** (40 menit)
+3. `fvm flutter create` & struktur project (30 menit)
+4. Dart Essentials (30 menit)
+5. Widget & Layout Flutter (30 menit)
+6. Layout & ListView (30 menit)
+7. State: `setState` + Provider (50 menit)
+8. HTTP dasar dengan `http` (30 menit)
+9. Review, diff, & catch-up (15 menit)
 
 ---
 
-## 1. Pengenalan Flutter & Struktur Project
+## 1. Pembukaan
 
-### Apa itu Flutter?
-- **Flutter SDK:** Framework UI open-source dari Google untuk membangun aplikasi mobile (Android/iOS), web, dan desktop dari satu codebase.
-- **Dart Language:** Bahasa pemrograman yang digunakan Flutter, berbasis OOP, *strongly-typed*, dengan null-safety.
-- **Hot Reload:** Perubahan kode langsung terlihat di emulator/perangkat tanpa rebuild penuh — mempercepat iterasi pengembangan.
+- Tujuan 4 sesi & hasil akhir yang akan dicapai
+- **Demo hasil akhir** — jalankan app dari branch `session-4-final` (aplikasi lengkap end-to-end)
+- Cek kesiapan: Flutter SDK (FVM), VS Code, emulator/device
+- Clone repo & checkout `session-1-start`
 
-### Struktur Folder Project (`flutter_training/`)
+```bash
+git clone https://github.com/indraAsLesmana/next-training-flutter.git
+cd next-training-flutter
+git checkout session-1-start
+```
 
-Project di repo ini sudah memiliki arsitektur berlapis (layered architecture) yang membagi tanggung jawab:
+> **Apa yang ada di `session-1-start`?** Scaffold Flutter kosong hasil `fvm flutter create` — hanya `main.dart` counter bawaan. Kita akan membangun semuanya dari nol hari ini.
+
+---
+
+## 2. Perencanaan & Desain Aplikasi
+
+> Bagian ini memberi **gambaran besar** sebelum mulai coding: apa yang kita bangun, siapa penggunanya, bagaimana data mengalir, dan bagaimana database dirancang.
+
+### 2.1 Gambaran Proyek
+
+**Aplikasi Pengumpulan Tugas** — aplikasi untuk sekolah dengan 2 peran pengguna:
+
+| Peran | Identitas | Bisa Melakukan |
+|---|---|---|
+| **Guru** | NIP (Nomor Induk Pegawai) | Membuat kelas, membuat tugas (individu/kelompok), melihat pengumpulan |
+| **Siswa** | NIK (Nomor Induk Kependudukan) | Melihat tugas kelas, mengumpulkan tugas (link URL), cek status |
+
+### 2.2 Alur Pengguna
+
+```{mermaid}
+flowchart TD
+    A[Register: NIP/NIK + password] --> B[Login]
+    B --> C{Role?}
+    C -->|guru| D[Dashboard Guru<br>buat kelas & tugas]
+    C -->|siswa| E[Dashboard Siswa<br>lihat tugas kelas]
+    D --> F[Buat Tugas<br>individu / kelompok]
+    E --> G[Kumpulkan Tugas<br>isi link URL]
+    F --> H[Siswa kumpulkan]
+    G --> I[Guru cek status<br>pengumpulan]
+```
+
+### 2.3 Arsitektur Aplikasi
+
+```{mermaid}
+flowchart LR
+    F["Flutter App<br>flutter_training/"] -->|"HTTP / JSON"| A["Hono API<br>flutter-task-api/"]
+    A --> D[("Neon PostgreSQL<br>5 tabel")]
+```
+
+| Layer | Teknologi | Peran |
+|---|---|---|
+| **Client** | Flutter (Dart) | UI, state management (Provider), HTTP client (Dio) |
+| **Backend** | Hono (TypeScript) | REST API, validasi, logika bisnis |
+| **Database** | Neon PostgreSQL | Penyimpanan data (serverless) |
+
+### 2.4 ERD Database (5 Tabel)
+
+```{mermaid}
+erDiagram
+    CLASSES ||--o{ USERS : "memiliki"
+    CLASSES ||--o{ TASKS : "memiliki"
+    USERS ||--o{ TASKS : "membuat (guru)"
+    USERS ||--o{ SUBMISSIONS : "mengumpulkan (siswa)"
+    TASKS ||--o{ SUBMISSIONS : "dikumpulkan"
+    SUBMISSIONS ||--o{ SUBMISSION_MEMBERS : "tim"
+    USERS ||--o{ SUBMISSION_MEMBERS : "anggota"
+```
+
+| Tabel | Isi | Relasi penting |
+|---|---|---|
+| `classes` | Kelas (nama, tingkatan) | 1 kelas → banyak users/tasks |
+| `users` | Guru & siswa (NIP/NIK, role, classId) | role: `guru`/`siswa` |
+| `tasks` | Tugas (guruId, classId, tanggal, link, isTeamTask) | dibuat guru untuk kelas |
+| `submissions` | Pengumpulan (taskId, siswaId, link) | 1 tugas ← banyak pengumpulan |
+| `submission_members` | Anggota tugas kelompok | 1 pengumpulan → banyak anggota |
+
+### 2.5 Ringkasan API
+
+| Method | Endpoint | Fungsi |
+|---|---|---|
+| `POST` | `/api/auth/register` | Daftar (NIP/NIK + password) |
+| `POST` | `/api/auth/login` | Masuk |
+| `GET` | `/api/classes` | Daftar kelas |
+| `POST` | `/api/tasks` | Guru membuat tugas |
+| `GET` | `/api/tasks?classId=&siswaId=` | Siswa melihat tugas |
+| `POST` | `/api/submissions` | Siswa mengumpulkan |
+| `GET` | `/api/tasks/:id/submissions` | Status pengumpulan |
+
+> **Detail backend dibahas di Session 3.** Untuk sekarang, cukup pahami *bentuk* API-nya.
+
+### 2.6 Peta 4 Sesi
+
+| Sesi | Hari | Fokus | Hasil Akhir | Branch |
+|---|---|---|---|---|
+| 1 | 15 Agu | Perencanaan + Dasar Flutter | App tugas minimal | `session-1-start` → `session-1-final` |
+| 2 | 16 Agu | State mgmt, HTTP, re-arch | Arsitektur berlapis + Dio | `session-2-start` → `session-2-final` |
+| 3 | 22 Agu | Backend Hono+Neon, login | App lengkap end-to-end | `session-3-start` → `session-3-final` |
+| 4 | 23 Agu | Workshop: replikasi, improvement, Q&A | Tidak ada target kode | `session-4-start` → `session-4-final` |
+
+> **Checkpoint:** Coba jawab — (1) apa yang akan kita bangun? (2) data apa saja yang disimpan di database? (3) apa perbedaan role guru & siswa?
+
+---
+
+## 3. Membuat Project: `fvm flutter create`
+
+```bash
+fvm flutter create --org com.flutter_training --platforms android,ios,web flutter_training
+cd flutter_training
+fvm flutter run
+```
+
+### Struktur Folder yang Dihasilkan
 
 ```text
 flutter_training/
 ├── lib/
-│   ├── main.dart                    # Entry point aplikasi (runApp + MultiProvider)
-│   ├── core/                        # Utilitas lintas fitur
-│   │   ├── network/                 #   - dio_client.dart, api_response.dart
-│   │   └── utils/                   #   - url_launcher_utils.dart
-│   ├── models/                      # Model data (TaskModel, UserModel, ClassModel, ...)
-│   ├── providers/                   # State management (AuthProvider, TaskProvider, ...)
-│   ├── repositories/                # Lapisan akses data ke API (AuthRepository, ...)
-│   ├── screens/                     # Halaman UI
-│   │   ├── auth/                    #   - login_screen.dart, register_screen.dart
-│   │   ├── guru/                    #   - teacher_home_screen.dart, task_detail_screen.dart
-│   │   └── siswa/                   #   - student_home_screen.dart
-│   └── widgets/                     # Widget reusable (empty_state_widget.dart)
-├── pubspec.yaml                     # Daftar dependency project
-├── android/  ios/  web/             # Folder platform
+│   └── main.dart              # Entry point (counter app bawaan)
+├── pubspec.yaml               # Daftar dependency
+├── android/  ios/  web/       # Folder platform
+└── test/                      # Unit test bawaan
 ```
 
-> **Kenapa berlapis?** Memisahkan UI (screens), logika/state (providers), akses data (repositories), dan representasi data (models) membuat kode mudah dirawat, diuji, dan dipahami — ini pola yang dipakai di industri.
+| Folder/File | Fungsi |
+|---|---|
+| `lib/` | Semua kode Dart aplikasi |
+| `pubspec.yaml` | Dependency + metadata project |
+| `android/`, `ios/`, `web/` | Kode native per platform (jarang disentuh) |
+| `test/` | Test otomatis |
 
-### Dependency di `pubspec.yaml`
+> **Checkpoint:** semua berhasil menjalankan counter app di emulator.
 
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.8
-  provider: ^6.1.5+1      # State management
-  dio: ^5.11.0            # HTTP client
-  shared_preferences: ^2.5.5  # Simpan sesi login lokal
-  url_launcher: ^6.3.2    # Membuka link eksternal
+### Eksplorasi `main.dart` Bawaan
+
+```dart
+void main() {
+  runApp(const MyApp());        // entry point
+}
+
+class MyApp extends StatelessWidget { ... }        // akar widget tree
+class MyHomePage extends StatefulWidget { ... }    // halaman dengan state
+class _MyHomePageState extends State<MyHomePage> { // state + setState()
+  int _counter = 0;
+  void _incrementCounter() {
+    setState(() { _counter++; });  // ubah state → rebuild UI
+  }
+}
 ```
 
 ---
 
-## 2. Dart Essentials: Class, Null-Safety, Factory
+## 4. Dart Essentials
 
-Dart adalah bahasa modern dengan **null-safety**: sebuah variabel secara default *tidak boleh* bernilai `null` kecuali dinyatakan dengan `?`.
+Dart adalah bahasa **strongly-typed** dengan **null-safety** (nilai default tidak boleh `null` kecuali dinyatakan dengan `?`).
 
 ### Variabel & Tipe Data
 
 ```dart
 String nama = 'Budi';        // String
 int tahun = 2026;            // Integer
-double nilai = 87.5;         // Double (desimal)
+double nilai = 87.5;         // Double
 bool aktif = true;           // Boolean
 
-// Nullable: boleh bernilai null
-String? email;               // default: null
-int? umur;
+String? email;               // Nullable — boleh null
+final int id = 1;            // final: tidak bisa diubah setelah di-set
+const pi = 3.14;             // const: konstanta compile-time
 
-// List dan Map
 List<String> peserta = ['Budi', 'Siti'];
 Map<String, dynamic> user = {'nama': 'Budi', 'role': 'siswa'};
 ```
 
 ### Class & Constructor
 
-Lihat `lib/models/user_model.dart` — ini contoh nyata dari project:
+Kita akan membuat model `Task` di `lib/models/task.dart`:
 
 ```dart
-class UserModel {
-  final String id;
-  final String nama;
-  final String role;        // 'guru' | 'siswa'
-  final String nipNik;
-  final String? email;      // nullable: siswa boleh tidak punya email
-  final String? classId;    // nullable: guru tidak punya classId
+class Task {
+  final int id;
+  final String title;
+  final String description;
+  final bool completed;
 
-  UserModel({
+  Task({
     required this.id,
-    required this.nama,
-    required this.role,
-    required this.nipNik,
-    this.email,
-    this.classId,
+    required this.title,
+    this.description = '',
+    this.completed = false,
   });
 }
 ```
 
 **Poin penting:**
-- `final` → nilai tidak bisa diubah setelah di-set (immutable)
-- `required` → parameter wajib diisi saat memanggil constructor
-- Named parameters (`{...}`) → lebih jelas daripada positional
+- `final` → immutable (nilai tidak bisa diubah setelah di-set)
+- `required` → parameter wajib
+- Named parameters `{...}` → lebih jelas daripada positional
 
 ### Factory Constructor: JSON → Object
 
-Data dari API berbentuk JSON (`Map<String, dynamic>`). Factory constructor mengubahnya menjadi object Dart:
-
 ```dart
-factory UserModel.fromJson(Map<String, dynamic> json) {
-  return UserModel(
+factory Task.fromJson(Map<String, dynamic> json) {
+  return Task(
     id: json['id'],
-    nama: json['nama'],
-    role: json['role'],
-    nipNik: json['nipNik'] ?? json['nip_nik'],
-    email: json['email'],
-    classId: json['classId'] ?? json['class_id'],
+    title: json['title'],
+    description: json['description'] ?? '',
+    completed: json['completed'] ?? false,
   );
 }
 ```
 
 **Poin penting:**
-- `factory` → constructor yang *tidak selalu* membuat instance baru, bisa melakukan transformasi
-- `json['nipNik'] ?? json['nip_nik']` → fallback jika key tidak ada (backend bisa kirim dua format berbeda)
-- Kebalikannya, `toJson()` mengubah object kembali ke `Map<String, dynamic>` sebelum dikirim ke API
-
-### Contoh Model Lain: `TaskModel`
-
-`lib/models/task_model.dart` lebih kompleks karena punya data bertingkat (team members):
-
-```dart
-class TaskModel {
-  final String id;
-  final String guruId;
-  final String classId;
-  final String description;
-  final String startDate;
-  final String endDate;
-  final String? attachmentUrl;
-  final bool isTeamTask;
-  final int maxTeamMembers;
-  final bool isSubmitted;
-  final List<TeamMemberInfo> teamMembers;   // nested model
-  // ... constructor, fromJson, toJson
-}
-```
-
-**Latihan singkat:** Sebutkan perbedaan `fromJson` pada `TaskModel` vs `UserModel`. Kenapa `TaskModel.fromJson` perlu memproses `teamMembers` secara terpisah?
+- `factory` → constructor yang bisa melakukan transformasi
+- `json['description'] ?? ''` → fallback jika key tidak ada / null
 
 ---
 
-## 3. Widget & Layout Flutter
+## 5. Widget & Layout Flutter
 
-Di Flutter, **semuanya adalah widget**. UI dibangun dengan menyusun widget di dalam widget (composition).
+Di Flutter, **semuanya adalah widget** — UI dibangun dengan menyusun widget di dalam widget (composition).
+
+### Widget Tree
+
+```text
+MaterialApp
+└── Scaffold
+    ├── AppBar (judul)
+    └── body: Center
+        └── Column
+            ├── Text
+            └── Text
+```
 
 ### StatelessWidget vs StatefulWidget
 
 ```dart
 // StatelessWidget: statis, tidak punya state yang berubah
-class EmptyStateWidget extends StatelessWidget {
-  final String title;
-  final String message;
-  const EmptyStateWidget({super.key, required this.title, required this.message});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text(title));
+    return MaterialApp(
+      title: 'Aplikasi Pengumpulan Tugas',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const HomeScreen(),
+    );
   }
 }
 ```
 
 ```dart
 // StatefulWidget: punya state yang bisa berubah + setState()
-class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _nipNikController = TextEditingController();
-  final _passwordController = TextEditingController();
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key);
 
   @override
-  void dispose() {
-    _nipNikController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-  // ... build()
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 ```
 
 **Aturan emas:**
-- Gunakan `StatelessWidget` jika UI tidak berubah setelah dibangun
-- Gunakan `StatefulWidget` jika ada data yang berubah (input form, loading, hasil API)
-- **Selalu `dispose()` controller** untuk mencegah memory leak
-
-### BuildContext
-
-`BuildContext` adalah "lokasi" widget di dalam tree. Digunakan untuk:
-- Mengakses tema: `Theme.of(context)`
-- Navigasi: `Navigator.push(context, ...)`
-- Menampilkan SnackBar: `ScaffoldMessenger.of(context)`
-- Mengakses Provider: `context.read<T>()`, `context.watch<T>()`
+- `StatelessWidget` → UI tidak berubah setelah dibangun
+- `StatefulWidget` → ada data yang berubah (input form, loading, hasil API)
 
 ### Layout Dasar
 
 | Widget | Fungsi |
 |---|---|
-| `Column` | Susun anak secara vertikal |
-| `Row` | Susun anak secara horizontal |
+| `Column` | Susun anak vertikal |
+| `Row` | Susun anak horizontal |
 | `Container` | Kotak dengan padding/margin/decoration |
 | `ListView` | Daftar scrollable |
 | `Card` | Kontainer bergaya kartu (Material) |
 | `Scaffold` | Kerangka halaman (AppBar, body, FAB) |
 
-Contoh nyata dari `student_home_screen.dart`:
-
-```dart
-Scaffold(
-  appBar: AppBar(
-    title: const Text('Dashboard Siswa'),
-    actions: [
-      IconButton(icon: const Icon(Icons.refresh), onPressed: _loadTasks),
-      IconButton(icon: const Icon(Icons.logout), onPressed: () => authProvider.logout()),
-    ],
-  ),
-  floatingActionButton: FloatingActionButton.extended(
-    onPressed: () => _showSubmitTaskBottomSheet(context),
-    icon: const Icon(Icons.upload_file),
-    label: const Text('Kumpulkan Tugas'),
-  ),
-  body: RefreshIndicator(
-    onRefresh: () async => _loadTasks(),
-    child: ...,
-  ),
-)
-```
-
-**Poin penting:**
-- `AppBar` punya `actions` untuk tombol di kanan atas
-- `FloatingActionButton.extended` → FAB dengan ikon + teks
-- `RefreshIndicator` → pull-to-refresh bawaan Material
+**Latihan:** modifikasi `MyApp` — ganti judul jadi `Aplikasi Pengumpulan Tugas`, ubah warna tema menjadi `Colors.blue`.
 
 ---
 
-## 4. Hands-on: Membangun UI Dashboard Siswa
+## 6. Layout & ListView
 
-Kita akan membangun bagian-bagian utama aplikasi **dari nol**, mengikuti kode nyata di repo. Mulai dari `session-1-start`.
+### Menampilkan Daftar dengan `ListView.builder`
 
-### 4.1 Entry Point: `main.dart`
+```dart
+ListView.builder(
+  itemCount: tasks.length,
+  itemBuilder: (context, index) {
+    final task = tasks[index];
+    return ListTile(
+      title: Text(task.title),
+      subtitle: Text(task.description),
+      leading: Checkbox(
+        value: task.completed,
+        onChanged: (value) { /* toggle */ },
+      ),
+    );
+  },
+)
+```
+
+**Latihan:** tampilkan 3 task statis (hardcoded `List<Task>`) di `ListView` dengan `Card`/`ListTile` + `Checkbox`.
+
+> **Checkpoint:** layar menampilkan 3 task dengan checkbox.
+
+---
+
+## 7. State: `setState` → Provider
+
+### 7.1 `setState` Sederhana
+
+```dart
+Checkbox(
+  value: task.completed,
+  onChanged: (value) {
+    setState(() {
+      task.completed = value!;
+    });
+  },
+)
+```
+
+**Latihan:** klik checkbox → coret judul task (`TextDecoration.lineThrough`).
+
+> **Checkpoint:** checkbox bisa toggle strikethrough.
+
+### 7.2 Kenapa `setState` Tidak Cukup?
+
+Ketika state harus **dibagi antar screen** (misal: daftar tugas dilihat dari 2 halaman), `setState` di satu screen tidak akan memperbarui screen lain. Solusinya: **`ChangeNotifier` + `Provider`**.
+
+### 7.3 Provider: `TaskProvider`
+
+```dart
+// lib/providers/task_provider.dart
+class TaskProvider with ChangeNotifier {
+  List<Task> _tasks = [];
+  bool _isLoading = false;
+  String? _error;
+
+  List<Task> get tasks => _tasks;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+
+  Future<void> fetchTasks() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _tasks = await _apiService.getTasks();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+}
+```
+
+### 7.4 Daftarkan di `main.dart`
 
 ```dart
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  final dioClient = DioClient();
-  final authRepo = AuthRepository(dioClient);
-  final schoolRepo = SchoolRepository(dioClient);
-  final taskRepo = TaskRepository(dioClient);
-
   runApp(
     MultiProvider(
       providers: [
-        Provider.value(value: schoolRepo),
-        ChangeNotifierProvider(create: (_) => AuthProvider(authRepo)),
-        ChangeNotifierProvider(create: (_) => SchoolProvider(schoolRepo)..fetchClasses()),
-        ChangeNotifierProvider(create: (_) => TaskProvider(taskRepo)),
+        ChangeNotifierProvider(create: (_) => TaskProvider()),
       ],
-      child: const MyApp(),
+      child: MyApp(),
     ),
   );
 }
 ```
 
-**Poin penting:**
-- `WidgetsFlutterBinding.ensureInitialized()` → wajib sebelum pakai plugin native
-- **Dependency Injection:** object (`DioClient`, repositories) dibuat sekali, lalu disuntikkan ke Provider
-- `MultiProvider` → mendaftarkan beberapa provider sekaligus
-
-### 4.2 Routing Berdasarkan Role
+### 7.5 Konsumsi dengan `Consumer`
 
 ```dart
-home: Consumer<AuthProvider>(
-  builder: (context, authProvider, _) {
-    if (!authProvider.isAuthenticated) {
-      return const RegisterScreen();
+Consumer<TaskProvider>(
+  builder: (context, provider, child) {
+    if (provider.isLoading) {
+      return const Center(child: CircularProgressIndicator());
     }
-    if (authProvider.currentUser?.role == 'guru') {
-      return const TeacherHomeScreen();
-    } else {
-      return const StudentHomeScreen();
+    if (provider.error != null) {
+      return Center(child: Text('Error: ${provider.error}'));
     }
-  },
-),
-```
-
-**Poin penting:**
-- `Consumer<AuthProvider>` → rebuild otomatis saat provider `notifyListeners()`
-- Aplikasi memilih halaman awal berdasarkan **status login dan role** pengguna
-
-### 4.3 Dashboard Siswa (`student_home_screen.dart`)
-
-Struktur utama halaman:
-
-```dart
-class _StudentHomeScreenState extends State<StudentHomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadTasks();
-    });
-  }
-
-  void _loadTasks() {
-    final authProvider = context.read<AuthProvider>();
-    final currentUser = authProvider.currentUser;
-    context.read<TaskProvider>().fetchTasks(
-          classId: currentUser?.classId,
-          siswaId: currentUser?.id,
+    if (provider.tasks.isEmpty) {
+      return const Center(child: Text('Belum ada tugas.'));
+    }
+    return ListView.builder(
+      itemCount: provider.tasks.length,
+      itemBuilder: (context, index) {
+        final task = provider.tasks[index];
+        return ListTile(
+          title: Text(
+            task.title,
+            style: TextStyle(
+              decoration: task.completed
+                  ? TextDecoration.lineThrough
+                  : null,
+            ),
+          ),
+          leading: Checkbox(
+            value: task.completed,
+            onChanged: (value) {
+              provider.toggleTaskCompletion(task.id, task.completed);
+            },
+          ),
         );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
-    final taskProvider = context.watch<TaskProvider>();
-    // ... Scaffold dengan AppBar, FAB, body
-  }
-}
+      },
+    );
+  },
+)
 ```
 
-**Poin penting:**
-- `addPostFrameCallback` → panggil aksi setelah frame pertama selesai (mencegah `setState` saat build)
-- `context.read<T>()` → baca provider sekali (untuk aksi)
-- `context.watch<T>()` → subscribe dan rebuild saat provider berubah (untuk tampilan)
-
-### 4.4 Empty State Widget (Reusable)
-
-`lib/widgets/empty_state_widget.dart` adalah contoh widget reusable dengan properti yang bisa dikonfigurasi:
-
-```dart
-class EmptyStateWidget extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String message;
-  final VoidCallback? onRefresh;
-
-  const EmptyStateWidget({
-    super.key,
-    this.icon = Icons.assignment_outlined,
-    required this.title,
-    required this.message,
-    this.onRefresh,
-  });
-  // ... build: ikon dalam lingkaran berwarna primary, teks, tombol "Muat Ulang"
-}
-```
-
-**Kenapa reusable?** Karena dipakai di beberapa halaman (dashboard siswa & guru) dengan ikon/teks berbeda — satu widget, banyak pemakaian. Ini prinsip **DRY (Don't Repeat Yourself)**.
-
-### Checklist Hasil Akhir Sesi 1
-- [ ] Struktur folder `lib/` dipahami (core, models, providers, repositories, screens, widgets)
-- [ ] `UserModel` dan `TaskModel` dengan `fromJson`/`toJson` dipahami
-- [ ] `main.dart` dengan `MultiProvider` dan routing role dipahami
-- [ ] `LoginScreen` dan `StudentHomeScreen` dibangun mengikuti kode nyata
-- [ ] Aplikasi bisa dijalankan (statis, tanpa backend) di emulator/perangkat
+> **Checkpoint:** app tetap jalan, tapi state sekarang ada di provider (bisa diakses dari screen mana pun).
 
 ---
 
-## 5. Review, Diff, dan Merge `session-1-final`
+## 8. HTTP Dasar dengan `http` Package
+
+Tambah dependency:
+
+```bash
+fvm flutter pub add http
+```
+
+### `ApiService` — Client HTTP Sederhana
+
+```dart
+// lib/services/api_service.dart
+class ApiService {
+  final String baseUrl = const String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'http://localhost:3000',
+  );
+
+  Future<List<Task>> getTasks() async {
+    final response = await http.get(Uri.parse('$baseUrl/tasks'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => Task.fromJson(json)).toList();
+    } else {
+      throw Exception('Gagal memuat tugas: ${response.statusCode}');
+    }
+  }
+
+  Future<Task> createTask(String title, String description) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/tasks'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'title': title, 'description': description}),
+    );
+    if (response.statusCode == 201) {
+      return Task.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Gagal membuat tugas baru');
+    }
+  }
+
+  Future<void> updateTask(int id, bool completed) async { ... }
+  Future<void> deleteTask(int id) async { ... }
+}
+```
+
+**Poin penting:**
+- `http.get/post/put/delete` → method HTTP
+- `jsonDecode` / `jsonEncode` → konversi JSON ↔ Dart
+- `statusCode` → cek keberhasilan (200/201)
+- `String.fromEnvironment` → base URL bisa di-override saat build (`--dart-define=API_BASE_URL=...`)
+
+**Latihan:** implement `fetchTasks()` di `TaskProvider` (panggil `ApiService.getTasks()`), tampilkan hasilnya di `HomeScreen` dengan `RefreshIndicator` (pull-to-refresh).
+
+> **Checkpoint:** app menampilkan data dari API (atau error state yang rapi jika server mati).
+
+---
+
+## 9. Review, Diff, dan Catch-up
 
 Di akhir sesi, bandingkan hasil kerja dengan referensi:
 
 ```bash
-# 1. Lihat semua file yang berubah vs branch start
+# 1. Lihat semua file yang berubah
 git diff session-1-start..session-1-final --stat
 
 # 2. Lihat detail perubahan per file
-git diff session-1-start..session-1-final -- flutter_training/lib/screens/auth/login_screen.dart
+git diff session-1-start..session-1-final -- flutter_training/lib/main.dart
 
 # 3. Ambil hasil referensi (jika tertinggal / mau lanjut)
-git merge session-1-final
+git checkout session-1-final -- flutter_training/
 ```
 
-**Kenapa branch `session-1-final`?** Jika ada peserta yang belum selesai, `git merge session-1-final` langsung membawa semua perubahan ke branch kerja peserta — tanpa harus mengetik ulang kode. Peserta bisa melanjutkan ke Session 2 dengan fondasi yang sama.
+> **Kenapa `git checkout <branch> -- <folder>` dan bukan `git merge`?** Karena di Session 1 peserta mulai dari scaffold kosong (`session-1-start`) yang *berbeda struktur* dari `session-1-final` — `git merge` akan bentrok. Dengan checkout file, kita menimpa folder `flutter_training/` dengan versi referensi, lalu tinggal `fvm flutter pub get` dan lanjut ke Session 2 dengan fondasi yang sama.
+
+### Checklist Hasil Akhir Sesi 1
+- [ ] `fvm flutter create` berhasil & struktur folder dipahami
+- [ ] Class `Task` dengan `fromJson` dipahami
+- [ ] UI daftar tugas (ListView + Card + Checkbox) dibangun
+- [ ] State dipindah ke `TaskProvider` (ChangeNotifier + Provider)
+- [ ] HTTP dasar (`ApiService`) dipahami
+- [ ] Aplikasi bisa dijalankan di emulator (data dari API lokal/mock)
 
 ---
 
 ## Latihan / Tugas Rumah
-
-1. Tambahkan halaman **profil** sederhana (`screens/siswa/profile_screen.dart`) yang menampilkan nama, NIP/NIK, dan kelas dari `AuthProvider.currentUser`.
-2. Buat widget reusable `StatusChip` untuk menampilkan status tugas ("Belum Dikumpulkan" / "Sudah Dikumpulkan") dengan warna berbeda.
-3. Jelaskan dengan kata-kata sendiri: apa bedanya `context.read`, `context.watch`, dan `Consumer`?
+1. Tambahkan `FloatingActionButton` untuk menambah tugas baru (dialog dengan `TextField`).
+2. Implement `deleteTask` di `ApiService` + tombol hapus di `ListTile` (ikon `Icons.delete`).
+3. Jelaskan dengan kata-kata sendiri: apa bedanya `setState`, `ChangeNotifier`, dan `Consumer`?
 
 ## Sumber Belajar
 - [Flutter Widget Catalog](https://docs.flutter.dev/development/ui/widgets)
