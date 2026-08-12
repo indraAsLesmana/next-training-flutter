@@ -73,7 +73,7 @@ Peserta tidak lagi *mengikuti instruksi* — mereka **berkreasi**:
 
 #### 14:30–15:00 — Penutupan (30 min)
 - [ ] Recap perjalanan 4 sesi
-- [ ] Bagikan link materi: repo, docs online (ReadTheDocs), storyboard
+- [ ] Bagikan link materi: repo, docs online (ReadTheDocs), rundown
 - [ ] Feedback form / evaluasi
 - [ ] Sertifikat / penutup
 

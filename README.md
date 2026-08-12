@@ -70,7 +70,7 @@ Setiap sesi memiliki branch **sebelum** (start) dan **sesudah** (final) pengerja
 
 Alur per sesi: peserta bekerja dari branch `start`, lalu di akhir sesi membandingkan dengan `git diff` dan mengambil hasil referensi dengan `git merge <branch-final>`.
 
-> **Storyboard mengajar** (panduan menit-per-menit untuk instruktur) ada di folder [`docs/storyboard/`](docs/storyboard/README.md).
+> **Rundown mengajar** (panduan menit-per-menit untuk instruktur) ada di folder [`docs/rundown/`](docs/rundown/README.md).
 
 ## Teknologi Stack
 - **Frontend:** Flutter 3.x (Dart) + Provider + Dio
