@@ -23,22 +23,35 @@ Training program untuk guru SMK tentang pengembangan aplikasi mobile dengan Flut
 - ✅ State management dengan Provider
 - ✅ REST API integration dengan Dio
 
-## Struktur Training (2 Sesi x 4 Jam)
+## Struktur Training (4 Sesi x 4 Jam — 2 Hari)
 
-Training disusun dalam **2 sesi pertemuan, masing-masing 4 jam**, membangun aplikasi nyata di folder `flutter_training/` (mobile) dan `flutter-task-api/` (backend):
+Training disusun dalam **4 sesi pertemuan, masing-masing 4 jam** (2 hari: Sabtu–Minggu), membangun aplikasi nyata di folder `flutter_training/` (mobile) dan `flutter-task-api/` (backend):
 
-1. **Session 1: Dasar Flutter & Dashboard Siswa (4 Jam)**
-   - Dart essentials: null-safety, class, factory constructor
-   - Widget & layout Flutter: Stateless/Stateful, BuildContext
-   - Membangun UI dashboard siswa (login, list tugas, empty state)
-   - Hasil: aplikasi statis tanpa backend
+1. **Session 1: Dart & Flutter Dasar (4 Jam)** — 15 Agustus
+   - Dari `fvm flutter create` (scaffold kosong), bangun aplikasi tugas statis
+   - Dart essentials, widget tree, Stateless/Stateful, ListView, setState
+   - State sederhana dengan Provider (ChangeNotifier) + HTTP dasar (`http` package)
+   - Hasil: aplikasi tugas statis (~340 LOC)
 
-2. **Session 2: Backend API, Dio & Provider (4 Jam)**
-   - REST API dengan Hono + Drizzle + Neon Functions
-   - Schema database 5 tabel (classes, users, tasks, submissions, submission_members)
-   - Dio client & repository pattern di Flutter
-   - State management dengan Provider (Auth, School, Task)
+2. **Session 2: State Management, HTTP & Re-Arch (4 Jam)** — 16 Agustus
+   - Arsitektur berlapis: models/ → repositories/ → providers/ → screens/
+   - Model lengkap dengan fromJson/toJson, repository pattern
+   - Dio client (interceptor, error handling, ApiResponse wrapper)
+   - UI role-based (siswa & guru) + navigation
+   - Hasil: re-arch lengkap (~1,120 LOC)
+
+3. **Session 3: Backend Hono + Neon, Dio & Login (4 Jam)** — 22 Agustus
+   - Backend Hono + Drizzle + Neon PostgreSQL (5 tabel, migration)
+   - Routes: register, login, classes, tasks, submissions
+   - Flutter ↔ backend via Dio (AuthRepository), session persistence (shared_preferences)
+   - Login screen + timeout handling
    - Hasil: aplikasi lengkap end-to-end (register → login → buat tugas → kumpulkan)
+
+4. **Session 4: Workshop — Replikasi & Improvement (4 Jam)** — 23 Agustus
+   - Challenge: replikasi project dari nol (bertahap, tanpa bantuan)
+   - Improvement session (fitur baru: delete, filter, search, dark mode, dll)
+   - Q&A terbuka + demo deploy (opsional)
+   - Hasil: tidak ada target kode — peserta berkreasi
 
 ### Branch Workflow per Sesi
 
@@ -46,12 +59,18 @@ Setiap sesi memiliki branch **sebelum** (start) dan **sesudah** (final) pengerja
 
 | Branch | Isi | Untuk |
 |---|---|---|
-| `session-1-start` | Skeleton project sebelum Session 1 | Peserta clone & mulai coding |
-| `session-1-final` | Hasil akhir Session 1 (dashboard statis) | Referensi / diff / merge |
+| `session-1-start` | Scaffold `fvm flutter create` (kosong) | Peserta mulai dari nol |
+| `session-1-final` | App tugas statis minimal (~340 LOC) | Referensi / diff / merge |
 | `session-2-start` | = `session-1-final` (lanjutan) | Peserta clone & mulai coding |
-| `session-2-final` | Aplikasi lengkap (setara `build-project`) | Referensi / diff / merge |
+| `session-2-final` | Re-arch lengkap: Dio, model, repo, provider, screens | Referensi / diff / merge |
+| `session-3-start` | = `session-2-final` (lanjutan) | Peserta clone & mulai coding |
+| `session-3-final` | + login screen + timeout (backend-ready) | Referensi / diff / merge |
+| `session-4-start` | = `session-3-final` (lanjutan) | Peserta clone & mulai coding |
+| `session-4-final` | = `session-3-final` (workshop — tidak ada target kode) | Referensi |
 
 Alur per sesi: peserta bekerja dari branch `start`, lalu di akhir sesi membandingkan dengan `git diff` dan mengambil hasil referensi dengan `git merge <branch-final>`.
+
+> **Storyboard mengajar** (panduan menit-per-menit untuk instruktur) ada di folder [`docs/storyboard/`](docs/storyboard/README.md).
 
 ## Teknologi Stack
 - **Frontend:** Flutter 3.x (Dart) + Provider + Dio

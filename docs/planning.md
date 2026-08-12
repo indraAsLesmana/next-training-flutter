@@ -133,13 +133,15 @@ Semua endpoint di `flutter-task-api/src/index.ts` (detail di Session 2):
 | `POST` | `/api/submissions` | Siswa mengumpulkan tugas |
 | `GET` | `/api/tasks/:id/submissions` | Status pengumpulan per siswa |
 
-## 6. Peta 2 Sesi & Branch
+## 6. Peta 4 Sesi & Branch (2 Hari)
 
 | Sesi | Fokus | Hasil Akhir | Branch |
 |---|---|---|---|
-| **Setup** | Install toolchain (FVM, VS Code, Android Studio) + akun Neon | Environment siap | — |
-| **Session 1** | Dart, widget, UI dashboard siswa | Aplikasi statis tanpa backend | `session-1-start` → `session-1-final` |
-| **Session 2** | Hono API, Dio, Provider | Aplikasi lengkap end-to-end | `session-2-start` → `session-2-final` |
+| **Setup** | Install toolchain (FVM, VS Code, Android Studio) + Neon CLI + akun Neon | Environment siap | — |
+| **Session 1** (15 Agu) | Dart & Flutter dasar, dari `fvm flutter create` | Aplikasi tugas statis (~340 LOC) | `session-1-start` → `session-1-final` |
+| **Session 2** (16 Agu) | State management, HTTP, re-arch | Re-arch lengkap: model/repo/provider/screens | `session-2-start` → `session-2-final` |
+| **Session 3** (22 Agu) | Backend Hono+Neon, Dio, login | Aplikasi lengkap end-to-end | `session-3-start` → `session-3-final` |
+| **Session 4** (23 Agu) | Workshop: replikasi, improvement, Q&A | Tidak ada target kode | `session-4-start` → `session-4-final` |
 
 ---
 
