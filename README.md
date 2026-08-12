@@ -67,6 +67,7 @@ Alur per sesi: peserta bekerja dari branch `start`, lalu di akhir sesi membandin
 3. Akun Neon (gratis) — buat project di region `aws-us-east-2` (satu-satunya region yang mendukung Neon Functions)
 4. Git untuk version control
 5. Node.js >= 20 (untuk backend di Session 2)
+6. Neon CLI (`neon`/`neonctl`) — install via `brew install neonctl` (macOS) atau `npm install -g neon@latest` (Windows), lalu `neon auth` + `neon me` (lihat `docs/setup.md` Bagian 5)
 
 ### Untuk Instruktur:
 1. Contoh kode lengkap (Flutter + Backend) di branch `build-project`

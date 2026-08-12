@@ -27,6 +27,11 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 ```powershell
 choco install fvm git vscode androidstudio -y
 ```
+> **Neon CLI (untuk Session 2):** neonctl tidak tersedia di Chocolatey, jadi install lewat npm:
+> ```powershell
+> npm install -g neon@latest
+> ```
+> *(Membutuhkan Node.js ≥ 20.19 — sudah dicakup di Bagian Node.js setup.)*
 :::
 :::{tab-item} macOS
 Menggunakan **Homebrew**.
@@ -50,6 +55,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 ```bash
 brew install git cocoapods fvm scrcpy
 brew install --cask visual-studio-code android-studio google-chrome
+brew install neonctl   # Neon CLI (dipakai Session 2)
 ```
 :::
 ::::
@@ -177,11 +183,27 @@ Backend API pada training ini berjalan di **Neon Functions** (serverless compute
 4. Klik **Create project**. Tunggu hingga project aktif.
 5. Simpan **connection string** (`DATABASE_URL`) yang ditampilkan — akan dipakai backend di Session 2.
 
-> **Toolchain tambahan untuk Session 2:** Backend `flutter-task-api` ditulis dalam TypeScript dan dijalankan dengan [Neon CLI](https://github.com/neondatabase/neon) + Node.js. Instal dulu:
+> **Toolchain tambahan untuk Session 2 — Neon CLI (`neon`):** Backend `flutter-task-api` ditulis dalam TypeScript dan dikelola dengan [Neon CLI](https://neon.com/docs/cli/install) (perintah `neon link`, `neon db push`, dll). Nama formula/package-nya **`neonctl`**, tetapi perintah yang dijalankan adalah **`neon`** (`neonctl` adalah alias).
+>
+> **Install** (sesuai OS):
 > ```bash
-> npm install -g neon
-> node --version   # pastikan Node.js >= 20 terinstall
+> # macOS (Homebrew)
+> brew install neonctl
+>
+> # Windows / alternatif (npm — butuh Node.js >= 20.19)
+> npm install -g neon@latest
 > ```
+>
+> **Authenticate** (membuka browser OAuth — login dengan akun Google/GitHub yang sama):
+> ```bash
+> neon auth
+> ```
+>
+> **Verifikasi koneksi** — harus menampilkan data akun kamu:
+> ```bash
+> neon me
+> ```
+> Jika `neon me` menampilkan email/nama akun, CLI siap dipakai di Session 2. Jika gagal, ulangi `neon auth`.
 
 ## Bagian 6: Inisialisasi Project
 

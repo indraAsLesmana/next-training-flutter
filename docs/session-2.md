@@ -52,6 +52,8 @@ atau saat error:
 
 ### Stack Backend di `flutter-task-api/`
 
+> **Prasyarat:** Pastikan Neon CLI sudah terpasang & terautentikasi dari [Setup (Bagian 5)](setup) — perintah `neon link` dan `neon db push` di sesi ini membutuhkannya. Cek dengan `neon me`.
+
 ```text
 flutter-task-api/
 ├── src/
