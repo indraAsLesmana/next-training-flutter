@@ -65,11 +65,6 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showSubmitTaskBottomSheet(context),
-        icon: const Icon(Icons.upload_file),
-        label: const Text('Kumpulkan Tugas'),
-      ),
       body: RefreshIndicator(
         onRefresh: () async => _loadTasks(),
         child: Padding(
