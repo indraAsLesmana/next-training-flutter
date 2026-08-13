@@ -247,9 +247,14 @@ npm run dev
 Lihat folder `docs/` untuk dokumentasi detail, atau kunjungi [dokumentasi online](https://next-training-flutter.readthedocs.io):
 
 - `setup.md` - Setup lengkap toolchain (FVM, Android Studio, VS Code) + akun Neon
-- `planning.md` - Perencanaan & desain aplikasi (alur pengguna, arsitektur, ERD database)
-- `session-1.md` - Materi Session 1: Dasar Flutter & Dashboard Siswa (4 jam)
-- `session-2.md` - Materi Session 2: Backend API, Dio & Provider (4 jam)
+- `session-1.md` - Materi Sesi 1: Perencanaan & Desain + Dasar Flutter (Sabtu, 15 Agu)
+- `session-2.md` - Materi Sesi 2: Arsitektur Berlapis, Model, Repository & Dio (Minggu, 16 Agu)
+- `session-3.md` - Materi Sesi 3: Backend Hono + Neon, Dio Integration & Login (Sabtu, 22 Agu)
+- `session-4.md` - Materi Sesi 4: Workshop Replikasi, Improvement & Q&A (Minggu, 23 Agu)
+- `rundown/` - Panduan mengajar instruktur (menit-per-menit, tidak ditampilkan di RTD)
+
+> **ℹ️ Versi live (ReadTheDocs) hanya menampilkan halaman Setup** untuk peserta training.
+> Materi sesi (session-1..4) tersedia penuh di branch `build-project` atau saat build lokal.
 
 ### 📖 **Menjalankan ReadTheDocs Secara Lokal (Python & Sphinx)**
 

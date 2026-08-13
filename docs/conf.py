@@ -24,6 +24,26 @@ extensions = [
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'rundown']
 
+# -- Branch-aware visibility ------------------------------------------------
+# LIVE ReadTheDocs (branch `main`) hanya menampilkan halaman Setup untuk
+# peserta training. Semua materi sesi (session-1..4, planning) disembunyikan.
+# Branch `build-project` (dan branch lain / build lokal) menampilkan SEMUA.
+import subprocess
+try:
+    _branch = subprocess.run(
+        ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+        capture_output=True, text=True, timeout=5,
+    ).stdout.strip()
+except Exception:
+    _branch = ''
+if _branch == 'main':
+    exclude_patterns += ['session-*.md', 'planning.md']
+    # Sesi sengaja disembunyikan di versi live — toctree di index.md tetap
+    # mencantumkannya (agar build-project tidak butuh file terpisah).
+    # Warning "toctree contains reference to excluded/nonexisting document"
+    # adalah konsekuensi yang diharapkan, jadi di-suppress di branch main.
+    suppress_warnings = ['toc']
+
 # MyST configurations
 myst_enable_extensions = [
     "colon_fence",
