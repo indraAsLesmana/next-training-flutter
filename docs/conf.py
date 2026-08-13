@@ -28,14 +28,20 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'rundown']
 # LIVE ReadTheDocs (branch `main`) hanya menampilkan halaman Setup untuk
 # peserta training. Semua materi sesi (session-1..4, planning) disembunyikan.
 # Branch `build-project` (dan branch lain / build lokal) menampilkan SEMUA.
+import os
 import subprocess
-try:
-    _branch = subprocess.run(
-        ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
-        capture_output=True, text=True, timeout=5,
-    ).stdout.strip()
-except Exception:
-    _branch = ''
+
+# RTD exposes READTHEDOCS_GIT_IDENTIFIER = branch/ref yang di-checkout.
+# Lokal: deteksi via `git rev-parse --abbrev-ref HEAD` (bisa detached → fallback '').
+_branch = os.environ.get('READTHEDOCS_GIT_IDENTIFIER', '')
+if not _branch:
+    try:
+        _branch = subprocess.run(
+            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+            capture_output=True, text=True, timeout=5,
+        ).stdout.strip()
+    except Exception:
+        _branch = ''
 if _branch == 'main':
     exclude_patterns += ['session-*.md', 'planning.md']
     # Sesi sengaja disembunyikan di versi live — toctree di index.md tetap
