@@ -58,6 +58,23 @@ git checkout session-1-start
 | **Guru** | NIP (Nomor Induk Pegawai) | Membuat kelas, membuat tugas (individu/kelompok), melihat pengumpulan |
 | **Siswa** | NIK (Nomor Induk Kependudukan) | Melihat tugas kelas, mengumpulkan tugas (link URL), cek status |
 
+#### 2.1.1 Hasil Akhir Aplikasi (Screenshot)
+
+Ini **tampilan aplikasi yang akan kita bangun** selama 4 sesi — jadikan target visual:
+
+| | |
+|---|---|
+| **1. Login** | **2. Register** |
+| ![Login](project_ss/1.login.png) | ![Register](project_ss/2.register.png) |
+| **3. Home Siswa** | **4. Submit Tugas (individu)** |
+| ![Home Siswa](project_ss/3.home-siswa.png) | ![Submit Tugas](project_ss/4.submit-task-siswa.png) |
+| **5. Submit Tugas (kelompok)** | **6. Progress Tugas Guru** |
+| ![Submit Kelompok](project_ss/5.submit-task-siswa-group.png) | ![Progress Guru](project_ss/6.task-progress-guru.png) |
+| **7. Pengumpulan Tugas Guru** | |
+| ![Pengumpulan Guru](project_ss/7.task-submit-guru.png) | |
+
+> **Catatan:** Screenshot di atas adalah hasil akhir dari seluruh training (branch `session-4-final`). Hari ini (Sesi 1) kita baru membangun fondasinya — tapi dengan target visual ini, kalian selalu tahu *ke mana* kita melangkah.
+
 ### 2.2 Alur Pengguna
 
 ```{mermaid}
