@@ -1,0 +1,357 @@
+openapi: 3.1.0
+info:
+  title: Flutter Training — API Pengumpulan Tugas
+  description: |
+    API untuk aplikasi pengumpulan tugas sekolah (Flutter + Hono + Neon).
+    Digunakan untuk training — coba endpoint langsung di Apidog.
+
+    - Base URL dev : http://localhost:8787 (Hono lokal, `npm run dev`)
+    - Base URL prod: Neon serverless (br-raspy-bird)
+  version: 1.0.0
+servers:
+  - url: "{{API_BASE_URL}}"
+    description: |
+      Pilih Environment di Apidog (ikon ⚙️) lalu set variabel API_BASE_URL:
+      - Dev : http://localhost:8787
+      - Prod: https://br-raspy-bird-ay9c83zx-todos.compute.c-5.us-east-2.aws.neon.tech
+tags:
+  - name: Auth
+    description: Registrasi & login
+  - name: Classes
+    description: Data kelas
+  - name: Students
+    description: Pencarian siswa
+  - name: Tasks
+    description: Tugas guru → siswa
+  - name: Submissions
+    description: Pengumpulan tugas oleh siswa
+paths:
+  /api/auth/register:
+    post:
+      tags: [Auth]
+      summary: Daftar akun baru (guru atau siswa)
+      description: |
+        Mendaftarkan user baru. Role `guru` memakai NIP (classId null),
+        role `siswa` memakai NIK + classId.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nama, role, nipNik, password]
+              properties:
+                nama: { type: string, example: "Budi Santoso" }
+                role: { type: string, enum: [guru, siswa], example: siswa }
+                nipNik:
+                  type: string
+                  description: NIP untuk guru, NIK untuk siswa
+                  example: "3301010101010001"
+                email: { type: string, format: email, example: "budi@sekolah.id" }
+                password: { type: string, example: "rahasia123" }
+                classId: { type: string, description: "Wajib untuk siswa", example: "uuid-kelas-xi-a" }
+      responses:
+        "201":
+          description: Berhasil daftar
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { $ref: "#/components/schemas/User" }
+        "500":
+          description: Gagal (duplikat NIP/NIK, dsb)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: false }
+                  message: { type: string }
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login dengan NIP/NIK + password
+      description: Mencocokkan nipNik + password. Tidak ada token — session disimpan di app (shared_preferences).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nipNik, password]
+              properties:
+                nipNik: { type: string, example: "3301010101010001" }
+                password: { type: string, example: "rahasia123" }
+      responses:
+        "200":
+          description: Login berhasil — data user dikembalikan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { $ref: "#/components/schemas/User" }
+        "401":
+          description: NIP/NIK atau password salah
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: false }
+                  message: { type: string, example: "NIP/NIK atau password salah" }
+  /api/classes:
+    get:
+      tags: [Classes]
+      summary: Daftar semua kelas
+      responses:
+        "200":
+          description: Daftar kelas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/Class" }
+  /api/students/search:
+    get:
+      tags: [Students]
+      summary: Cari siswa dalam satu kelas (nama / NIK)
+      parameters:
+        - name: classId
+          in: query
+          required: true
+          description: ID kelas (wajib)
+          schema: { type: string, example: "uuid-kelas-xi-a" }
+        - name: query
+          in: query
+          required: false
+          description: Kata kunci nama atau NIK (kosong = semua siswa)
+          schema: { type: string, example: "Budi" }
+      responses:
+        "200":
+          description: Daftar siswa (maks 20)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/Student" }
+        "400":
+          description: classId tidak diberikan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: false }
+                  message: { type: string, example: "classId query parameter is required" }
+  /api/tasks:
+    get:
+      tags: [Tasks]
+      summary: Daftar tugas (filter classId / guruId / siswaId)
+      description: |
+        - Guru: `?classId=` atau `?guruId=` → semua tugas kelas.
+        - Siswa: `?siswaId=` → tugas + status pengumpulan siswa tsb.
+      parameters:
+        - name: classId
+          in: query
+          required: false
+          schema: { type: string, example: "uuid-kelas-xi-a" }
+        - name: guruId
+          in: query
+          required: false
+          schema: { type: string, example: "uuid-guru" }
+        - name: siswaId
+          in: query
+          required: false
+          schema: { type: string, example: "uuid-siswa" }
+      responses:
+        "200":
+          description: Daftar tugas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/Task" }
+    post:
+      tags: [Tasks]
+      summary: Guru membuat tugas baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [guruId, classId, description, startDate, endDate]
+              properties:
+                guruId: { type: string, example: "uuid-guru" }
+                classId: { type: string, example: "uuid-kelas-xi-a" }
+                description: { type: string, example: "Buat makalah tentang sejarah Indonesia" }
+                startDate: { type: string, format: date-time, example: "2026-08-16T00:00:00.000Z" }
+                endDate: { type: string, format: date-time, example: "2026-08-22T23:59:59.000Z" }
+                attachmentUrl: { type: string, example: "https://drive.google.com/file/xyz" }
+                isTeamTask: { type: boolean, default: false, example: false }
+                maxTeamMembers: { type: integer, default: 5, example: 4 }
+      responses:
+        "201":
+          description: Tugas berhasil dibuat
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { $ref: "#/components/schemas/Task" }
+  /api/submissions:
+    post:
+      tags: [Submissions]
+      summary: Siswa mengumpulkan / mengedit tugas (individu atau kelompok)
+      description: |
+        Jika siswa sudah pernah mengumpulkan untuk taskId yang sama → data di-update (upsert).
+        Untuk tugas kelompok, kirim `teamMemberIds` berisi ID anggota lain (siswa utama otomatis masuk).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [taskId, siswaId, submitUrl]
+              properties:
+                taskId: { type: string, example: "uuid-task" }
+                siswaId: { type: string, example: "uuid-siswa" }
+                submitUrl: { type: string, example: "https://github.com/budi/tugas-makalah" }
+                notes: { type: string, example: "Sudah termasuk daftar pustaka" }
+                teamMemberIds:
+                  type: array
+                  items: { type: string }
+                  example: ["uuid-siswa-2", "uuid-siswa-3"]
+      responses:
+        "201":
+          description: Pengumpulan berhasil (baru atau update)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { $ref: "#/components/schemas/Submission" }
+  /api/tasks/{id}/submissions:
+    get:
+      tags: [Submissions]
+      summary: Status pengumpulan per siswa (untuk guru)
+      description: |
+        Menampilkan detail tugas + daftar siswa di kelas dengan status pengumpulan
+        (isSubmitted, submitUrl, notes, submittedAt, teamMembers).
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID tugas
+          schema: { type: string, example: "uuid-task" }
+      responses:
+        "200":
+          description: Detail tugas + status siswa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    type: object
+                    properties:
+                      task: { $ref: "#/components/schemas/Task" }
+                      students:
+                        type: array
+                        items: { $ref: "#/components/schemas/StudentStatus" }
+        "404":
+          description: Tugas tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: false }
+                  message: { type: string, example: "Tugas tidak ditemukan" }
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id: { type: string, example: "uuid-user" }
+        nama: { type: string, example: "Budi Santoso" }
+        role: { type: string, enum: [guru, siswa] }
+        nipNik: { type: string, example: "3301010101010001" }
+        email: { type: string, nullable: true }
+        passwordHash: { type: string, description: "Plain text di versi training (tanpa bcrypt)" }
+        classId: { type: string, nullable: true, description: "null untuk guru" }
+    Class:
+      type: object
+      properties:
+        id: { type: string, example: "uuid-kelas-xi-a" }
+        tingkat: { type: string, example: "XI" }
+        namaKelas: { type: string, example: "a" }
+    Student:
+      type: object
+      properties:
+        id: { type: string }
+        siswaId: { type: string }
+        nama: { type: string }
+        nipNik: { type: string }
+        email: { type: string, nullable: true }
+        classId: { type: string }
+    Task:
+      type: object
+      properties:
+        id: { type: string, example: "uuid-task" }
+        guruId: { type: string }
+        classId: { type: string }
+        description: { type: string }
+        startDate: { type: string, format: date-time }
+        endDate: { type: string, format: date-time }
+        attachmentUrl: { type: string, nullable: true }
+        isTeamTask: { type: boolean }
+        maxTeamMembers: { type: integer }
+        createdAt: { type: string, format: date-time }
+    Submission:
+      type: object
+      properties:
+        id: { type: string, example: "uuid-submission" }
+        taskId: { type: string }
+        siswaId: { type: string }
+        submitUrl: { type: string }
+        notes: { type: string, nullable: true }
+        submittedAt: { type: string, format: date-time }
+    StudentStatus:
+      type: object
+      properties:
+        siswaId: { type: string }
+        nama: { type: string }
+        nipNik: { type: string }
+        email: { type: string, nullable: true }
+        isSubmitted: { type: boolean }
+        submitUrl: { type: string, nullable: true }
+        notes: { type: string, nullable: true }
+        submittedAt: { type: string, format: date-time, nullable: true }
+        teamMembers:
+          type: array
+          items:
+            type: object
+            properties:
+              siswaId: { type: string }
+              nama: { type: string }
+              nipNik: { type: string }

@@ -18,10 +18,37 @@ release = '1.0.0'
 extensions = [
     'myst_parser',
     'sphinx_design',
+    'sphinxcontrib.mermaid',
 ]
 
 templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'rundown', 'apidog']
+
+# -- Branch-aware visibility ------------------------------------------------
+# LIVE ReadTheDocs (branch `main`) menampilkan Setup + Session 1 untuk peserta.
+# Session 2-4 (materi hari berikutnya) disembunyikan sampai waktunya.
+# Branch `build-project` (dan branch lain / build lokal) menampilkan SEMUA.
+import os
+import subprocess
+
+# RTD exposes READTHEDOCS_GIT_IDENTIFIER = branch/ref yang di-checkout.
+# Lokal: deteksi via `git rev-parse --abbrev-ref HEAD` (bisa detached → fallback '').
+_branch = os.environ.get('READTHEDOCS_GIT_IDENTIFIER', '')
+if not _branch:
+    try:
+        _branch = subprocess.run(
+            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+            capture_output=True, text=True, timeout=5,
+        ).stdout.strip()
+    except Exception:
+        _branch = ''
+if _branch == 'main':
+    exclude_patterns += ['session-2.md', 'session-3.md', 'session-4.md']
+    # Sesi berikutnya sengaja disembunyikan di versi live — toctree di index.md
+    # tetap mencantumkannya (agar build-project tidak butuh file terpisah).
+    # Warning "toctree contains reference to excluded/nonexisting document"
+    # adalah konsekuensi yang diharapkan, jadi di-suppress di branch main.
+    suppress_warnings = ['toc']
 
 # MyST configurations
 myst_enable_extensions = [
