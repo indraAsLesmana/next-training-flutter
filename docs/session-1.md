@@ -217,8 +217,7 @@ flutter_training/
 ├── lib/
 │   └── main.dart              # Entry point (counter app bawaan)
 ├── pubspec.yaml               # Daftar dependency
-├── android/  ios/  web/       # Folder platform
-└── test/                      # Unit test bawaan
+└── android/  ios/  web/       # Folder platform
 ```
 
 | Folder/File | Fungsi |
