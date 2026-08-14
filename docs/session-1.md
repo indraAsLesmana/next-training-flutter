@@ -10,21 +10,23 @@
 ## Objectives
 - Memahami **gambaran besar aplikasi**: alur pengguna, arsitektur, ERD 5 tabel, dan peta 4 sesi
 - Membuat project Flutter dari nol dengan `fvm flutter create`
-- Memahami dasar bahasa Dart: variabel, tipe data, class, constructor
-- Memahami widget Flutter: `StatelessWidget` vs `StatefulWidget`, widget tree, layout
-- Membangun **aplikasi tugas minimal**: daftar tugas, checkbox, tambah/hapus, dengan `setState` + `Provider`
-- Mengenal HTTP dasar dengan package `http`
+- Memahami dasar bahasa Dart: variabel, tipe data, class, constructor, `toJson`
+- Memahami widget Flutter: `StatelessWidget` vs `StatefulWidget`, widget tree, layout, form
+- Menjalankan **backend lokal** dengan `neon dev` (Hono API + Neon PostgreSQL)
+- Membangun **register page**: form + validasi + `AuthProvider` (state) + HTTP POST
+- **Melihat data register masuk ke database** via `drizzle-kit studio` (`npm run db:studio`)
 
 ## Agenda (4 jam efektif)
 1. Pembukaan & ice-breaking (10 menit)
 2. **Perencanaan & Desain Aplikasi** (40 menit)
 3. `fvm flutter create` & struktur project (30 menit)
 4. Dart Essentials (30 menit)
-5. Widget & Layout Flutter (30 menit)
-6. Layout & ListView (30 menit)
-7. State: `setState` + Provider (50 menit)
-8. HTTP dasar dengan `http` (30 menit)
-9. Review, diff, & catch-up (15 menit)
+5. **Setup Backend: `neon dev` + `db:push` + `db:studio`** (30 menit)
+6. Widget & Layout Flutter (25 menit)
+7. **Membangun Register Page** (40 menit)
+8. State: `setState` + Provider (35 menit)
+9. HTTP ke backend (`AuthApiService`) (30 menit)
+10. Review, diff, & catch-up (15 menit)
 
 ---
 
@@ -193,7 +195,7 @@ erDiagram
 
 | Sesi | Hari | Fokus | Hasil Akhir | Branch |
 |---|---|---|---|---|
-| 1 | 15 Agu | Perencanaan + Dasar Flutter | App tugas minimal | `session-1-start` → `session-1-final` |
+| 1 | 15 Agu | Perencanaan + Dasar Flutter + `neon dev` | **Register page + data masuk Neon DB** | `session-1-start` → `session-1-final` |
 | 2 | 16 Agu | State mgmt, HTTP, re-arch | Arsitektur berlapis + Dio | `session-2-start` → `session-2-final` |
 | 3 | 22 Agu | Backend Hono+Neon, login | App lengkap end-to-end | `session-3-start` → `session-3-final` |
 | 4 | 23 Agu | Workshop: replikasi, improvement, Q&A | Tidak ada target kode | `session-4-start` → `session-4-final` |
@@ -246,6 +248,7 @@ class _MyHomePageState extends State<MyHomePage> { // state + setState()
 ```
 
 ---
+---
 
 ## 4. Dart Essentials
 
@@ -269,20 +272,24 @@ Map<String, dynamic> user = {'nama': 'Budi', 'role': 'siswa'};
 
 ### Class & Constructor
 
-Kita akan membuat model `Task` di `lib/models/task.dart`:
+Kita akan membuat model `User` di `lib/models/user_model.dart` — mewakili **satu baris di tabel `users`** database:
 
 ```dart
-class Task {
-  final int id;
-  final String title;
-  final String description;
-  final bool completed;
+class User {
+  final String? id;      // UUID dari database (null sebelum disimpan)
+  final String nama;
+  final String role;     // 'guru' | 'siswa'
+  final String nipNik;   // NIP (guru) atau NIK (siswa)
+  final String? email;
+  final String password;
 
-  Task({
-    required this.id,
-    required this.title,
-    this.description = '',
-    this.completed = false,
+  User({
+    this.id,
+    required this.nama,
+    required this.role,
+    required this.nipNik,
+    this.email,
+    required this.password,
   });
 }
 ```
@@ -291,27 +298,101 @@ class Task {
 - `final` → immutable (nilai tidak bisa diubah setelah di-set)
 - `required` → parameter wajib
 - Named parameters `{...}` → lebih jelas daripada positional
+- `String?` → nullable (boleh null) — `id` & `email` belum tentu ada
 
-### Factory Constructor: JSON → Object
+### Method `toJson`: Object → JSON
 
 ```dart
-factory Task.fromJson(Map<String, dynamic> json) {
-  return Task(
-    id: json['id'],
-    title: json['title'],
-    description: json['description'] ?? '',
-    completed: json['completed'] ?? false,
-  );
-}
+Map<String, dynamic> toJson() => {
+      'nama': nama,
+      'role': role,
+      'nipNik': nipNik,
+      'email': email,
+      'password': password,
+      'classId': null,   // siswa diisi di Session 2
+    };
 ```
 
 **Poin penting:**
-- `factory` → constructor yang bisa melakukan transformasi
-- `json['description'] ?? ''` → fallback jika key tidak ada / null
+- `toJson()` → mengubah objek Dart menjadi `Map` yang bisa di-encode ke JSON (`jsonEncode`)
+- API backend menerima JSON body — inilah "bahasa" komunikasi Flutter ↔ Hono
+- Nama key (`nama`, `role`, `nipNik`) **harus cocok** dengan yang backend baca di `c.req.json()`
 
 ---
 
-## 5. Widget & Layout Flutter
+## 5. Setup Backend Lokal: `neon dev`
+
+Sebelum membangun register page, kita aktifkan **backend lokal** — supaya nanti saat form di-submit, datanya benar-benar tersimpan ke database.
+
+### 5.1 Prasyarat
+
+- Sudah install **Neon CLI**: `npm install -g neon` (lihat Setup)
+- Sudah punya akun Neon + project (lihat Setup)
+
+### 5.2 Jalankan Backend dengan `neon dev`
+
+```bash
+cd flutter-task-api
+npm install          # install dependencies (hono, drizzle, dll)
+neon dev             # jalankan Hono API secara lokal
+```
+
+`neon dev` akan:
+1. Membaca konfigurasi `neon.ts` (function `todos` → `src/index.ts`)
+2. Menjalankan **Hono API di `http://localhost:8787`**
+3. Mengisi `.env` dengan `DATABASE_URL` yang menunjuk ke **Neon cloud** (branch yang di-link)
+
+> **Kenapa `neon dev`?** Ini adalah cara resmi Neon untuk develop backend secara lokal — API jalan di mesinmu, tapi database tetap di Neon cloud (serverless PostgreSQL). Perubahan schema langsung bisa di-push.
+
+> **Penting:** Biarkan terminal `neon dev` berjalan — jangan ditutup selama sesi.
+
+### 5.3 Push Schema ke Database
+
+Di terminal kedua:
+
+```bash
+cd flutter-task-api
+npm run db:push     # push schema Drizzle (tabel users, classes, dll) ke Neon
+```
+
+Ini membuat 5 tabel (`classes`, `users`, `tasks`, `submissions`, `submission_members`) di database Neon kamu.
+
+### 5.4 Buka Drizzle Studio (Database Visualizer)
+
+```bash
+npm run db:studio   # = drizzle-kit studio
+```
+
+Drizzle Studio terbuka di browser (biasanya `https://local.drizzle.studio` atau `http://127.0.0.1:4983`).
+
+**Yang perlu kamu lihat:**
+- Tabel **`users`** — masih **kosong** (belum ada data)
+- Kolom-kolomnya: `id`, `nama`, `role`, `nip_nik`, `email`, `password_hash`, `class_id`, `created_at`
+
+> **Checkpoint:** Drizzle Studio terbuka, tabel `users` kosong. Ini "kanvas" kita — setiap register yang berhasil akan muncul di sini.
+
+### 5.5 Test API dengan `curl`
+
+Sebelum bikin Flutter, test dulu endpoint register:
+
+```bash
+curl -X POST http://localhost:8787/api/auth/register \
+  -H 'content-type: application/json' \
+  -d '{"nama":"Test User","role":"siswa","nipNik":"1234567890","password":"rahasia123"}'
+```
+
+**Respons sukses (201):**
+```json
+{ "success": true, "data": { "id": "uuid-...", "nama": "Test User", "role": "siswa" } }
+```
+
+Sekarang **refresh Drizzle Studio** → tabel `users` berisi **1 baris**! 🎉
+
+> **Ini momen penting:** data yang kamu kirim dari API → tersimpan di database → terlihat di studio. Alur inilah yang akan kita bangun dari Flutter.
+
+---
+
+## 6. Widget & Layout Flutter
 
 Di Flutter, **semuanya adalah widget** — UI dibangun dengan menyusun widget di dalam widget (composition).
 
@@ -320,11 +401,17 @@ Di Flutter, **semuanya adalah widget** — UI dibangun dengan menyusun widget di
 ```text
 MaterialApp
 └── Scaffold
-    ├── AppBar (judul)
+    ├── AppBar (judul "Register")
     └── body: Center
-        └── Column
-            ├── Text
-            └── Text
+        └── SingleChildScrollView
+            └── Form
+                └── Column
+                    ├── SegmentedButton (role)
+                    ├── TextFormField (nama)
+                    ├── TextFormField (NIP/NIK)
+                    ├── TextFormField (email)
+                    ├── TextFormField (password)
+                    └── FilledButton (Daftar)
 ```
 
 ### StatelessWidget vs StatefulWidget
@@ -347,11 +434,11 @@ class MyApp extends StatelessWidget {
 
 ```dart
 // StatefulWidget: punya state yang bisa berubah + setState()
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key);
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 ```
 
@@ -366,86 +453,158 @@ class HomeScreen extends StatefulWidget {
 | `Column` | Susun anak vertikal |
 | `Row` | Susun anak horizontal |
 | `Container` | Kotak dengan padding/margin/decoration |
-| `ListView` | Daftar scrollable |
+| `SingleChildScrollView` | Konten scrollable (form panjang) |
 | `Card` | Kontainer bergaya kartu (Material) |
 | `Scaffold` | Kerangka halaman (AppBar, body, FAB) |
 
-**Latihan:** modifikasi `MyApp` — ganti judul jadi `Aplikasi Pengumpulan Tugas`, ubah warna tema menjadi `Colors.blue`.
-
 ---
 
-## 6. Layout & ListView
+## 7. Membangun Register Page
 
-### Menampilkan Daftar dengan `ListView.builder`
+Sekarang kita bangun halaman register — **goal utama sesi ini**.
+
+### 7.1 Form dengan `TextFormField`
+
+`TextFormField` adalah input teks dengan **validasi bawaan** (`validator`):
 
 ```dart
-ListView.builder(
-  itemCount: tasks.length,
-  itemBuilder: (context, index) {
-    final task = tasks[index];
-    return ListTile(
-      title: Text(task.title),
-      subtitle: Text(task.description),
-      leading: Checkbox(
-        value: task.completed,
-        onChanged: (value) { /* toggle */ },
-      ),
-    );
+// lib/screens/register_screen.dart
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _namaController = TextEditingController();
+  final _nipNikController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  String _role = 'siswa'; // toggle: 'siswa' | 'guru'
+
+  @override
+  void dispose() {
+    _namaController.dispose();
+    _nipNikController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+}
+```
+
+**Poin penting:**
+- `TextEditingController` → "jembatan" antara widget dan teks yang diketik
+- `GlobalKey<FormState>` → untuk memicu validasi (`_formKey.currentState!.validate()`)
+- `dispose()` → selalu bersihkan controller (hindari memory leak)
+- `setState` → untuk toggle role (`SegmentedButton`)
+
+### 7.2 Pilihan Peran dengan `SegmentedButton`
+
+```dart
+SegmentedButton<String>(
+  segments: const [
+    ButtonSegment(value: 'siswa', label: Text('Siswa'), icon: Icon(Icons.school)),
+    ButtonSegment(value: 'guru', label: Text('Guru'), icon: Icon(Icons.teacher)),
+  ],
+  selected: {_role},
+  onSelectionChanged: (selection) {
+    setState(() => _role = selection.first);
   },
 )
 ```
 
-**Latihan:** tampilkan 3 task statis (hardcoded `List<Task>`) di `ListView` dengan `Card`/`ListTile` + `Checkbox`.
+**Latihan:** ubah label NIP/NIK dinamis — jika `_role == 'guru'` tampilkan "NIP", jika siswa tampilkan "NIK".
 
-> **Checkpoint:** layar menampilkan 3 task dengan checkbox.
+### 7.3 Field dengan Validasi
+
+```dart
+TextFormField(
+  controller: _namaController,
+  decoration: const InputDecoration(
+    labelText: 'Nama Lengkap',
+    prefixIcon: Icon(Icons.person),
+    border: OutlineInputBorder(),
+  ),
+  validator: (v) => (v == null || v.trim().isEmpty) ? 'Nama wajib diisi' : null,
+),
+```
+
+```dart
+TextFormField(
+  controller: _passwordController,
+  decoration: const InputDecoration(
+    labelText: 'Password',
+    prefixIcon: Icon(Icons.lock),
+    border: OutlineInputBorder(),
+  ),
+  obscureText: true,   // tampil sebagai bullet
+  validator: (v) => (v == null || v.length < 6) ? 'Password minimal 6 karakter' : null,
+),
+```
+
+**Poin penting:**
+- `validator` mengembalikan `String?` — `null` = valid, selain itu = pesan error
+- `obscureText: true` → menyembunyikan teks password
+- `trim()` → hapus spasi di awal/akhir
+
+> **Checkpoint:** form tampil dengan 4 field + toggle role, validasi bekerja (klik Daftar dengan form kosong → muncul error).
 
 ---
 
-## 7. State: `setState` → Provider
+## 8. State: `setState` → Provider
 
-### 7.1 `setState` Sederhana
+### 8.1 `setState` untuk Loading
 
 ```dart
-Checkbox(
-  value: task.completed,
-  onChanged: (value) {
-    setState(() {
-      task.completed = value!;
-    });
-  },
+FilledButton(
+  onPressed: authProvider.isLoading ? null : _submit,
+  child: authProvider.isLoading
+      ? const SizedBox(
+          height: 20, width: 20,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        )
+      : const Text('Daftar'),
 )
 ```
 
-**Latihan:** klik checkbox → coret judul task (`TextDecoration.lineThrough`).
+**Latihan:** klik Daftar → tombol berubah jadi spinner (loading state). Ini `setState`/`notifyListeners` bekerja.
 
-> **Checkpoint:** checkbox bisa toggle strikethrough.
+### 8.2 Kenapa `setState` Tidak Cukup?
 
-### 7.2 Kenapa `setState` Tidak Cukup?
+Ketika state harus **dibagi antar screen** (misal: status register dilihat dari halaman lain), `setState` di satu screen tidak akan memperbarui screen lain. Solusinya: **`ChangeNotifier` + `Provider`**.
 
-Ketika state harus **dibagi antar screen** (misal: daftar tugas dilihat dari 2 halaman), `setState` di satu screen tidak akan memperbarui screen lain. Solusinya: **`ChangeNotifier` + `Provider`**.
-
-### 7.3 Provider: `TaskProvider`
+### 8.3 Provider: `AuthProvider`
 
 ```dart
-// lib/providers/task_provider.dart
-class TaskProvider with ChangeNotifier {
-  List<Task> _tasks = [];
+// lib/providers/auth_provider.dart
+class AuthProvider extends ChangeNotifier {
+  final AuthApiService _api = AuthApiService();
+
   bool _isLoading = false;
   String? _error;
+  User? _registeredUser;
 
-  List<Task> get tasks => _tasks;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  User? get registeredUser => _registeredUser;
 
-  Future<void> fetchTasks() async {
+  Future<bool> register({
+    required String nama,
+    required String role,
+    required String nipNik,
+    String? email,
+    required String password,
+  }) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      _tasks = await _apiService.getTasks();
+      final user = User(
+        nama: nama, role: role, nipNik: nipNik,
+        email: email, password: password,
+      );
+      _registeredUser = await _api.register(user);
+      return true;
     } catch (e) {
-      _error = e.toString();
+      _error = e.toString().replaceFirst('Exception: ', '');
+      return false;
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -454,14 +613,19 @@ class TaskProvider with ChangeNotifier {
 }
 ```
 
-### 7.4 Daftarkan di `main.dart`
+**Poin penting:**
+- `ChangeNotifier` → memberi tahu listener saat state berubah (`notifyListeners()`)
+- `register()` mengembalikan `bool` — screen tinggal cek sukses/gagal
+- Error disimpan di `_error` agar UI bisa menampilkan pesan
+
+### 8.4 Daftarkan di `main.dart`
 
 ```dart
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => TaskProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
       child: MyApp(),
     ),
@@ -469,51 +633,23 @@ void main() {
 }
 ```
 
-### 7.5 Konsumsi dengan `Consumer`
+### 8.5 Konsumsi dengan `context.watch` / `context.read`
 
 ```dart
-Consumer<TaskProvider>(
-  builder: (context, provider, child) {
-    if (provider.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (provider.error != null) {
-      return Center(child: Text('Error: ${provider.error}'));
-    }
-    if (provider.tasks.isEmpty) {
-      return const Center(child: Text('Belum ada tugas.'));
-    }
-    return ListView.builder(
-      itemCount: provider.tasks.length,
-      itemBuilder: (context, index) {
-        final task = provider.tasks[index];
-        return ListTile(
-          title: Text(
-            task.title,
-            style: TextStyle(
-              decoration: task.completed
-                  ? TextDecoration.lineThrough
-                  : null,
-            ),
-          ),
-          leading: Checkbox(
-            value: task.completed,
-            onChanged: (value) {
-              provider.toggleTaskCompletion(task.id, task.completed);
-            },
-          ),
-        );
-      },
-    );
-  },
-)
+// Di dalam build():
+final authProvider = context.watch<AuthProvider>();   // rebuild saat berubah
+
+// Di dalam handler:
+final authProvider = context.read<AuthProvider>();     // sekali pakai, tanpa rebuild
 ```
 
-> **Checkpoint:** app tetap jalan, tapi state sekarang ada di provider (bisa diakses dari screen mana pun).
+**Aturan:**
+- `watch` → di dalam `build()` (ikuti perubahan)
+- `read` → di dalam event handler (panggil method)
 
 ---
 
-## 8. HTTP Dasar dengan `http` Package
+## 9. HTTP ke Backend: `AuthApiService`
 
 Tambah dependency:
 
@@ -521,58 +657,61 @@ Tambah dependency:
 fvm flutter pub add http
 ```
 
-### `ApiService` — Client HTTP Sederhana
+### `AuthApiService` — Kirim Register ke Hono
 
 ```dart
-// lib/services/api_service.dart
-class ApiService {
+// lib/services/auth_api_service.dart
+class AuthApiService {
   final String baseUrl = const String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://localhost:3000',
+    defaultValue: 'http://localhost:8787',   // port dari `neon dev`
   );
 
-  Future<List<Task>> getTasks() async {
-    final response = await http.get(Uri.parse('$baseUrl/tasks'));
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body);
-      return data.map((json) => Task.fromJson(json)).toList();
-    } else {
-      throw Exception('Gagal memuat tugas: ${response.statusCode}');
-    }
-  }
-
-  Future<Task> createTask(String title, String description) async {
+  Future<User> register(User user) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/tasks'),
+      Uri.parse('$baseUrl/api/auth/register'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'title': title, 'description': description}),
+      body: jsonEncode(user.toJson()),
     );
-    if (response.statusCode == 201) {
-      return Task.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Gagal membuat tugas baru');
-    }
-  }
 
-  Future<void> updateTask(int id, bool completed) async { ... }
-  Future<void> deleteTask(int id) async { ... }
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+
+    if (response.statusCode == 201 && body['success'] == true) {
+      final data = body['data'] as Map<String, dynamic>;
+      return User(
+        id: data['id'],
+        nama: data['nama'],
+        role: data['role'],
+        nipNik: data['nipNik'],
+        email: data['email'],
+        password: user.password,
+      );
+    }
+
+    throw Exception(body['message'] ?? 'Gagal mendaftar (HTTP ${response.statusCode})');
+  }
 }
 ```
 
 **Poin penting:**
-- `http.get/post/put/delete` → method HTTP
-- `jsonDecode` / `jsonEncode` → konversi JSON ↔ Dart
-- `statusCode` → cek keberhasilan (200/201)
-- `String.fromEnvironment` → base URL bisa di-override saat build (`--dart-define=API_BASE_URL=...`)
+- `http.post(Uri, headers:, body:)` → kirim HTTP POST dengan JSON body
+- `jsonEncode(user.toJson())` → objek `User` → JSON string
+- `statusCode == 201` → Created (backend mengembalikan 201 untuk register sukses)
+- `String.fromEnvironment` → base URL bisa di-override saat build:
+  ```bash
+  fvm flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8787   # Android emulator
+  ```
 
-**Latihan:** implement `fetchTasks()` di `TaskProvider` (panggil `ApiService.getTasks()`), tampilkan hasilnya di `HomeScreen` dengan `RefreshIndicator` (pull-to-refresh).
+> **Penting — Android emulator:** `localhost` di emulator menunjuk ke emulator itu sendiri. Untuk mencapai backend di mesin host, pakai `10.0.2.2`:
+> `fvm flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8787`
 
-> **Checkpoint:** app menampilkan data dari API (atau error state yang rapi jika server mati).
+**Latihan:** jalankan app, isi form register, klik **Daftar** → setelah sukses, buka **Drizzle Studio** dan refresh tabel `users` → **baris baru muncul!** 🎉
+
+> **Checkpoint:** register dari Flutter → data tersimpan di Neon → terlihat di Drizzle Studio.
 
 ---
 
-## 9. Review, Diff, dan Catch-up
+## 10. Review, Diff, dan Catch-up
 
 Di akhir sesi, bandingkan hasil kerja dengan referensi:
 
@@ -591,20 +730,27 @@ git checkout session-1-final -- flutter_training/
 
 ### Checklist Hasil Akhir Sesi 1
 - [ ] `fvm flutter create` berhasil & struktur folder dipahami
-- [ ] Class `Task` dengan `fromJson` dipahami
-- [ ] UI daftar tugas (ListView + Card + Checkbox) dibangun
-- [ ] State dipindah ke `TaskProvider` (ChangeNotifier + Provider)
-- [ ] HTTP dasar (`ApiService`) dipahami
-- [ ] Aplikasi bisa dijalankan di emulator (data dari API lokal/mock)
+- [ ] Backend lokal jalan: `neon dev` → Hono API di `localhost:8787`
+- [ ] Schema di-push: `npm run db:push` → 5 tabel di Neon
+- [ ] Drizzle Studio terbuka (`npm run db:studio`) & tabel `users` kosong
+- [ ] Test API `curl` register → 1 baris muncul di studio
+- [ ] Class `User` + `toJson` dipahami
+- [ ] UI form register (TextFormField + SegmentedButton + validasi) dibangun
+- [ ] State dipindah ke `AuthProvider` (ChangeNotifier + Provider)
+- [ ] HTTP POST register (`AuthApiService`) dipahami
+- [ ] **Register dari Flutter → data masuk ke Neon → terlihat di Drizzle Studio**
 
 ---
 
 ## Latihan / Tugas Rumah
-1. Tambahkan `FloatingActionButton` untuk menambah tugas baru (dialog dengan `TextField`).
-2. Implement `deleteTask` di `ApiService` + tombol hapus di `ListTile` (ikon `Icons.delete`).
-3. Jelaskan dengan kata-kata sendiri: apa bedanya `setState`, `ChangeNotifier`, dan `Consumer`?
+1. Tambahkan **validasi NIP/NIK** — minimal 10 karakter (NIK Indonesia 16 digit).
+2. Tampilkan **snackbar sukses** berisi id user yang baru dibuat (dari `registeredUser.id`).
+3. Coba register **guru** (toggle role) → di Drizzle Studio, kolom `role` = `guru` dan `class_id` = `null`.
+4. Jelaskan dengan kata-kata sendiri: apa bedanya `setState`, `ChangeNotifier`, dan `Consumer`?
 
 ## Sumber Belajar
 - [Flutter Widget Catalog](https://docs.flutter.dev/development/ui/widgets)
 - [Dart Language Tour](https://dart.dev/guides/language/language-tour)
 - [Provider Package](https://pub.dev/packages/provider)
+- [Neon CLI — `neon dev`](https://neon.tech/docs/cli/dev)
+- [Drizzle Kit Studio](https://orm.drizzle.team/drizzle-studio/overview/)

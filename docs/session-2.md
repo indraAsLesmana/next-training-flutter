@@ -29,7 +29,7 @@
 
 ## 1. Review Sesi 1 & Preview Target
 
-Kemarin kita membangun app tugas minimal dengan `http` + `Provider`. Hari ini kita **re-architect** menjadi struktur berlapis yang dipakai di industri:
+Kemarin kita membangun **register page** dengan `http` + `Provider` (struktur sederhana: model `User`, `AuthApiService`, `AuthProvider`, `RegisterScreen`). Hari ini kita **re-architect** menjadi struktur berlapis yang dipakai di industri — dan mengembangkan register page menjadi login + home guru/siswa:
 
 ```text
 lib/
