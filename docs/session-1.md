@@ -178,12 +178,31 @@ erDiagram
 | `POST` | `/api/auth/register` | Daftar (NIP/NIK + password) |
 | `POST` | `/api/auth/login` | Masuk |
 | `GET` | `/api/classes` | Daftar kelas |
+| `GET` | `/api/students/search?classId=&query=` | Cari siswa per kelas |
 | `POST` | `/api/tasks` | Guru membuat tugas |
 | `GET` | `/api/tasks?classId=&siswaId=` | Siswa melihat tugas |
 | `POST` | `/api/submissions` | Siswa mengumpulkan |
 | `GET` | `/api/tasks/:id/submissions` | Status pengumpulan |
 
 > **Detail backend dibahas di Session 3.** Untuk sekarang, cukup pahami *bentuk* API-nya.
+
+#### 📥 Coba API Langsung di Apidog
+
+Collection Apidog sudah disiapkan — **import & langsung coba** tanpa setup manual:
+
+- **File:** [`docs/apidog/next-training-api.yaml`](apidog/next-training-api.yaml)
+  - *GitHub raw:* <https://raw.githubusercontent.com/indraAsLesmana/next-training-flutter/build-project/docs/apidog/next-training-api.yaml>
+
+**Cara pakai:**
+1. Buka <https://apidog.com> → **Import** → pilih file `next-training-api.yaml` (atau tempel URL raw GitHub)
+2. Apidog akan membuat collection dengan `servers` berisi placeholder `{{API_BASE_URL}}`
+3. Buat **Environment** di Apidog (ikon ⚙️ → Environment) — dua pilihan:
+   - **`Dev`** → set variabel `API_BASE_URL = http://localhost:8787` (backend Hono lokal)
+   - **`Prod`** → set variabel `API_BASE_URL = https://br-raspy-bird-ay9c83zx-todos.compute.c-5.us-east-2.aws.neon.tech` (Neon serverless)
+4. Pilih environment aktif, lalu salah satu endpoint (mis. `POST /api/auth/register`) → **Send** 🚀
+5. Alur lengkap untuk dicoba: `register` (guru + siswa) → `login` → `GET /api/classes` → `POST /api/tasks` → `POST /api/submissions` → `GET /api/tasks/:id/submissions`
+
+> **Contoh alur lengkap (Dev):** nyalakan backend (`cd flutter-task-api && npm run dev`, port 8787), lalu di Apidog pilih env **Dev**. Coba register siswa di kelas XI-a, login, buat tugas sebagai guru, kumpulkan sebagai siswa, lalu cek statusnya sebagai guru.
 
 ### 2.6 Peta 4 Sesi
 

@@ -22,7 +22,7 @@ extensions = [
 ]
 
 templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'rundown']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'rundown', 'apidog']
 
 # -- Branch-aware visibility ------------------------------------------------
 # LIVE ReadTheDocs (branch `main`) hanya menampilkan halaman Setup untuk
