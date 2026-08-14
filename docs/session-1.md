@@ -225,7 +225,6 @@ flutter_training/
 | `lib/` | Semua kode Dart aplikasi |
 | `pubspec.yaml` | Dependency + metadata project |
 | `android/`, `ios/`, `web/` | Kode native per platform (jarang disentuh) |
-| `test/` | Test otomatis |
 
 > **Checkpoint:** semua berhasil menjalankan counter app di emulator.
 
