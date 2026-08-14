@@ -258,14 +258,21 @@ Lihat folder `docs/` untuk dokumentasi detail, atau kunjungi [dokumentasi online
 
 ### 📖 **Menjalankan ReadTheDocs Secara Lokal (Python & Sphinx)**
 
+Gunakan Python Virtual Environment (`venv`) agar `pip` dan `sphinx-build` ter-install dengan benar tanpa error `command not found`:
+
 ```bash
-# 1. Install dependensi Sphinx
+# 1. Buat & aktifkan virtual environment
+python3 -m venv .venv
+source .venv/bin/activate        # macOS / Linux
+# .venv\Scripts\activate          # (Khusus Windows PowerShell)
+
+# 2. Install dependensi Sphinx
 pip install -r docs/requirements.txt
 
-# 2. Build HTML documentation dari folder docs
+# 3. Build HTML documentation dari folder docs
 sphinx-build -b html docs docs/_build/html
 
-# 3. Jalankan HTTP Server lokal dengan Python
+# 4. Jalankan HTTP Server lokal dengan Python
 python3 -m http.server 8000 --directory docs/_build/html
 ```
 Buka browser di **`http://localhost:8000`** untuk melihat preview dokumentasi lokal.
