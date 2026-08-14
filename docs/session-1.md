@@ -107,13 +107,60 @@ flowchart LR
 
 ```{mermaid}
 erDiagram
-    CLASSES ||--o{ USERS : "memiliki"
-    CLASSES ||--o{ TASKS : "memiliki"
-    USERS ||--o{ TASKS : "membuat (guru)"
-    USERS ||--o{ SUBMISSIONS : "mengumpulkan (siswa)"
-    TASKS ||--o{ SUBMISSIONS : "dikumpulkan"
-    SUBMISSIONS ||--o{ SUBMISSION_MEMBERS : "tim"
-    USERS ||--o{ SUBMISSION_MEMBERS : "anggota"
+    CLASSES ||--o{ USERS : "contains (role=siswa)"
+    CLASSES ||--o{ TASKS : "assigned to"
+    USERS ||--o{ TASKS : "creates (role=guru)"
+    USERS ||--o{ SUBMISSIONS : "submits (role=siswa)"
+    TASKS ||--o{ SUBMISSIONS : "has"
+    SUBMISSIONS ||--o{ SUBMISSION_MEMBERS : "includes"
+    USERS ||--o{ SUBMISSION_MEMBERS : "member of"
+
+    CLASSES {
+        uuid id PK "Primary Key"
+        varchar tingkat "Tingkat kelas: X, XI, XII"
+        varchar nama_kelas "Nama kelas: a, b, c, d"
+        timestamp created_at "Timestamp pembuatan"
+    }
+
+    USERS {
+        uuid id PK "Primary Key"
+        varchar nama "Nama lengkap user"
+        varchar role "Role user: 'guru' | 'siswa'"
+        varchar nip_nik "Unique NIP/NIK"
+        varchar email "Email user (Opsional)"
+        text password_hash "Password hash / plain"
+        uuid class_id FK "Foreign Key -> classes.id (Siswa Only)"
+        timestamp created_at "Timestamp pendaftaran"
+    }
+
+    TASKS {
+        uuid id PK "Primary Key"
+        uuid guru_id FK "Foreign Key -> users.id (Guru)"
+        uuid class_id FK "Foreign Key -> classes.id"
+        text description "Deskripsi tugas"
+        timestamp start_date "Tanggal & waktu mulai"
+        timestamp end_date "Tenggat waktu pengumpulan"
+        text attachment_url "Link file lampiran (Opsional)"
+        boolean is_team_task "Flag tugas kelompok"
+        integer max_team_members "Maksimal anggota per tim"
+        timestamp created_at "Timestamp pembuatan"
+    }
+
+    SUBMISSIONS {
+        uuid id PK "Primary Key"
+        uuid task_id FK "Foreign Key -> tasks.id"
+        uuid siswa_id FK "Foreign Key -> users.id (Siswa/Leader)"
+        text submit_url "URL hasil tugas (Drive/GitHub)"
+        text notes "Catatan tambahan (Opsional)"
+        timestamp submitted_at "Waktu pengumpulan"
+    }
+
+    SUBMISSION_MEMBERS {
+        uuid id PK "Primary Key"
+        uuid submission_id FK "Foreign Key -> submissions.id"
+        uuid siswa_id FK "Foreign Key -> users.id (Siswa Anggota)"
+        timestamp created_at "Timestamp penambahan"
+    }
 ```
 
 | Tabel | Isi | Relasi penting |
