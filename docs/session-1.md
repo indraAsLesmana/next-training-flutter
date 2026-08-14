@@ -55,12 +55,12 @@ git checkout session-1-start
 
 | Peran | Identitas | Bisa Melakukan |
 |---|---|---|
-| **Guru** | NIP (Nomor Induk Pegawai) | Membuat kelas, membuat tugas (individu/kelompok), melihat pengumpulan |
+| **Guru** | NIP (Nomor Induk Pegawai) | membuat tugas (individu/kelompok), melihat pengumpulan |
 | **Siswa** | NIK (Nomor Induk Kependudukan) | Melihat tugas kelas, mengumpulkan tugas (link URL), cek status |
 
 #### 2.1.1 Hasil Akhir Aplikasi (Screenshot)
 
-Ini **tampilan aplikasi yang akan kita bangun** selama 4 sesi — jadikan target visual:
+Ini **tampilan aplikasi yang akan kita bangun** selama 4 sesi:
 
 | | |
 |---|---|
@@ -73,7 +73,7 @@ Ini **tampilan aplikasi yang akan kita bangun** selama 4 sesi — jadikan target
 | **7. Pengumpulan Tugas Guru** | |
 | ![Pengumpulan Guru](project_ss/7.task-submit-guru.png) | |
 
-> **Catatan:** Screenshot di atas adalah hasil akhir dari seluruh training (branch `session-4-final`). Hari ini (Sesi 1) kita baru membangun fondasinya — tapi dengan target visual ini, kalian selalu tahu *ke mana* kita melangkah.
+> **Catatan:** Screenshot di atas adalah hasil akhir dari seluruh training (branch `session-4-final`).
 
 ### 2.2 Alur Pengguna
 
