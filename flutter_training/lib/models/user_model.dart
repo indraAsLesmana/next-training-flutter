@@ -1,32 +1,39 @@
-// lib/models/user_model.dart
-// Model User untuk halaman Register.
-// Mewakili satu baris di tabel `users` (Neon PostgreSQL).
-
-class User {
-  final String? id;      // UUID dari database (null sebelum disimpan)
+class UserModel {
+  final String id;
   final String nama;
-  final String role;     // 'guru' | 'siswa'
-  final String nipNik;   // NIP (guru) atau NIK (siswa)
+  final String role;
+  final String nipNik;
   final String? email;
-  final String password; // Plain text — versi training (tanpa bcrypt)
+  final String? classId;
 
-  User({
-    this.id,
+  UserModel({
+    required this.id,
     required this.nama,
     required this.role,
     required this.nipNik,
     this.email,
-    required this.password,
+    this.classId,
   });
 
-  // Mengubah objek User menjadi Map untuk dikirim ke API (JSON body).
-  Map<String, dynamic> toJson() => {
-        'nama': nama,
-        'role': role,
-        'nipNik': nipNik,
-        'email': email,
-        'password': password,
-        // classId dikirim null untuk guru; siswa akan diisi di Session 2
-        'classId': null,
-      };
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json['id'],
+      nama: json['nama'],
+      role: json['role'],
+      nipNik: json['nipNik'] ?? json['nip_nik'],
+      email: json['email'],
+      classId: json['classId'] ?? json['class_id'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'nama': nama,
+      'role': role,
+      'nipNik': nipNik,
+      'email': email,
+      'classId': classId,
+    };
+  }
 }

@@ -1,42 +1,79 @@
 // lib/services/auth_api_service.dart
-// Client HTTP sederhana untuk endpoint auth backend Hono.
-// Backend dijalankan lokal dengan `neon dev` (port 8787).
+// Layanan API untuk autentikasi & master data kelas.
+// Memakai Dio (via DioClient) untuk HTTP — bukan package http.
+//
+// Di Session 2, service ini akan di-refactor menjadi
+// AuthRepository + SchoolRepository (pola repository).
 
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import '../core/network/api_response.dart';
+import '../core/network/dio_client.dart';
+import '../models/class_model.dart';
 import '../models/user_model.dart';
 
 class AuthApiService {
-  // Base URL backend Hono lokal (dijalankan dengan `neon dev`).
-  // Catatan: Android emulator memakai 10.0.2.2, bukan localhost.
-  final String baseUrl = const String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'http://localhost:8787',
-  );
+  final DioClient _client = DioClient();
 
-  /// Mengirim data register ke `POST /api/auth/register`.
-  /// Mengembalikan User yang berhasil dibuat (dengan id dari database).
-  Future<User> register(User user) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/api/auth/register'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(user.toJson()),
-    );
+  // POST /api/auth/register — daftarkan user baru
+  Future<ApiResponse<UserModel>> register({
+    required String nama,
+    required String role,
+    required String nipNik,
+    required String password,
+    String? email,
+    String? classId,
+  }) async {
+    try {
+      final response = await _client.dio.post('/api/auth/register', data: {
+        'nama': nama,
+        'role': role,
+        'nipNik': nipNik,
+        'password': password,
+        'email': email,
+        'classId': classId,
+      });
 
-    final body = jsonDecode(response.body) as Map<String, dynamic>;
-
-    if (response.statusCode == 201 && body['success'] == true) {
-      final data = body['data'] as Map<String, dynamic>;
-      return User(
-        id: data['id'],
-        nama: data['nama'],
-        role: data['role'],
-        nipNik: data['nipNik'],
-        email: data['email'],
-        password: user.password,
+      return ApiResponse<UserModel>.fromJson(
+        response.data,
+        (json) => UserModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on DioException catch (e) {
+      return ApiResponse<UserModel>(
+        success: false,
+        message: DioClient.getErrorMessage(e),
+      );
+    } catch (e) {
+      return ApiResponse<UserModel>(
+        success: false,
+        message: 'Terjadi kesalahan: ${e.toString()}',
       );
     }
+  }
 
-    throw Exception(body['message'] ?? 'Gagal mendaftar (HTTP ${response.statusCode})');
+  // GET /api/classes — ambil daftar kelas (untuk dropdown Tingkat & Ruang Kelas)
+  Future<ApiResponse<List<ClassModel>>> fetchClasses() async {
+    try {
+      final response = await _client.dio.get('/api/classes');
+
+      return ApiResponse<List<ClassModel>>.fromJson(
+        response.data,
+        (json) {
+          final list = json as List<dynamic>;
+          return list
+              .map((e) => ClassModel.fromJson(e as Map<String, dynamic>))
+              .toList();
+        },
+      );
+    } on DioException catch (e) {
+      return ApiResponse<List<ClassModel>>(
+        success: false,
+        message: DioClient.getErrorMessage(e),
+      );
+    } catch (e) {
+      return ApiResponse<List<ClassModel>>(
+        success: false,
+        message: 'Terjadi kesalahan: ${e.toString()}',
+      );
+    }
   }
 }
