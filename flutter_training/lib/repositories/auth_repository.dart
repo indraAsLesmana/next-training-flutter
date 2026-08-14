@@ -33,13 +33,41 @@ class AuthRepository {
     } on DioException catch (e) {
       return ApiResponse<UserModel>(
         success: false,
-        message: e.response?.data?['message'] ?? e.message,
+        message: DioClient.getErrorMessage(e),
         error: e.response?.data?['error'],
       );
     } catch (e) {
       return ApiResponse<UserModel>(
         success: false,
-        message: e.toString(),
+        message: 'Terjadi kesalahan: ${e.toString()}',
+      );
+    }
+  }
+
+  Future<ApiResponse<UserModel>> loginUser({
+    required String nipNik,
+    required String password,
+  }) async {
+    try {
+      final response = await _client.dio.post('/api/auth/login', data: {
+        'nipNik': nipNik,
+        'password': password,
+      });
+
+      return ApiResponse<UserModel>.fromJson(
+        response.data,
+        (json) => UserModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on DioException catch (e) {
+      return ApiResponse<UserModel>(
+        success: false,
+        message: DioClient.getErrorMessage(e),
+        error: e.response?.data?['error'],
+      );
+    } catch (e) {
+      return ApiResponse<UserModel>(
+        success: false,
+        message: 'Terjadi kesalahan: ${e.toString()}',
       );
     }
   }

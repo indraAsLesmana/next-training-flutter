@@ -34,13 +34,13 @@ class TaskRepository {
     } on DioException catch (e) {
       return ApiResponse<TaskModel>(
         success: false,
-        message: e.response?.data?['message'] ?? e.message,
+        message: DioClient.getErrorMessage(e),
         error: e.response?.data?['error'],
       );
     } catch (e) {
       return ApiResponse<TaskModel>(
         success: false,
-        message: e.toString(),
+        message: 'Terjadi kesalahan: ${e.toString()}',
       );
     }
   }
@@ -66,13 +66,13 @@ class TaskRepository {
     } on DioException catch (e) {
       return ApiResponse<SubmissionModel>(
         success: false,
-        message: e.response?.data?['message'] ?? e.message,
+        message: DioClient.getErrorMessage(e),
         error: e.response?.data?['error'],
       );
     } catch (e) {
       return ApiResponse<SubmissionModel>(
         success: false,
-        message: e.toString(),
+        message: 'Terjadi kesalahan: ${e.toString()}',
       );
     }
   }

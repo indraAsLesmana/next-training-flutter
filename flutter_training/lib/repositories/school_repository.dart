@@ -22,13 +22,13 @@ class SchoolRepository {
     } on DioException catch (e) {
       return ApiResponse<List<ClassModel>>(
         success: false,
-        message: e.response?.data?['message'] ?? e.message,
+        message: DioClient.getErrorMessage(e),
         error: e.response?.data?['error'],
       );
     } catch (e) {
       return ApiResponse<List<ClassModel>>(
         success: false,
-        message: e.toString(),
+        message: 'Terjadi kesalahan: ${e.toString()}',
       );
     }
   }

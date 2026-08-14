@@ -1,17 +1,21 @@
 # flutter_training
 
-A new Flutter project.
+Aplikasi Mobile Pengumpulan Tugas (Flutter).
 
-## Getting Started
+## Environment Configurations
 
-This project is a starting point for a Flutter application.
+Proyek ini mendukung pergantian konfigurasi API Base URL antara **Development** (server Hono lokal) dan **Production** (Neon Cloud API).
 
-A few resources to get you started if this is your first Flutter project:
+### 🛠️ 1. Development Mode (Server Lokal)
+Gunakan konfigurasi `config_dev.json` untuk menghubungkan aplikasi ke server `neon dev` lokal (`http://localhost:8787` / `http://10.0.2.2:8787` di Android Emulator):
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+```bash
+fvm flutter run --dart-define-from-file=config_dev.json
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 🌐 2. Production Mode (Neon Cloud API)
+Gunakan konfigurasi `config_prod.json` untuk menghubungkan aplikasi langsung ke database / API cloud Neon:
+
+```bash
+fvm flutter run --dart-define-from-file=config_prod.json
+```
