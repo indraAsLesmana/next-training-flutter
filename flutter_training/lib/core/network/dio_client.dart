@@ -35,21 +35,4 @@ class DioClient {
       error: true,
     ));
   }
-
-  static String getErrorMessage(DioException e) {
-    switch (e.type) {
-      case DioExceptionType.connectionTimeout:
-      case DioExceptionType.sendTimeout:
-      case DioExceptionType.receiveTimeout:
-        return 'Koneksi ke server timeout (waktu habis). Silakan periksa koneksi internet atau server backend.';
-      case DioExceptionType.connectionError:
-        return 'Gagal terhubung ke server backend. Pastikan server aktif.';
-      case DioExceptionType.badResponse:
-        return e.response?.data?['message'] ?? 'Terjadi kesalahan pada server (${e.response?.statusCode}).';
-      case DioExceptionType.cancel:
-        return 'Permintaan dibatalkan.';
-      default:
-        return e.message ?? 'Terjadi kesalahan jaringan tidak terduga.';
-    }
-  }
 }

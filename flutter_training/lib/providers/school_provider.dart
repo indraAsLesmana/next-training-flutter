@@ -1,16 +1,15 @@
-// lib/providers/school_provider.dart
-// SchoolProvider — state untuk data master kelas (dropdown Tingkat & Ruang Kelas).
-
 import 'package:flutter/material.dart';
+import '../repositories/school_repository.dart';
 import '../models/class_model.dart';
-import '../services/auth_api_service.dart';
 
-class SchoolProvider extends ChangeNotifier {
-  final AuthApiService _api = AuthApiService();
-
+class SchoolProvider with ChangeNotifier {
+  final SchoolRepository _schoolRepo;
+  
   List<ClassModel> _classes = [];
   bool _isLoading = false;
   String? _error;
+
+  SchoolProvider(this._schoolRepo);
 
   List<ClassModel> get classes => _classes;
   bool get isLoading => _isLoading;
@@ -21,14 +20,14 @@ class SchoolProvider extends ChangeNotifier {
     _error = null;
     notifyListeners();
 
-    final response = await _api.fetchClasses();
+    final response = await _schoolRepo.getClasses();
 
     _isLoading = false;
 
     if (response.success && response.data != null) {
       _classes = response.data!;
     } else {
-      _error = response.message ?? 'Gagal memuat kelas';
+      _error = response.message ?? 'Failed to load classes';
     }
     notifyListeners();
   }

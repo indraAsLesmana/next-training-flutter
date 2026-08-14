@@ -1,21 +1,20 @@
-// lib/providers/auth_provider.dart
-// AuthProvider — state untuk proses register.
-// (Login & session akan dibahas di Session 3.)
-
 import 'package:flutter/material.dart';
+import '../repositories/auth_repository.dart';
 import '../models/user_model.dart';
-import '../services/auth_api_service.dart';
 
-class AuthProvider extends ChangeNotifier {
-  final AuthApiService _api = AuthApiService();
+class AuthProvider with ChangeNotifier {
+  final AuthRepository _authRepo;
 
+  UserModel? _currentUser;
   bool _isLoading = false;
   String? _error;
-  UserModel? _registeredUser;
 
+  AuthProvider(this._authRepo);
+
+  UserModel? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
   String? get error => _error;
-  UserModel? get registeredUser => _registeredUser;
+  bool get isAuthenticated => _currentUser != null;
 
   Future<bool> register({
     required String nama,
@@ -29,7 +28,7 @@ class AuthProvider extends ChangeNotifier {
     _error = null;
     notifyListeners();
 
-    final response = await _api.register(
+    final response = await _authRepo.registerUser(
       nama: nama,
       role: role,
       nipNik: nipNik,
@@ -41,18 +40,18 @@ class AuthProvider extends ChangeNotifier {
     _isLoading = false;
 
     if (response.success && response.data != null) {
-      _registeredUser = response.data;
+      _currentUser = response.data;
       notifyListeners();
       return true;
+    } else {
+      _error = response.message ?? 'Unknown error';
+      notifyListeners();
+      return false;
     }
-
-    _error = response.message ?? 'Gagal mendaftar';
-    notifyListeners();
-    return false;
   }
 
-  void clearError() {
-    _error = null;
+  void logout() {
+    _currentUser = null;
     notifyListeners();
   }
 }

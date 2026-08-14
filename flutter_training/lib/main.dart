@@ -1,19 +1,31 @@
-// lib/main.dart
-// Entry point — mendaftarkan provider lalu membuka LoginScreen.
-// LoginScreen (home) punya tombol "Daftar di sini" → RegisterScreen.
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'core/network/dio_client.dart';
+import 'repositories/auth_repository.dart';
+import 'repositories/school_repository.dart';
+import 'repositories/task_repository.dart';
+
 import 'providers/auth_provider.dart';
 import 'providers/school_provider.dart';
-import 'screens/auth/login_screen.dart';
+import 'providers/task_provider.dart';
+
+import 'screens/auth/register_screen.dart';
+import 'screens/guru/teacher_home_screen.dart';
+import 'screens/siswa/student_home_screen.dart';
 
 void main() {
+  final dioClient = DioClient();
+  final authRepo = AuthRepository(dioClient);
+  final schoolRepo = SchoolRepository(dioClient);
+  final taskRepo = TaskRepository(dioClient);
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => SchoolProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider(authRepo)),
+        ChangeNotifierProvider(create: (_) => SchoolProvider(schoolRepo)..fetchClasses()),
+        ChangeNotifierProvider(create: (_) => TaskProvider(taskRepo)),
       ],
       child: const MyApp(),
     ),
@@ -31,7 +43,19 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const LoginScreen(),
+      home: Consumer<AuthProvider>(
+        builder: (context, authProvider, _) {
+          if (!authProvider.isAuthenticated) {
+            return const RegisterScreen();
+          }
+
+          if (authProvider.currentUser?.role == 'guru') {
+            return const TeacherHomeScreen();
+          } else {
+            return const StudentHomeScreen();
+          }
+        },
+      ),
     );
   }
 }

@@ -59,11 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       classId: _role == 'siswa' ? _selectedClassId : null,
     );
 
-    if (success && mounted) {
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
-    } else if (!success && mounted) {
+    if (!success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(authProvider.error ?? 'Gagal mendaftar')),
       );
@@ -231,21 +227,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: authProvider.isLoading
                             ? const CircularProgressIndicator()
                             : const Text('Daftar'),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Sudah punya akun?'),
-                          TextButton(
-                            onPressed: () {
-                              if (Navigator.canPop(context)) {
-                                Navigator.pop(context);
-                              }
-                            },
-                            child: const Text('Masuk di sini'),
-                          ),
-                        ],
                       ),
                     ],
                   ),
