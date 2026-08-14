@@ -1,6 +1,6 @@
 # Session 2: Arsitektur Berlapis, Model, Repository & Dio
 
-> **Hari 2 — Minggu, 16 Agustus** (09:00–12:00 pagi, 13:00–15:00 siang, break 12:00–13:00)
+> **Hari 2 — Minggu, 16 Agustus** (09:30–12:00 pagi, 13:00–14:30 siang, break 12:00–13:00)
 
 > **Branch workflow sesi ini:**
 > - Mulai dari branch **`session-2-start`** (= hasil akhir `session-1-final`)

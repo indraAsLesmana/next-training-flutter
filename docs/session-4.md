@@ -1,6 +1,6 @@
 # Session 4: Workshop — Replikasi, Improvement & Q&A
 
-> **Hari 4 — Minggu, 23 Agustus** (09:00–12:00 pagi, 13:00–15:00 siang, break 12:00–13:00)
+> **Hari 4 — Minggu, 23 Agustus** (09:30–12:00 pagi, 13:00–14:30 siang, break 12:00–13:00)
 
 > **Branch workflow sesi ini:**
 > - Mulai dari branch **`session-4-start`** (= hasil akhir `session-3-final`)
@@ -22,7 +22,7 @@ Peserta tidak lagi *mengikuti instruksi* — mereka **berkreasi**:
 
 ---
 
-## 1. Recap 3 Sesi (09:00–09:30)
+## 1. Recap 3 Sesi (09:30–09:50)
 
 **Perjalanan yang sudah dilalui:**
 
@@ -53,7 +53,7 @@ lib/
 
 ---
 
-## 2. Challenge: Replikasi Mandiri (09:30–11:00)
+## 2. Challenge: Replikasi Mandiri (09:50–11:20)
 
 **Tantangan:** tutup semua materi, buat ulang project dari `fvm flutter create` — **hanya dengan hint dari instruktur, tanpa kode jadi**.
 
@@ -86,7 +86,7 @@ git checkout session-4-final -- flutter_training/
 
 ---
 
-## 3. Improvement Session (11:00–11:45)
+## 3. Improvement Session (11:20–11:45)
 
 Pilih **1-2 improvement** per peserta (atau berpasangan), kerjakan mandiri:
 
@@ -110,7 +110,7 @@ Pilih **1-2 improvement** per peserta (atau berpasangan), kerjakan mandiri:
 
 ---
 
-## 4. Q&A Terbuka (13:00–14:00)
+## 4. Q&A Terbuka (13:00–13:45)
 
 ### Topik yang Siap Dibahas
 
@@ -125,12 +125,12 @@ Pilih **1-2 improvement** per peserta (atau berpasangan), kerjakan mandiri:
 | **Performa** | Lazy loading, caching, image optimization |
 | **Roadmap belajar** | Lanjutan setelah Flutter dasar |
 
-### Demo Deploy (opsional, 14:00–14:30)
+### Demo Deploy (opsional, 13:45–14:05)
 Jika waktu & jaringan memungkinkan: demo deploy backend ke **Neon Functions** + Flutter web.
 
 ---
 
-## 5. Penutupan (14:45–15:00)
+## 5. Penutupan (14:05–14:30)
 
 - Recap perjalanan 4 sesi
 - Bagikan link materi: repo, docs online (ReadTheDocs), rundown

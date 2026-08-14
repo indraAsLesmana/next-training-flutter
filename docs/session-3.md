@@ -1,6 +1,6 @@
 # Session 3: Backend Hono + Neon, Dio Integration & Login
 
-> **Hari 3 — Sabtu, 22 Agustus** (09:00–12:00 pagi, 13:00–15:00 siang, break 12:00–13:00)
+> **Hari 3 — Sabtu, 22 Agustus** (09:30–12:00 pagi, 13:00–14:30 siang, break 12:00–13:00)
 
 > **Branch workflow sesi ini:**
 > - Mulai dari branch **`session-3-start`** (= hasil akhir `session-2-final`)

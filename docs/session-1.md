@@ -1,6 +1,6 @@
 # Session 1: Perencanaan & Desain Aplikasi + Dasar Flutter
 
-> **Hari 1 — Sabtu, 15 Agustus** (09:00–12:00 pagi, 13:00–15:00 siang, break 12:00–13:00)
+> **Hari 1 — Sabtu, 15 Agustus** (09:30–12:00 pagi, 13:00–14:30 siang, break 12:00–13:00)
 
 > **Branch workflow sesi ini:**
 > - Mulai dari branch **`session-1-start`** (scaffold `fvm flutter create` — kosong)

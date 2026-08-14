@@ -1,7 +1,7 @@
 # Sesi 4: Workshop — Replikasi, Improvement & Q&A
 
 ## Info
-- **Tanggal:** Minggu, 23 Agustus (pagi 09:00–12:00, siang 13:00–15:00; break 12:00–13:00)
+- **Tanggal:** Minggu, 23 Agustus (pagi 09:30–12:00, siang 13:00–14:30; break 12:00–13:00)
 - **Mulai dari:** `session-4-start` (= hasil sesi 3, app lengkap end-to-end)
 - **Target akhir:** tidak ada target kode — ini sesi workshop
 - **Branch pembanding:** — (gunakan `session-4-start` sebagai baseline)
@@ -16,14 +16,14 @@ Peserta tidak lagi *mengikuti instruksi* — mereka **berkreasi**:
 
 ## Storyboard Menit-per-Menit
 
-### BLOK PAGI (09:00–12:00) — Replikasi & Improvement
+### BLOK PAGI (09:30–12:00) — Replikasi & Improvement
 
-#### 09:00–09:30 — Recap 3 Sesi (30 min)
+#### 09:30–09:50 — Recap 3 Sesi (20 min)
 - [ ] Recap cepat: apa yang dibangun di sesi 1-3 (alur: create → model → provider → Dio → backend → login)
 - [ ] Tampilkan **struktur akhir** project (`session-4-start` tree) — peta lengkap
 - [ ] Jelaskan alur end-to-end: register → login → buat tugas → kumpul → cek status
 
-#### 09:30–11:00 — Challenge: Replikasi Mandiri (90 min)
+#### 09:50–11:20 — Challenge: Replikasi Mandiri (90 min)
 - [ ] **Tantangan:** peserta *menutup* semua materi, coba buat ulang project dari `fvm flutter create`
 - [ ] Instruktur hanya *memberi hint* jika macet (jangan kasih kode)
 - [ ] Tingkat kesulitan bertahap:
@@ -34,7 +34,7 @@ Peserta tidak lagi *mengikuti instruksi* — mereka **berkreasi**:
 - [ ] **Checkpoint 10:30:** siapa sudah sampai level 2?
 - [ ] **Checkpoint 11:00:** siapa sudah level 3/4?
 
-#### 11:00–11:45 — Improvement Session (45 min)
+#### 11:20–11:45 — Improvement Session (25 min)
 - [ ] **List improvement** (pilih 1-2 per peserta):
   - Tambah `DELETE /api/tasks/:id` + tombol hapus di UI
   - Validasi register (tolak NIP/NIK duplikat dengan pesan ramah)
@@ -54,9 +54,9 @@ Peserta tidak lagi *mengikuti instruksi* — mereka **berkreasi**:
 
 ---
 
-### BLOK SIANG (13:00–15:00) — Q&A & Penutupan
+### BLOK SIANG (13:00–14:30) — Q&A & Penutupan
 
-#### 13:00–14:00 — Q&A Terbuka (60 min)
+#### 13:00–13:45 — Q&A Terbuka (45 min)
 - [ ] **Topik siap-siap:**
   - Deployment: cara deploy Flutter ke Play Store / web (Firebase Hosting, Netlify)
   - Backend: deploy Hono ke Neon Functions / Vercel / Railway
@@ -68,10 +68,10 @@ Peserta tidak lagi *mengikuti instruksi* — mereka **berkreasi**:
   - Cara lanjut belajar: roadmap Flutter developer
 - [ ] Tampung pertanyaan peserta (bisa juga via sticky notes/mentimeter)
 
-#### 14:00–14:30 — Demo Deploy (opsional) (30 min)
+#### 13:45–14:05 — Demo Deploy (opsional) (20 min)
 - [ ] Jika waktu & jaringan memungkinkan: demo deploy backend ke Neon Functions + Flutter web
 
-#### 14:30–15:00 — Penutupan (30 min)
+#### 14:05–14:30 — Penutupan (25 min)
 - [ ] Recap perjalanan 4 sesi
 - [ ] Bagikan link materi: repo, docs online (ReadTheDocs), rundown
 - [ ] Feedback form / evaluasi

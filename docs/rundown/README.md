@@ -6,12 +6,12 @@
 
 | Hari | Tanggal | Sesi | Jam | Materi |
 |---|---|---|---|---|
-| Sabtu | **15 Agustus** | Sesi 1 | 09:00–15:00 | Perencanaan & Desain Aplikasi + Dart & Flutter dasar |
-| Minggu | **16 Agustus** | Sesi 2 | 09:00–15:00 | State management, HTTP, re-arch project |
-| Sabtu | **22 Agustus** | Sesi 3 | 09:00–15:00 | Backend Hono+Neon, Dio, login |
-| Minggu | **23 Agustus** | Sesi 4 | 09:00–15:00 | Workshop: replikasi, improvement, Q&A |
+| Sabtu | **15 Agustus** | Sesi 1 | 09:30–14:30 | Perencanaan & Desain Aplikasi + Dart & Flutter dasar |
+| Minggu | **16 Agustus** | Sesi 2 | 09:30–14:30 | State management, HTTP, re-arch project |
+| Sabtu | **22 Agustus** | Sesi 3 | 09:30–14:30 | Backend Hono+Neon, Dio, login |
+| Minggu | **23 Agustus** | Sesi 4 | 09:30–14:30 | Workshop: replikasi, improvement, Q&A |
 
-> Break **12:00–13:00** (1 jam). Jam efektif mengajar **4 jam per sesi** (09:00–12:00 pagi + 13:00–15:00 siang).
+> Break **12:00–13:00** (1 jam). Jam efektif mengajar **4 jam per sesi** (09:30–12:00 pagi + 13:00–14:30 siang).
 
 ## Topologi Branch (rantai hasil akhir)
 
@@ -39,13 +39,13 @@ session-3-final ──► session-4-start ──► session-4-final
 2. **Checkpoint setiap 20-30 menit** — "semua orang harus melihat layar X sekarang".
 3. **Jangan pernah menulis kode untuk peserta** — tunjukkan, jelaskan, biarkan mereka mengetik.
 4. **Gunakan branch pembanding** — jika peserta tertinggal, `git merge session-X-final` untuk mengejar.
-5. **Break 12:00–13:00** — jadwal mengajar menyesuaikan (blok pagi 09:00–12:00, blok siang 13:00–15:00).
+5. **Break 12:00–13:00** — jadwal mengajar menyesuaikan (blok pagi 09:30–12:00, blok siang 13:00–14:30).
 
 ---
 
 ## Ringkasan Per Sesi
 
-- [**Sesi 1**](session-1.md) — Perencanaan & Desain Aplikasi + Dart & Flutter dasar, widget tree, dari `fvm flutter create` sampai app tugas statis (09:00–12:00, 13:00–15:00)
-- [**Sesi 2**](session-2.md) — State management (Provider), HTTP (http package), re-arch ke struktur model/repo/provider/screens (09:00–12:00, 13:00–15:00)
-- [**Sesi 3**](session-3.md) — Backend Hono+Neon, Dio client, repository, login (09:00–12:00, 13:00–15:00)
-- [**Sesi 4**](session-4.md) — Workshop: replikasi project, improvement, Q&A (09:00–12:00, 13:00–15:00)
+- [**Sesi 1**](session-1.md) — Perencanaan & Desain Aplikasi + Dart & Flutter dasar, widget tree, dari `fvm flutter create` sampai app tugas statis (09:30–12:00, 13:00–14:30)
+- [**Sesi 2**](session-2.md) — State management (Provider), HTTP (http package), re-arch ke struktur model/repo/provider/screens (09:30–12:00, 13:00–14:30)
+- [**Sesi 3**](session-3.md) — Backend Hono+Neon, Dio client, repository, login (09:30–12:00, 13:00–14:30)
+- [**Sesi 4**](session-4.md) — Workshop: replikasi project, improvement, Q&A (09:30–12:00, 13:00–14:30)
