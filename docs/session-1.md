@@ -198,7 +198,7 @@ erDiagram
 | 3 | 22 Agu | Backend Hono+Neon, login | App lengkap end-to-end | `session-3-start` → `session-3-final` |
 | 4 | 23 Agu | Workshop: replikasi, improvement, Q&A | Tidak ada target kode | `session-4-start` → `session-4-final` |
 
-> **Checkpoint:** Coba jawab — (1) apa yang akan kita bangun? (2) data apa saja yang disimpan di database? (3) apa perbedaan role guru & siswa?
+> **Checkpoint**
 
 ---
 
