@@ -11,7 +11,7 @@
 - Memahami **arsitektur berlapis**: `models/` → `repositories/` → `providers/` → `screens/`
 - Membuat model Dart lengkap dengan `fromJson`/`toJson` (serialization manual)
 - Memahami **repository pattern** sebagai abstraksi sumber data
-- Mengganti `http` → **Dio** (interceptor, error handling, `ApiResponse` wrapper)
+- **Refactor `AuthApiService` → `AuthRepository` + `SchoolRepository`** (service dipisah per domain, tetap pakai Dio yang sudah kita kenal di Sesi 1)
 - Membuat **halaman role-based** (siswa & guru) dengan routing otomatis
 
 ## Agenda (4 jam efektif)
@@ -29,7 +29,7 @@
 
 ## 1. Review Sesi 1 & Preview Target
 
-Kemarin kita membangun **register page** dengan `http` + `Provider` (struktur sederhana: model `User`, `AuthApiService`, `AuthProvider`, `RegisterScreen`). Hari ini kita **re-architect** menjadi struktur berlapis yang dipakai di industri — dan mengembangkan register page menjadi login + home guru/siswa:
+Kemarin kita membangun **register page** dengan **Dio** + `Provider` (struktur sederhana: model `UserModel`, `AuthApiService`, `AuthProvider`, `RegisterScreen`, `SchoolProvider`). Hari ini kita **re-architect** menjadi struktur berlapis yang dipakai di industri — dan mengembangkan register page menjadi login + home guru/siswa:
 
 ```text
 lib/

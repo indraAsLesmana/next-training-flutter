@@ -25,8 +25,8 @@ templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'rundown', 'apidog']
 
 # -- Branch-aware visibility ------------------------------------------------
-# LIVE ReadTheDocs (branch `main`) menampilkan Setup + Session 1 untuk peserta.
-# Session 2-4 (materi hari berikutnya) disembunyikan sampai waktunya.
+# LIVE ReadTheDocs (branch `main`) menampilkan Setup + Session 1 + Session 2 untuk peserta.
+# Session 3-4 (materi hari berikutnya) disembunyikan sampai tanggalnya tiba.
 # Branch `build-project` (dan branch lain / build lokal) menampilkan SEMUA.
 import os
 import subprocess
@@ -43,7 +43,7 @@ if not _branch:
     except Exception:
         _branch = ''
 if _branch == 'main':
-    exclude_patterns += ['session-2.md', 'session-3.md', 'session-4.md']
+    exclude_patterns += ['session-3.md', 'session-4.md']
     # Sesi berikutnya sengaja disembunyikan di versi live — toctree di index.md
     # tetap mencantumkannya (agar build-project tidak butuh file terpisah).
     # Warning "toctree contains reference to excluded/nonexisting document"
