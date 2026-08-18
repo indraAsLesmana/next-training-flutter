@@ -450,6 +450,8 @@ git merge session-2-final
 2. Implement `AuthRepository.register()` — POST `/api/auth/register` dengan `ApiResponse<UserModel>`.
 3. Jelaskan aliran data: dari tombol "Kumpulkan Tugas" di UI sampai tersimpan di database — sebutkan layer yang terlibat.
 
+> **Menuju Sesi 3 (Homework 1 minggu):** mulai sesi berikutnya kita pindah ke **dua repository baru** — [`flutter_application_training`](https://github.com/indraAsLesmana/flutter_application_training) + [`flutter-task-api-session1`](https://github.com/indraAsLesmana/flutter-task-api-session1) — yang merupakan **live code saat onsite teaching** dan sudah berisi login + session. Di sana kita kembangkan **Task Management (guru)**: buat tugas, list, dan detail + status siswa. Semua detail ada di Session 3.
+
 ## Sumber Belajar
 - [Dio Package](https://pub.dev/packages/dio)
 - [Provider Package](https://pub.dev/packages/provider)

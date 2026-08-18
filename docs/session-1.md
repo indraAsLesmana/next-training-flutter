@@ -198,7 +198,7 @@ erDiagram
 |---|---|---|---|---|
 | 1 | 15 Agu | Perencanaan + Dasar Flutter + `neon dev` | **Register page (persis build-project) + data masuk Neon DB** | `session-1-start` → `session-1-final` |
 | 2 | 16 Agu | State mgmt, HTTP, re-arch | Arsitektur berlapis + Dio | `session-2-start` → `session-2-final` |
-| 3 | 22 Agu | Backend Hono+Neon, login | App lengkap end-to-end | `session-3-start` → `session-3-final` |
+| 3 | 22 Agu | **Homework 1 minggu** — Task Management (Guru) | Repo baru: `flutter_application_training` + `flutter-task-api-session1` | `s3-start` → `s3-finish` (2 repo) |
 | 4 | 23 Agu | Workshop: replikasi, improvement, Q&A | Tidak ada target kode | `session-4-start` → `session-4-final` |
 
 > **Checkpoint**

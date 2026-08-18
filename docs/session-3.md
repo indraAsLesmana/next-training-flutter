@@ -1,463 +1,761 @@
-# Session 3: Backend Hono + Neon, Dio Integration & Login
+# Session 3: Homework 1 Minggu — Task Management (Guru)
 
-> **Hari 3 — Sabtu, 22 Agustus** (09:30–12:00 pagi, 13:00–14:30 siang, break 12:00–13:00)
+> **Hari 3 — Sabtu, 15 Agustus → Sabtu, 22 Agustus** (homework 1 minggu, dikumpulkan 22 Agu)
 
-> **Branch workflow sesi ini:**
-> - Mulai dari branch **`session-3-start`** (= hasil akhir `session-2-final`)
-> - Hasil akhir sesi ini tersimpan di branch **`session-3-final`** (login screen + timeout handling)
-> - Di akhir sesi bandingkan dengan `git diff` dan ambil referensi dengan `git merge session-3-final`
+> **Ini berbeda dari sesi sebelumnya!** Mulai sesi ini kita pindah ke **dua repository baru** — kode yang sama persis dengan yang dipakai saat teaching onsite. Repo ini sudah berisi login + session (hasil Sesi 2), dan tugas kalian adalah mengembangkan **fitur Task Management untuk guru** selama 1 minggu.
+
+> **Repository:**
+> - **Flutter**: [`flutter_application_training`](https://github.com/indraAsLesmana/flutter_application_training) (package name: `flutter_application_1`)
+> - **Backend**: [`flutter-task-api-session1`](https://github.com/indraAsLesmana/flutter-task-api-session1)
+
+> **Branch workflow:** setiap step punya branch sendiri (`s3-start` → `s3-01-*` → `s3-02-*` → `s3-03-*` → `s3-finish`). Di akhir tiap step, bandingkan dengan branch berikutnya untuk memastikan tidak tertinggal.
 
 ## Objectives
-- Memahami arsitektur backend: **Hono + Drizzle + Neon PostgreSQL** (5 tabel)
-- Membuat & menjalankan API lokal (register, login, tasks, submissions)
-- Menghubungkan Flutter (Dio) ke API sungguhan
-- **Login dengan NIP/NIK + password**, simpan sesi via `shared_preferences`
-- Menangani error & timeout dengan pesan ramah (`DioClient.getErrorMessage`)
+- Memahami **Task Management** di sisi guru: buat tugas → lihat daftar → detail + status siswa
+- Menguasai pola **step-by-step pengembangan**: schema baru → `db:push` → `neon dev` test → `neon deploy`
+- Membuat model Dart lengkap (`TaskModel`, `SubmissionModel`, `TeamMemberInfo`, `StudentSubmissionModel`)
+- Membangun **TaskProvider + TaskRepository** (pola repository yang sudah dipelajari)
+- Membangun **EmptyStateWidget**, **CreateTaskForm**, **list tugas**, dan **TaskDetailScreen**
+- Menambahkan dependency baru dengan benar (`fvm flutter pub get`)
+- Verifikasi API via **`neon dev`** (lokal) dan **`neon deploy`** (produksi)
 
-## Agenda (4 jam efektif)
-1. Review Sesi 2 & demo akhir (15 menit)
-2. Setup backend project (30 menit)
-3. Database schema & migration (45 menit)
-4. Hono routes: auth & classes (45 menit)
-5. Hono routes: tasks & submissions (30 menit)
-6. Dio integration: AuthRepository (40 menit)
-7. Session persistence: shared_preferences (40 menit)
-8. Login screen & timeout handling (20 menit)
-9. Review, merge, preview Sesi 4 (15 menit)
+## Agenda (1 minggu, 3 step)
+1. **Setup** — clone 2 repo, branch `s3-start`, env, `neon dev` (1 hari)
+2. **S3-01** — Schema Task + Model + Provider + Repository + EmptyState (2 hari)
+3. **S3-02** — List Tugas Guru + API filter (2 hari)
+4. **S3-03** — Task Detail + Status Siswa + url_launcher (2 hari)
 
 ---
 
-## 1. Review Sesi 2 & Demo Akhir
+## 1. Setup: Clone & Jalankan
 
-Kemarin kita punya arsitektur berlapis + Dio, tapi masih dengan data mock/API lokal. Hari ini kita bangun **backend sungguhan** dan sambungkan:
-
-```text
-Flutter App (Dio)
-    ↕ HTTP / JSON
-Hono API (TypeScript)
-    ↕ Drizzle ORM
-Neon PostgreSQL (5 tabel)
-```
-
-**Demo akhir:** register → login → dashboard (role) → buat tugas → kumpulkan → cek status — **end-to-end**.
-
----
-
-## 2. Setup Backend Project
-
-Struktur `flutter-task-api/`:
-
-```text
-flutter-task-api/
-├── src/
-│   ├── index.ts              # Hono app + semua routes
-│   └── db/
-│       ├── schema.ts         # Definisi 5 tabel (Drizzle)
-│       ├── seed.ts           # Data awal (kelas, contoh user)
-│       └── reset.ts          # Hapus semua data
-├── drizzle/                  # Hasil generate migration
-├── drizzle.config.ts
-├── neon.ts                   # Neon Functions entry
-├── package.json
-└── .env.example              # Template environment
-```
+### 1.1 Clone 2 repo + checkout `s3-start`
 
 ```bash
-cd flutter-task-api
+# Flutter app
+git clone https://github.com/indraAsLesmana/flutter_application_training.git
+cd flutter_application_training
+git checkout s3-start
+
+# Backend API
+git clone https://github.com/indraAsLesmana/flutter-task-api-session1.git
+cd flutter-task-api-session1
+git checkout s3-start
+```
+
+> **Kenapa pindah repo?** Repo ini adalah **live code yang dipakai saat onsite teaching** — lebih relevan dan sudah mengandung login + session (materi Sesi 2). Kita lanjut kembangkan dari sini.
+
+### 1.2 Setup Backend (API repo)
+
+```bash
+cd flutter-task-api-session1
 npm install
-npm run dev
+neon login        # sekali saja
+neon link         # hubungkan ke project Neon (buat .env.local)
+npm run db:push   # terapkan schema (classes + users) ke database
+npm run db:seed   # isi 12 kelas (X/a-d, XI/a-d, XII/a-d)
 ```
 
-> **Prasyarat:** Neon CLI sudah terpasang & terautentikasi dari Setup — cek dengan `neon me`.
-
-> **Checkpoint:** server jalan di `localhost:3000`, `GET /api/classes` merespons.
-
----
-
-## 3. Database Schema & Migration
-
-### 3.1 Lima Tabel di `src/db/schema.ts`
-
-```ts
-// 1. Tabel Classes
-export const classes = pgTable('classes', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  tingkat: varchar('tingkat', { length: 5 }).notNull(),      // 'X', 'XI', 'XII'
-  namaKelas: varchar('nama_kelas', { length: 5 }).notNull(), // 'a', 'b', 'c', 'd'
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-}, (table) => [
-  uniqueIndex('tingkat_nama_kelas_idx').on(table.tingkat, table.namaKelas),
-]);
-
-// 2. Tabel Users
-export const users = pgTable('users', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  nama: varchar('nama', { length: 100 }).notNull(),
-  role: varchar('role', { length: 10 }).notNull(),           // 'guru' | 'siswa'
-  nipNik: varchar('nip_nik', { length: 50 }).notNull().unique(),
-  email: varchar('email', { length: 100 }),
-  passwordHash: text('password_hash').notNull(),
-  classId: uuid('class_id').references(() => classes.id, { onDelete: 'set null' }),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
-
-// 3. Tabel Tasks
-export const tasks = pgTable('tasks', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  guruId: uuid('guru_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  classId: uuid('class_id').notNull().references(() => classes.id, { onDelete: 'cascade' }),
-  description: text('description').notNull(),
-  startDate: timestamp('start_date').notNull(),
-  endDate: timestamp('end_date').notNull(),
-  attachmentUrl: text('attachment_url'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
-
-// 4. Tabel Submissions
-export const submissions = pgTable('submissions', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  taskId: uuid('task_id').notNull().references(() => tasks.id, { onDelete: 'cascade' }),
-  siswaId: uuid('siswa_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  submitUrl: text('submit_url').notNull(),
-  notes: text('notes'),
-  submittedAt: timestamp('submitted_at').defaultNow().notNull(),
-});
-```
-
-**Poin penting (relasi & onDelete):**
-- `users.classId → classes.id` dengan `onDelete: 'set null'` — jika kelas dihapus, user tetap ada (classId jadi null)
-- `tasks.guruId → users.id` dengan `onDelete: 'cascade'` — jika guru dihapus, tugasnya ikut terhapus
-- `submissions.taskId → tasks.id` dengan `onDelete: 'cascade'` — jika tugas dihapus, pengumpulannya ikut terhapus
-- `nip_nik` unik — satu NIP/NIK hanya bisa daftar sekali
-
-### 3.2 Migration ke Neon
+### 1.3 Jalankan Backend Lokal: `neon dev`
 
 ```bash
-# Buat migration dari schema
-npm run db:generate
-
-# Terapkan ke database Neon
-npm run db:push
+neon dev
 ```
 
-> **Checkpoint:** 5 tabel terbuat di Neon (cek via `neon` CLI / dashboard).
+`neon dev` menjalankan Hono API secara lokal (port `8787`) sambil terhubung ke **Neon cloud**. Test dengan curl:
+
+```bash
+curl http://localhost:8787/api/classes
+# → {"success":true,"data":[{"id":"...","tingkat":"X","namaKelas":"a"},...]}
+```
+
+### 1.4 Jalankan Flutter App
+
+```bash
+cd flutter_application_training
+fvm flutter pub get
+fvm flutter run
+```
+
+Login dengan akun guru yang sudah didaftarkan di Sesi 2 (atau register baru). Setelah login, muncul **"Dashboard Guru"** dengan teks "Hello Dashboard" — belum ada fitur apa pun. Inilah titik awal S3-01.
 
 ---
 
-## 4. Hono Routes: Auth & Classes
+## 2. S3-01: Schema Task + Model + Provider + Repository + EmptyState
 
-### 4.1 Register (`POST /api/auth/register`)
+> **Branch:** Flutter `s3-01-task-emptystate` · API `s3-01-taskapi-schema`
+> **Fokus:** siapkan fondasi task management — dari database sampai UI kosong.
+
+### 2.1 API: Tambah Schema `tasks` (WAJIB `db:push`!)
+
+Buka `src/db/schema.ts` di API repo — tambahkan tabel `tasks`:
 
 ```ts
-app.post('/api/auth/register', async (c) => {
-  const { nama, role, nipNik, password, email, classId } = await c.req.json();
-
-  // Validasi role
-  if (!['guru', 'siswa'].includes(role)) {
-    return c.json({ success: false, message: 'Role tidak valid' }, 400);
-  }
-
-  // Hash password
-  const passwordHash = await Bun.password.hash(password);
-
-  // Cek duplikat NIP/NIK
-  const existing = await db.select().from(users).where(eq(users.nipNik, nipNik));
-  if (existing.length > 0) {
-    return c.json({ success: false, message: 'NIP/NIK sudah terdaftar' }, 409);
-  }
-
-  const [user] = await db.insert(users).values({ ... }).returning();
-  return c.json({ success: true, data: user });
+// src/db/schema.ts (tambahkan di bawah tabel users)
+export const tasks = pgTable("tasks", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  guruId: uuid("guru_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  classId: uuid("class_id")
+    .notNull()
+    .references(() => classes.id, { onDelete: "cascade" }),
+  description: text("description").notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  attachmentUrl: text("attachment_url"),
+  isTeamTask: boolean("is_team_task").default(false).notNull(),
+  maxTeamMembers: integer("max_team_members").default(5).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 ```
 
-### 4.2 Login (`POST /api/auth/login`)
+> **Pola penting:** setiap kali schema berubah, **wajib `npm run db:push`** untuk menyinkronkan ke database Neon:
+> ```bash
+> npm run db:push
+> ```
+
+### 2.2 API: Routes `POST /api/tasks` + `GET /api/tasks`
+
+Tambahkan di `src/index.ts`:
 
 ```ts
-app.post('/api/auth/login', async (c) => {
-  const { nipNik, password } = await c.req.json();
+app.post("/api/tasks", async (c) => {
+  const db = getDb();
+  const {
+    guruId, classId, description, startDate, endDate,
+    attachmentUrl, isTeamTask, maxTeamMembers,
+  } = await c.req.json();
 
-  const [user] = await db.select().from(users).where(eq(users.nipNik, nipNik));
-  if (!user) {
-    return c.json({ success: false, message: 'NIP/NIK tidak ditemukan' }, 404);
+  try {
+    const newTask = await db
+      .insert(tasks)
+      .values({
+        guruId, classId, description,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+        attachmentUrl: attachmentUrl || null,
+        isTeamTask: isTeamTask ?? false,
+        maxTeamMembers: maxTeamMembers ? parseInt(maxTeamMembers.toString(), 10) : 5,
+      })
+      .returning();
+
+    return c.json({ success: true, data: newTask[0] }, 201);
+  } catch (err: any) {
+    return c.json({ success: false, message: err.message }, 500);
   }
+});
 
-  const valid = await Bun.password.verify(password, user.passwordHash);
-  if (!valid) {
-    return c.json({ success: false, message: 'Password salah' }, 401);
+app.get("/api/tasks", async (c) => {
+  const db = getDb();
+  const classId = c.req.query("classId");
+  const guruId = c.req.query("guruId");
+  const siswaId = c.req.query("siswaId");
+
+  try {
+    const conditions = [];
+    if (classId) conditions.push(eq(tasks.classId, classId));
+    if (guruId) conditions.push(eq(tasks.guruId, guruId));
+
+    const taskList =
+      conditions.length > 0
+        ? await db.select().from(tasks).where(and(...conditions))
+        : await db.select().from(tasks);
+
+    return c.json({ success: true, data: taskList });
+  } catch (err: any) {
+    return c.json({ success: false, message: err.message }, 500);
   }
-
-  return c.json({ success: true, data: user });
 });
 ```
 
-### 4.3 Classes (`GET /api/classes`)
+**Test dengan `neon dev`** (backend harus jalan):
 
-```ts
-app.get('/api/classes', async (c) => {
-  const allClasses = await db.select().from(classes);
-  return c.json({ success: true, data: allClasses });
-});
+```bash
+# Buat tugas (ganti guruId/classId dengan data dari Drizzle Studio)
+curl -X POST http://localhost:8787/api/tasks \
+  -H 'content-type: application/json' \
+  -d '{"guruId":"<uuid-guru>","classId":"<uuid-kelas>","description":"Tugas 1","startDate":"2026-08-15T00:00:00Z","endDate":"2026-08-22T23:59:59Z"}'
+
+# List tugas
+curl http://localhost:8787/api/tasks
 ```
 
-**Latihan:** implement register & login mengikuti kode di atas, test dengan curl/Postman.
+**Deploy ke Neon Functions:**
 
-> **Checkpoint:** `POST /api/auth/register` + `POST /api/auth/login` sukses via curl.
-
----
-
-## 5. Hono Routes: Tasks & Submissions
-
-```ts
-// Guru membuat tugas
-app.post('/api/tasks', async (c) => {
-  const { guruId, classId, description, startDate, endDate, attachmentUrl } = await c.req.json();
-  const [task] = await db.insert(tasks).values({ ... }).returning();
-  return c.json({ success: true, data: task }, 201);
-});
-
-// Siswa melihat tugas kelas
-app.get('/api/tasks', async (c) => {
-  const { classId, siswaId } = c.req.query();
-  // ... filter berdasarkan classId, cek status pengumpulan siswa
-});
-
-// Siswa mengumpulkan tugas
-app.post('/api/submissions', async (c) => {
-  const { taskId, siswaId, submitUrl, notes } = await c.req.json();
-  const [submission] = await db.insert(submissions).values({ ... }).returning();
-  return c.json({ success: true, data: submission }, 201);
-});
-
-// Guru cek status pengumpulan
-app.get('/api/tasks/:id/submissions', async (c) => {
-  const taskId = c.req.param('id');
-  // ... list submissions dengan data siswa
-});
+```bash
+neon deploy
 ```
 
-**Latihan:** implement minimal task CRUD + submissions.
+Setelah deploy, test URL produksi (ganti `<branch>` dan `<region>` dengan milikmu):
 
-> **Checkpoint:** bisa buat tugas via API (`POST /api/tasks`).
+```bash
+curl https://<branch>-ftonsite.compute.<region>.aws.neon.tech/api/tasks
+```
 
----
+> **Catatan:** nama function di `neon.ts` adalah `ftonsite` ("flutter training onsite") — lihat di `neon functions get` untuk URL invocation.
 
-## 6. Dio Integration: AuthRepository
+### 2.3 Flutter: Model Task
+
+Buat `lib/models/task_model.dart`:
 
 ```dart
-// lib/repositories/auth_repository.dart
-class AuthRepository {
+import 'team_member_model.dart';
+
+class TaskModel {
+  final String id;
+  final String guruId;
+  final String classId;
+  final String description;
+  final String startDate;
+  final String endDate;
+  final String? attachmentUrl;
+  final bool isTeamTask;
+  final int maxTeamMembers;
+  final bool isSubmitted;
+  final String? submittedAt;
+  final String? submitUrl;
+  final String? submissionNotes;
+  final List<TeamMemberInfo> teamMembers;
+
+  TaskModel({
+    required this.id,
+    required this.guruId,
+    required this.classId,
+    required this.description,
+    required this.startDate,
+    required this.endDate,
+    this.attachmentUrl,
+    this.isTeamTask = false,
+    this.maxTeamMembers = 5,
+    this.isSubmitted = false,
+    this.submittedAt,
+    this.submitUrl,
+    this.submissionNotes,
+    this.teamMembers = const [],
+  });
+
+  factory TaskModel.fromJson(Map<String, dynamic> json) {
+    final rawMembers = json['teamMembers'] ?? json['team_members'];
+    List<TeamMemberInfo> membersList = [];
+    if (rawMembers is List) {
+      membersList = rawMembers
+          .map((e) => TeamMemberInfo.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+
+    return TaskModel(
+      id: json['id'],
+      guruId: json['guruId'] ?? json['guru_id'],
+      classId: json['classId'] ?? json['class_id'],
+      description: json['description'],
+      startDate: json['startDate'] ?? json['start_date'],
+      endDate: json['endDate'] ?? json['end_date'],
+      attachmentUrl: json['attachmentUrl'] ?? json['attachment_url'],
+      isTeamTask: json['isTeamTask'] ?? json['is_team_task'] ?? false,
+      maxTeamMembers: json['maxTeamMembers'] ?? json['max_team_members'] ?? 5,
+      isSubmitted: json['isSubmitted'] ?? json['is_submitted'] ?? false,
+      submittedAt: json['submittedAt'] ?? json['submitted_at'],
+      submitUrl: json['submitUrl'] ?? json['submit_url'],
+      submissionNotes: json['submissionNotes'] ?? json['submission_notes'],
+      teamMembers: membersList,
+    );
+  }
+
+  Map<String, dynamic> toJson() { ... }
+}
+```
+
+**Poin penting:**
+- `TaskModel` = 1 baris tabel `tasks` + info submission (dari join API)
+- `fromJson` dengan fallback `??` untuk format key camelCase/snake_case
+- `isSubmitted`/`submitUrl`/`teamMembers` diisi oleh API saat query dengan `siswaId`
+
+Buat juga model pendukung (`submission_model.dart`, `team_member_model.dart`, `student_submission_model.dart`) — mengikuti pola `fromJson` yang sama.
+
+### 2.4 Flutter: TaskRepository
+
+Buat `lib/repositories/task_repository.dart`:
+
+```dart
+class TaskRepository {
   final DioClient _client;
 
-  AuthRepository(this._client);
+  TaskRepository(this._client);
 
-  Future<ApiResponse<UserModel>> loginUser({
-    required String nipNik,
-    required String password,
+  Future<ApiResponse<List<TaskModel>>> getTasks({
+    String? classId,
+    String? guruId,
+    String? siswaId,
   }) async {
     try {
-      final response = await _client.dio.post('/api/auth/login', data: {
-        'nipNik': nipNik,
-        'password': password,
-      });
+      final Map<String, dynamic> queryParams = {};
+      if (classId != null && classId.isNotEmpty) queryParams['classId'] = classId;
+      if (guruId != null && guruId.isNotEmpty) queryParams['guruId'] = guruId;
+      if (siswaId != null && siswaId.isNotEmpty) queryParams['siswaId'] = siswaId;
 
-      return ApiResponse<UserModel>.fromJson(
-        response.data,
-        (json) => UserModel.fromJson(json as Map<String, dynamic>),
+      final response = await _client.dio.get(
+        '/api/tasks',
+        queryParameters: queryParams.isNotEmpty ? queryParams : null,
       );
+
+      return ApiResponse<List<TaskModel>>.fromJson(response.data, (json) {
+        final list = json as List<dynamic>;
+        return list
+            .map((e) => TaskModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      });
     } on DioException catch (e) {
-      return ApiResponse<UserModel>(
+      return ApiResponse<List<TaskModel>>(
         success: false,
         message: DioClient.getErrorMessage(e),
         error: e.response?.data?['error'],
       );
-    } catch (e) {
-      return ApiResponse<UserModel>(
-        success: false,
-        message: 'Terjadi kesalahan: ${e.toString()}',
-      );
     }
   }
 
-  Future<ApiResponse<UserModel>> registerUser({
-    required String nama,
-    required String role,
-    required String nipNik,
-    required String password,
-    String? email,
-    String? classId,
-  }) async {
-    // ... POST /api/auth/register
-  }
+  Future<ApiResponse<TaskModel>> createTask({
+    required String guruId,
+    required String classId,
+    required String description,
+    required String startDate,
+    required String endDate,
+    String? attachmentUrl,
+    bool isTeamTask = false,
+    int maxTeamMembers = 5,
+  }) async { ... }
 }
 ```
 
-**Latihan:** implement `loginUser` + `registerUser` di `AuthRepository`, lalu `login()` di `AuthProvider`.
+**Poin penting:**
+- `queryParameters` → filter opsional (classId/guruId/siswaId) — dikirim hanya jika ada
+- `ApiResponse<T>.fromJson` → wrapper `{success, data, message}`
+- `on DioException` → pesan error ramah (`DioClient.getErrorMessage`)
 
-> **Checkpoint:** login berhasil dari Flutter (user tersimpan di provider).
+### 2.5 Flutter: TaskProvider
 
----
-
-## 7. Session Persistence: shared_preferences
-
-```bash
-fvm flutter pub add shared_preferences
-```
-
-### AuthProvider dengan Persistensi
+Buat `lib/providers/task_provider.dart`:
 
 ```dart
-// lib/providers/auth_provider.dart (ringkas)
-class AuthProvider extends ChangeNotifier {
-  final AuthRepository _authRepository;
-  UserModel? _currentUser;
+class TaskProvider with ChangeNotifier {
+  final TaskRepository _taskRepo;
+
+  List<TaskModel> _tasks = [];
+  List<StudentSubmissionModel> _studentSubmissions = [];
   bool _isLoading = false;
   String? _error;
 
-  UserModel? get currentUser => _currentUser;
-  bool get isAuthenticated => _currentUser != null;
+  TaskProvider(this._taskRepo);
 
-  Future<void> login({required String nipNik, required String password}) async {
+  List<TaskModel> get tasks => _tasks;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+
+  Future<void> fetchTasks({String? classId, String? guruId, String? siswaId}) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
-    final response = await _authRepository.loginUser(nipNik: nipNik, password: password);
-    if (response.success) {
-      _currentUser = response.data;
-      await _saveSession(response.data!);   // simpan ke shared_preferences
-    } else {
-      _error = response.message;
-    }
-
-    _isLoading = false;
-    notifyListeners();
-    return response.success;
-  }
-
-  Future<void> _saveSession(UserModel user) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('user_id', user.id);
-    await prefs.setString('user_nama', user.nama);
-    await prefs.setString('user_role', user.role);
-    // ...
-  }
-
-  Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    _currentUser = null;
-    notifyListeners();
-  }
-}
-```
-
-**Poin penting:**
-- `SharedPreferences` → simpan data kecil (session) secara lokal & persisten
-- Auto-login: saat app dibuka, baca `prefs`, restore `_currentUser`
-- `logout()` → clear prefs + null-kan user
-
-**Latihan:** implement `_restoreSession()` di `initState`/`main()` — tutup & buka app → tetap login.
-
-> **Checkpoint:** tutup & buka app → tetap login (session persist).
-
----
-
-## 8. Login Screen & Timeout Handling
-
-### 8.1 LoginScreen
-
-```dart
-// lib/screens/auth/login_screen.dart
-class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _nipNikController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  void _submit() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    final authProvider = context.read<AuthProvider>();
-    final success = await authProvider.login(
-      nipNik: _nipNikController.text,
-      password: _passwordController.text,
+    final response = await _taskRepo.getTasks(
+      classId: classId, guruId: guruId, siswaId: siswaId,
     );
 
-    if (!success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(authProvider.error ?? 'Gagal masuk. Silakan coba lagi.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+    _isLoading = false;
+
+    if (response.success && response.data != null) {
+      _tasks = response.data!;
+    } else {
+      _error = response.message ?? 'Gagal mengambil daftar tugas';
     }
+    notifyListeners();
   }
 
-  // build(): Form dengan TextFormField NIP/NIK + Password, tombol Masuk
+  Future<bool> createNewTask({...}) async { ... }
 }
 ```
 
-### 8.2 Timeout Handling (`DioClient.getErrorMessage`)
+### 2.6 Flutter: Daftarkan di `main.dart`
 
 ```dart
-static String getErrorMessage(DioException e) {
-  switch (e.type) {
-    case DioExceptionType.connectionTimeout:
-    case DioExceptionType.sendTimeout:
-    case DioExceptionType.receiveTimeout:
-      return 'Koneksi ke server timeout (waktu habis). Silakan periksa koneksi internet atau server backend.';
-    case DioExceptionType.connectionError:
-      return 'Gagal terhubung ke server backend. Pastikan server aktif.';
-    case DioExceptionType.badResponse:
-      return e.response?.data?['message'] ?? 'Terjadi kesalahan pada server (${e.response?.statusCode}).';
-    case DioExceptionType.cancel:
-      return 'Permintaan dibatalkan.';
-    default:
-      return e.message ?? 'Terjadi kesalahan jaringan tidak terduga.';
+final taskRepo = TaskRepository(dioClient);
+// ...
+ChangeNotifierProvider(create: (_) => TaskProvider(taskRepo)),
+```
+
+### 2.7 Flutter: EmptyStateWidget + CreateTaskForm
+
+**EmptyStateWidget** (`lib/widgets/empty_state_widget.dart`) — tampilan saat belum ada tugas:
+
+```dart
+class EmptyStateWidget extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String message;
+  final VoidCallback? onRefresh;
+
+  const EmptyStateWidget({
+    super.key,
+    this.icon = Icons.assignment_outlined,
+    required this.title,
+    required this.message,
+    this.onRefresh,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, size: 80, color: Theme.of(context).colorScheme.primary),
+            ),
+            const SizedBox(height: 20),
+            Text(title, style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 8),
+            Text(message, textAlign: TextAlign.center),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+**CreateTaskForm** (`lib/widgets/create_task_form.dart`) — bottom sheet form buat tugas baru (deskripsi, kelas tujuan, tanggal mulai/selesai, attachment URL, toggle tugas tim, max anggota).
+
+**Update `teacher_home_screen.dart`** — ganti "Hello Dashboard" dengan header guru + FAB "Buat Tugas Baru" + EmptyStateWidget:
+
+```dart
+floatingActionButton: FloatingActionButton.extended(
+  onPressed: () => _showCreateTaskBottomSheet(context),
+  icon: const Icon(Icons.add),
+  label: const Text('Buat Tugas Baru'),
+),
+// body: taskProvider.isLoading
+//   ? const Center(child: CircularProgressIndicator())
+//   : taskProvider.tasks.isEmpty
+//   ? EmptyStateWidget(...)
+//   : ...  (S3-02)
+```
+
+> **Checkpoint S3-01:** setelah login sebagai guru, dashboard menampilkan header "Selamat Datang, [nama]" + tombol "Buat Tugas Baru" + EmptyState "Belum Ada Tugas". Klik FAB → form muncul → isi → submit → data masuk tabel `tasks` di Neon (cek Drizzle Studio).
+
+---
+
+## 3. S3-02: List Tugas Guru + API Filter
+
+> **Branch:** Flutter `s3-02-listtask` · API `s3-02-listtask`
+> **Fokus:** tampilkan daftar tugas yang dibuat guru (Card + nama kelas).
+
+### 3.1 API: Filter + Submissions (schema `submissions` + `submission_members`)
+
+Tambahkan di `src/db/schema.ts` — tabel `submissions` dan `submission_members` (lihat diff branch `s3-01-taskapi-schema` → `s3-02-listtask`):
+
+```ts
+// 4. Tabel Submissions
+export const submissions = pgTable("submissions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  taskId: uuid("task_id").notNull().references(() => tasks.id, { onDelete: "cascade" }),
+  siswaId: uuid("siswa_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  submitUrl: text("submit_url").notNull(),
+  notes: text("notes"),
+  submittedAt: timestamp("submitted_at").defaultNow().notNull(),
+});
+
+// 5. Tabel Submission Members (Team Task Members)
+export const submissionMembers = pgTable(
+  "submission_members",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    submissionId: uuid("submission_id").notNull().references(() => submissions.id, { onDelete: "cascade" }),
+    siswaId: uuid("siswa_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [uniqueIndex("submission_siswa_idx").on(table.submissionId, table.siswaId)],
+);
+```
+
+> **WAJIB `npm run db:push`** lagi (schema berubah).
+
+Update `GET /api/tasks` di `src/index.ts` — tambahkan query `siswaId` yang mengembalikan `isSubmitted`, `submitUrl`, `teamMembers` per task (lihat diff branch). Ini yang membuat siswa bisa lihat status pengumpulannya.
+
+**Test:**
+
+```bash
+# List tugas guru tertentu
+curl "http://localhost:8787/api/tasks?guruId=<uuid-guru>"
+
+# List tugas dengan status submission siswa
+curl "http://localhost:8787/api/tasks?siswaId=<uuid-siswa>"
+```
+
+### 3.2 Flutter: List Tugas di TeacherHomeScreen
+
+Update `teacher_home_screen.dart` — ganti EmptyState dengan `ListView.builder`:
+
+```dart
+: ListView.builder(
+    itemCount: taskProvider.tasks.length,
+    itemBuilder: (context, index) {
+      final task = taskProvider.tasks[index];
+
+      // Cari nama kelas dari schoolProvider
+      final matchingClass = schoolProvider.classes.firstWhere(
+        (c) => c.id == task.classId,
+        orElse: () => schoolProvider.classes.isNotEmpty
+            ? schoolProvider.classes.first
+            : throw Exception(),
+      );
+      final className =
+          schoolProvider.classes.any((c) => c.id == task.classId)
+          ? 'Kelas ${matchingClass.tingkat} - ${matchingClass.namaKelas}'
+          : 'Kelas ID: ${task.classId.substring(0, task.classId.length > 8 ? 8 : task.classId.length)}...';
+
+      return Card(
+        margin: const EdgeInsets.only(bottom: 12),
+        elevation: 2,
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => TaskDetailScreen(task: task, className: className),
+              ),
+            );
+          },
+          child: /* isi card: deskripsi, kelas, tanggal, status */,
+        ),
+      );
+    },
+  ),
+```
+
+**Poin penting:**
+- `schoolProvider.classes.firstWhere` → konversi `classId` (UUID) → nama kelas (Tingkat + Ruang)
+- `Card` + `InkWell` → tiap tugas bisa diklik → S3-03
+- `RefreshIndicator` (pull-to-refresh) + tombol refresh di AppBar
+
+> **Checkpoint S3-02:** daftar tugas guru muncul sebagai Card (deskripsi + kelas + tanggal). Klik → (S3-03, belum ada → bisa placeholder dulu).
+
+---
+
+## 4. S3-03: Task Detail + Status Siswa + url_launcher
+
+> **Branch:** Flutter `s3-03-taskdetailscreen` · API `s3-03-taskdetailapi`
+> **Fokus:** detail tugas + daftar siswa + status pengumpulan + buka link.
+
+### 4.1 API: `GET /api/tasks/:id/submissions`
+
+Tambahkan di `src/index.ts`:
+
+```ts
+app.get("/api/tasks/:id/submissions", async (c) => {
+  const db = getDb();
+  const taskId = c.req.param("id");
+
+  try {
+    const taskData = await db.select().from(tasks).where(eq(tasks.id, taskId));
+    if (taskData.length === 0) {
+      return c.json({ success: false, message: "Tugas tidak ditemukan" }, 404);
+    }
+    const task = taskData[0];
+
+    // Semua siswa di kelas tugas ini
+    const studentsInClass = await db
+      .select()
+      .from(users)
+      .where(and(eq(users.role, "siswa"), eq(users.classId, task.classId)));
+
+    // Submission per task
+    const taskSubmissions = await db
+      .select()
+      .from(submissions)
+      .where(eq(submissions.taskId, taskId));
+
+    // Map submission → members (untuk team task)
+    // ... (lihat diff branch)
+
+    return c.json({
+      success: true,
+      data: {
+        task,
+        students: studentList,   // [{siswaId, nama, nipNik, isSubmitted, submitUrl, notes, submittedAt, teamMembers}]
+      },
+    });
+  } catch (err: any) {
+    return c.json({ success: false, message: err.message }, 500);
+  }
+});
+```
+
+**Test `neon dev`:**
+
+```bash
+curl http://localhost:8787/api/tasks/<uuid-task>/submissions
+# → {"success":true,"data":{"task":{...},"students":[{"siswaId":"...","nama":"Budi","isSubmitted":false,...}]}}
+```
+
+**Deploy:**
+
+```bash
+neon deploy
+```
+
+### 4.2 Flutter: TaskDetailScreen + url_launcher
+
+**pubspec berubah!** Tambah dependency:
+
+```bash
+fvm flutter pub add url_launcher
+```
+
+> **Pola penting:** setiap kali `pubspec.yaml` berubah, jalankan `fvm flutter pub get` (atau `fvm flutter pub add` yang otomatis melakukannya).
+
+Buat `lib/core/utils/url_launcher_utils.dart`:
+
+```dart
+import 'package:url_launcher/url_launcher.dart';
+
+Future<void> openUrl(String url) async {
+  final uri = Uri.parse(url);
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+}
+```
+
+Buat `lib/screens/guru/task_detail_screen.dart` — detail tugas + daftar siswa + filter status:
+
+```dart
+enum SubmissionFilter { all, submitted, pending }
+
+class TaskDetailScreen extends StatefulWidget {
+  final TaskModel task;
+  final String? className;
+
+  const TaskDetailScreen({super.key, required this.task, this.className});
+
+  @override
+  State<TaskDetailScreen> createState() => _TaskDetailScreenState();
+}
+
+class _TaskDetailScreenState extends State<TaskDetailScreen> {
+  SubmissionFilter _filter = SubmissionFilter.all;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+  }
+
+  void _loadData() {
+    context.read<TaskProvider>().fetchTaskSubmissions(widget.task.id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final taskProvider = context.watch<TaskProvider>();
+    final students = taskProvider.studentSubmissions;
+
+    final totalStudents = students.length;
+    final submittedCount = students.where((s) => s.isSubmitted).length;
+    final pendingCount = totalStudents - submittedCount;
+
+    final filteredStudents = students.where((s) {
+      if (_filter == SubmissionFilter.submitted) return s.isSubmitted;
+      if (_filter == SubmissionFilter.pending) return !s.isSubmitted;
+      return true;
+    }).toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Detail Pengumpulan Tugas'),
+        actions: [IconButton(icon: const Icon(Icons.refresh), onPressed: _loadData)],
+      ),
+      // ... ringkasan tugas + statistik (total/submitted/pending) + filter chips + ListView siswa
+    );
   }
 }
 ```
 
 **Poin penting:**
-- Setiap tipe `DioException` punya pesan ramah untuk user (bukan stack trace)
-- `connectionTimeout` → pesan khusus "timeout"
-- `badResponse` → ambil pesan dari backend jika ada
+- `enum SubmissionFilter` → filter All / Submitted / Pending
+- `fetchTaskSubmissions(taskId)` → panggil API → `studentSubmissions`
+- Tiap siswa: nama + status (chip "Sudah" / "Belum") + tombol buka `submitUrl` via `url_launcher`
+- `RefreshIndicator` + tombol refresh
 
-**Latihan:** implement `LoginScreen` + hubungkan ke `AuthProvider.login()`. Matikan server → login → lihat pesan timeout yang rapi.
+**Update `teacher_home_screen.dart`** — `onTap` Card → `TaskDetailScreen(task: task, className: className)`.
 
-> **Checkpoint:** app menampilkan pesan timeout/error yang ramah jika server mati.
+> **Checkpoint S3-03:** klik tugas → detail dengan daftar siswa (filter All/Submitted/Pending), status pengumpulan, dan link submit bisa dibuka.
 
 ---
 
-## 9. Review, Merge & Preview Sesi 4
+## 5. Verifikasi Akhir & Pengumpulan
+
+### 5.1 Bandingkan dengan referensi
 
 ```bash
-# 1. Bandingkan dengan referensi
-git diff session-3-start..session-3-final --stat
+# Flutter: diff seluruh homework
+git diff s3-start..s3-finish --stat
 
-# 2. Ambil hasil referensi (jika tertinggal)
-git merge session-3-final
+# API: diff seluruh homework
+git diff s3-start..s3-finish --stat
+
+# Detail per file (contoh)
+git diff s3-start..s3-finish -- lib/screens/guru/teacher_home_screen.dart
 ```
 
-**Preview Sesi 4 (besok):** **workshop** — replikasi project dari nol, improvement (fitur baru), dan Q&A. Aplikasi sudah **end-to-end lengkap** — besok saatnya berkreasi!
+> **Kenapa `git diff s3-start..s3-finish` dan bukan merge?** Karena homework ini berbasis branch per step — diff menunjukkan progres kalian dari titik awal sampai akhir, dan bisa dibandingkan dengan branch referensi `s3-01-*`/`s3-02-*`/`s3-03-*` per step.
 
-### Checklist Hasil Akhir Sesi 3
-- [ ] Backend Hono jalan dengan 5 tabel di Neon
-- [ ] Register & login berfungsi via API (curl/Postman)
-- [ ] Flutter terhubung ke backend sungguhan via Dio
-- [ ] Login screen berfungsi (NIP/NIK + password, error state)
-- [ ] Session persisten (tutup & buka app → tetap login)
-- [ ] Pesan timeout/error ramah untuk user
+### 5.2 Screenshot hasil
+
+- [ ] Dashboard guru menampilkan daftar tugas (Card + nama kelas + tanggal)
+- [ ] Detail tugas menampilkan daftar siswa + status pengumpulan (All/Submitted/Pending)
+- [ ] Tombol "Buat Tugas Baru" membuka form dan berhasil membuat tugas (cek Drizzle Studio)
+
+### 5.3 Checklist Hasil Akhir Sesi 3
+
+- [ ] Kedua repo di-clone + branch `s3-start` checkout
+- [ ] `neon link` + `db:push` + `db:seed` berhasil (tabel classes/users)
+- [ ] `neon dev` jalan di `localhost:8787` + curl `/api/classes` sukses
+- [ ] Schema `tasks` ditambahkan + `db:push` + curl `POST /api/tasks` sukses
+- [ ] `neon deploy` berhasil + curl URL produksi sukses
+- [ ] `TaskModel` + model pendukung (Submission/TeamMember/StudentSubmission) dibuat
+- [ ] `TaskRepository` + `TaskProvider` dibuat & didaftarkan di `main.dart`
+- [ ] `EmptyStateWidget` + `CreateTaskForm` dibuat
+- [ ] List tugas guru muncul (Card + class lookup)
+- [ ] Schema `submissions` + `submission_members` ditambahkan + `db:push`
+- [ ] `GET /api/tasks?guruId=...` & `?siswaId=...` bekerja
+- [ ] `url_launcher` ditambahkan (`fvm flutter pub add url_launcher`)
+- [ ] `TaskDetailScreen` + filter status (All/Submitted/Pending) berfungsi
+- [ ] `GET /api/tasks/:id/submissions` berfungsi
+- [ ] `git diff s3-start..s3-finish` bersih (tidak ada file hilang)
 
 ---
 
-## Latihan / Tugas Rumah
-1. Tambahkan validasi di register: tolak NIP/NIK duplikat dengan pesan ramah (cek status 409).
-2. Implement `SchoolRepository.fetchClasses()` + tampilkan dropdown kelas di halaman register.
-3. Coba deploy backend ke **Neon Functions** (lihat `neon.ts`) — atau setidaknya pahami konsepnya.
+## Latihan / Pengayaan (Opsional)
+
+1. Tambahkan **validasi tanggal** — `endDate` harus setelah `startDate` (di CreateTaskForm dan API).
+2. Tambahkan **halaman siswa**: siswa login → lihat tugas kelasnya + tombol "Kumpulkan" (pakai `GET /api/tasks?siswaId=...` + `POST /api/submissions` yang sudah ada di API).
+3. Tambahkan **konfirmasi hapus tugas** (guru) — dengan `DELETE /api/tasks/:id` (buat sendiri di API).
+4. Jelaskan dengan kata-kata sendiri: kenapa kita perlu `db:push` setiap schema berubah, dan apa bedanya `neon dev` vs `neon deploy`?
 
 ## Sumber Belajar
-- [Hono Documentation](https://hono.dev/)
-- [Drizzle ORM](https://orm.drizzle.team/)
-- [Neon Functions](https://neon.com/docs/functions/overview)
-- [shared_preferences Package](https://pub.dev/packages/shared_preferences)
+- [Neon CLI — `neon dev`](https://neon.tech/docs/cli/dev)
+- [Neon CLI — `neon deploy`](https://neon.tech/docs/cli/deploy)
+- [Drizzle ORM — Schema & Migrations](https://orm.drizzle.team/docs/migrations)
+- [Provider Package](https://pub.dev/packages/provider)
+- [url_launcher](https://pub.dev/packages/url_launcher)
+- [Flutter — ListView & Cards](https://docs.flutter.dev/ui/widgets/layout)
