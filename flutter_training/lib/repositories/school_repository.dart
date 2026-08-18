@@ -1,7 +1,7 @@
 import '../core/network/dio_client.dart';
 import '../core/network/api_response.dart';
 import '../models/class_model.dart';
-import '../models/student_submission_model.dart';
+import '../models/team_member_model.dart';
 import 'package:dio/dio.dart';
 
 class SchoolRepository {
