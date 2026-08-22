@@ -46,7 +46,7 @@ git checkout session-1-start
 
 > **Apa yang ada di `session-1-start`?** Scaffold Flutter kosong hasil `fvm flutter create` — hanya `main.dart` counter bawaan. Kita akan membangun semuanya dari nol hari ini.
 
----
+ 
 
 ## 2. Perencanaan & Desain Aplikasi
 
@@ -248,7 +248,6 @@ class _MyHomePageState extends State<MyHomePage> { // state + setState()
 }
 ```
 
----
 ---
 
 ## 4. Dart Essentials
