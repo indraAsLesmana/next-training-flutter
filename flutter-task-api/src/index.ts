@@ -241,6 +241,24 @@ app.post('/api/tasks', async (c) => {
 });
 
 // -------------------------------------------------------------
+// DELETE: Guru Hapus Tugas
+// -------------------------------------------------------------
+app.delete('/api/tasks/:id', async (c) => {
+  const db = getDb();
+  const taskId = c.req.param('id');
+
+  try {
+    const deleted = await db.delete(tasks).where(eq(tasks.id, taskId)).returning();
+    if (deleted.length === 0) {
+      return c.json({ success: false, message: 'Tugas tidak ditemukan' }, 404);
+    }
+    return c.json({ success: true, message: 'Tugas berhasil dihapus', data: deleted[0] }, 200);
+  } catch (err: any) {
+    return c.json({ success: false, message: err.message }, 500);
+  }
+});
+
+// -------------------------------------------------------------
 // POST: Siswa Submit / Edit Tugas (supports Team Tasks)
 // -------------------------------------------------------------
 app.post('/api/submissions', async (c) => {
