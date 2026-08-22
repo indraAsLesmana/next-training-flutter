@@ -282,32 +282,14 @@ IconButton(
 
 ## 3. Q&A Terbuka Berbasis Project (13:00–13:45)
 
-> **Catatan:** project ini memakai **`Provider`** sebagai state management (ChangeNotifier + `MultiProvider`) dan **Dio** untuk HTTP. Q&A berikut berdasarkan kode nyata project — bukan teori umum.
-
-### Tabel Topik (berbasis project)
-
 | Topik | Isi |
 |---|---|
-| **State management: Provider** | Kenapa project pakai `Provider` (bukan Riverpod/Bloc) — lihat `main.dart` `MultiProvider` + `ChangeNotifier` + `context.watch`/`context.read`. Kapan `watch` vs `read`? |
-| **Cascade delete** | Kenapa hapus tugas menghapus pengumpulan siswa? Lihat schema `onDelete: "cascade"` + respons API. |
+| **Menjalankan Project (CLI)** | **Flutter**: `fvm flutter run --dart-define-from-file=config_prod.json`<br>**Backend**: `neon dev` (lokal port 8787) atau `neon deploy` (produksi). |
+| **Menambah Dependencies** | **Flutter**: `flutter pub add <nama_paket>` (atau edit `pubspec.yaml` + `flutter pub get`).<br>**Backend**: `npm install <nama_paket>` di folder `flutter-task-api`. |
+| **Flutter Debugging & DevTools** | Saat `flutter run` aktif di terminal:<br>• Tekan `v` untuk membuka **Flutter DevTools** di browser (Inspector, Network, Logs).<br>• Tekan `r` (Hot Reload), `R` (Hot Restart), `p` (Debug Paint/Inspector).<br>• Di VS Code: Tekan `F5` / *Debug Mode* atau icon DevTools di status bar. |
+| **State management: Provider** | Kenapa project pakai `Provider` — lihat `main.dart` `MultiProvider` + `ChangeNotifier` + `context.watch`/`context.read`. Kapan `watch` vs `read`? |
 | **`neon dev` vs `neon deploy`** | Bedanya? `dev` = lokal (port 8787), `deploy` = produksi (Neon Functions). Kapan pakai masing-masing. |
 | **Repository pattern** | Kenapa pisah `repository` dari `provider`? Lihat `TaskRepository` vs `TaskProvider`. Manfaat untuk testing. |
-| **ApiResponse wrapper** | Kenapa semua response dibungkus `{success, data, message}`? Konsistensi error handling. |
-| **Error handling Dio** | `getErrorMessage` — bagaimana `DioException` diubah jadi pesan ramah untuk user. |
-| **Git workflow** | Branch per sesi (`session-1-start`..`s3-finish`), `git diff` utk bandingkan, `git checkout <branch> -- folder`. |
-| **Neon Functions deploy** | `neon.ts` + `ftonsite` function — bagaimana Hono API di-deploy & invocation URL-nya. |
-
-### Pertanyaan Pemicu (mulai diskusi)
-
-1. **Provider vs setState:** di `TaskProvider`, kenapa kita butuh `ChangeNotifier` + `notifyListeners`? Apa bedanya dengan `setState` di widget?
-2. **`watch` vs `read`:** di `task_detail_screen.dart`, kenapa `context.watch` di `build()` tapi `context.read` di handler? Bisa salah pakai?
-3. **Cascade delete:** jika kita ganti `onDelete: "cascade"` jadi `"set null"`, apa akibatnya saat hapus guru/tugas?
-4. **Repository purpose:** kenapa `TaskProvider` tidak langsung panggil Dio? Apa untungnya API dipisah di `TaskRepository`?
-5. **Error handling:** jalankan `neon dev` dalam keadaan mati → apa pesan yang muncul di app? Dari `DioClient.getErrorMessage` bagian mana?
-6. **Delete flow:** apa yang terjadi di UI jika `DELETE` mengembalikan 404 (tugas sudah dihapus orang lain)? Apakah pesan error-nya sudah ramah?
-
-### Demo Deploy (opsional, 13:45–14:05)
-Demo: `neon deploy` + panggil `/api/tasks` dari URL Neon Functions produksi, lalu hapus via Flutter web.
 
 ---
 
@@ -322,13 +304,6 @@ Demo: `neon deploy` + panggil `/api/tasks` dari URL Neon Functions produksi, lal
 
 ## Checklist Kesiapan Instruktur
 - [ ] Kode delete task sudah di-commit & build (2 commit terakhir `build-project`)
-- [ ] `neon dev` siap demo (API jalan di `localhost:8787`)
 - [ ] Jawaban Q&A siap (lihat tabel + pertanyaan pemicu)
 - [ ] (Opsional) Demo deploy siap dijalankan
 - [ ] Feedback form siap
-
-## Tips Mengajar
-- Mulai dari **alur end-to-end** dulu (2.5), baru breakdown per layer — peserta lihat "mau ke mana"
-- Tekankan **konfirmasi destruktif** & **cascade delete** — ini pelajaran penting produksi
-- Peserta cepat: minta buat **hapus kelas** atau **ganti `cascade` → `set null`** dan jelaskan dampaknya
-- Peserta lambat: sudah punya kode referensi di `build-project`, fokus pahami alur + 1 layer
