@@ -23,6 +23,7 @@ class TaskDetailScreen extends StatefulWidget {
 
 class _TaskDetailScreenState extends State<TaskDetailScreen> {
   SubmissionFilter _filter = SubmissionFilter.all;
+  bool _isDeleting = false;
 
   @override
   void initState() {
@@ -34,6 +35,70 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
 
   void _loadData() {
     context.read<TaskProvider>().fetchTaskSubmissions(widget.task.id);
+  }
+
+  Future<void> _confirmDeleteTask() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Colors.red),
+            SizedBox(width: 8),
+            Text('Hapus Tugas'),
+          ],
+        ),
+        content: const Text(
+          'Apakah Anda yakin ingin menghapus tugas ini?\n\n'
+          'Perhatian: Seluruh data pengumpulan siswa yang terkait dengan tugas ini juga akan dihapus secara permanen.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Hapus'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    setState(() {
+      _isDeleting = true;
+    });
+
+    final taskProvider = context.read<TaskProvider>();
+    final success = await taskProvider.deleteTask(widget.task.id);
+
+    if (!mounted) return;
+
+    setState(() {
+      _isDeleting = false;
+    });
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Tugas berhasil dihapus'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.of(context).pop(true);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(taskProvider.error ?? 'Gagal menghapus tugas'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -105,12 +170,33 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          SelectableText(
-                            'ID: ${widget.task.id.substring(0, widget.task.id.length > 8 ? 8 : widget.task.id.length)}...',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SelectableText(
+                                'ID: ${widget.task.id.substring(0, widget.task.id.length > 8 ? 8 : widget.task.id.length)}...',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              IconButton(
+                                icon: _isDeleting
+                                    ? const SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.red,
+                                        ),
+                                      )
+                                    : const Icon(Icons.delete_outline, color: Colors.red),
+                                tooltip: 'Hapus Tugas',
+                                onPressed: _isDeleting ? null : _confirmDeleteTask,
+                                visualDensity: VisualDensity.compact,
+                              ),
+                            ],
                           ),
                         ],
                       ),

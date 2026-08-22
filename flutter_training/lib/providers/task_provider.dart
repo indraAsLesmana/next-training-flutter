@@ -78,6 +78,27 @@ class TaskProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> deleteTask(String taskId) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    final response = await _taskRepo.deleteTask(taskId);
+
+    _isLoading = false;
+
+    if (response.success) {
+      _tasks.removeWhere((t) => t.id == taskId);
+      _studentSubmissions = [];
+      notifyListeners();
+      return true;
+    } else {
+      _error = response.message;
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<bool> submitStudentTask({
     required String taskId,
     required String siswaId,

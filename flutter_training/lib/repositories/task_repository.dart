@@ -87,6 +87,27 @@ class TaskRepository {
     }
   }
 
+  Future<ApiResponse<void>> deleteTask(String taskId) async {
+    try {
+      final response = await _client.dio.delete('/api/tasks/$taskId');
+      return ApiResponse<void>(
+        success: response.data['success'] ?? true,
+        message: response.data['message'],
+      );
+    } on DioException catch (e) {
+      return ApiResponse<void>(
+        success: false,
+        message: DioClient.getErrorMessage(e),
+        error: e.response?.data?['error'],
+      );
+    } catch (e) {
+      return ApiResponse<void>(
+        success: false,
+        message: 'Terjadi kesalahan: ${e.toString()}',
+      );
+    }
+  }
+
   Future<ApiResponse<SubmissionModel>> submitTask({
     required String taskId,
     required String siswaId,
